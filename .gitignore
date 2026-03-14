@@ -1,0 +1,29 @@
+# System files
+.DS_Store
+Thumbs.db
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+
+# Build
+build/
+dist/
+.cache/
+
+# Environment
+.env
+.env.local
+.env.production
+
+# Temporary files
+*.tmp
+*.temp
