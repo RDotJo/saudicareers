@@ -1,0 +1,13 @@
+{
+  "name": "saudicareers",
+  "version": "1.0.0",
+  "description": "منصة وظائف حكومية وشبه حكومية في السعودية",
+  "scripts": {
+    "dev": "npx serve .",
+    "build": "echo 'Static site - no build needed'",
+    "start": "npx serve ."
+  },
+  "keywords": ["jobs", "saudi", "careers", "vision2030"],
+  "author": "RDotJo",
+  "license": "MIT"
+}
