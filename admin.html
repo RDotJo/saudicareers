@@ -33,27 +33,64 @@
     </style>
 </head>
 <body class="bg-gray-50">
-    <!-- Admin Check -->
-    <script>
-        // Check if user is admin
-        const currentUser = JSON.parse(localStorage.getItem('saudicareers_user') || '{}');
-        const isAdmin = currentUser.email === 'admin@saudicareers.site' || localStorage.getItem('saudicareers_is_admin') === 'true';
-        
-        if (!isAdmin) {
-            document.body.innerHTML = `
-                <div class="min-h-screen flex items-center justify-center bg-emerald-950">
-                    <div class="text-center text-white">
-                        <i class="fas fa-lock text-6xl mb-4"></i>
-                        <h1 class="text-3xl font-bold mb-4">غير مصرح</h1>
-                        <p class="mb-6">يجب تسجيل الدخول كمشرف</p>
-                        <a href="index.html" class="text-gold-500 hover:underline">العودة للرئيسية</a>
-                    </div>
+<!-- Admin Login Screen -->
+    <div id="admin-login-screen" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-950 to-emerald-900">
+        <div class="w-full max-w-md p-8">
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 bg-gold-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <i class="fas fa-shield-alt text-white text-3xl"></i>
                 </div>
-            `;
-        }
-    </script>
+                <h1 class="text-3xl font-bold text-white mb-2">SaudiCareers</h1>
+                <p class="text-gray-400">لوحة تحكم المشرف</p>
+            </div>
+            
+            <div class="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20">
+                <h2 class="text-xl font-bold text-white mb-6 text-center">تسجيل الدخول</h2>
+                
+                <form id="admin-login-form" class="space-y-4">
+                    <div>
+                        <label class="block text-sm text-gray-300 mb-2">البريد الإلكتروني</label>
+                        <div class="relative">
+                            <i class="fas fa-envelope absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                            <input type="email" id="admin-email" required 
+                                class="w-full pr-12 pl-4 py-4 rounded-xl bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:border-gold-500 focus:outline-none"
+                                placeholder="admin@saudicareers.site">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm text-gray-300 mb-2">كلمة المرور</label>
+                        <div class="relative">
+                            <i class="fas fa-lock absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                            <input type="password" id="admin-password" required 
+                                class="w-full pr-12 pl-4 py-4 rounded-xl bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:border-gold-500 focus:outline-none"
+                                placeholder="••••••••">
+                        </div>
+                    </div>
+                    
+                    <button type="submit" 
+                        class="w-full py-4 bg-gold-500 text-white rounded-xl font-bold hover:bg-gold-600 transition-colors flex items-center justify-center gap-2">
+                        <i class="fas fa-sign-in-alt"></i>
+                        دخول لوحة التحكم
+                    </button>
+                </form>
+                
+                <p id="login-error" class="text-red-400 text-sm text-center mt-4 hidden"></p>
+                
+                <div class="mt-6 text-center">
+                    <a href="index.html" class="text-gray-400 hover:text-white text-sm">
+                        <i class="fas fa-arrow-right ml-1"></i>
+                        العودة للموقع
+                    </a>
+                </div>
+            </div>
+            
+            <p class="text-center text-gray-500 text-sm mt-8">© 2024 SaudiCareers - جميع الحقوق محفوظة</p>
+        </div>
+    </div>
 
-    <div class="flex min-h-screen">
+    <!-- Admin Dashboard (Hidden initially) -->
+    <div id="admin-dashboard" class="hidden">
         <!-- Sidebar -->
         <aside class="sidebar w-72 bg-emerald-950 text-white fixed h-full right-0 top-0 z-50">
             <div class="p-6 border-b border-white/10">
@@ -325,6 +362,57 @@
     </div>
 
     <script>
+        // Admin credentials (in production, use Supabase Auth with role-based access)
+        const ADMIN_CREDENTIALS = {
+            email: 'admin@saudicareers.site',
+            password: 'Admin@2024!'
+        };
+        
+        // Check if already logged in
+        function checkAdminAuth() {
+            const isAdmin = localStorage.getItem('saudicareers_is_admin') === 'true';
+            if (isAdmin) {
+                showDashboard();
+            }
+        }
+        
+        function showDashboard() {
+            document.getElementById('admin-login-screen').classList.add('hidden');
+            document.getElementById('admin-dashboard').classList.remove('hidden');
+            document.body.classList.remove('bg-gradient-to-br', 'from-emerald-950', 'to-emerald-900');
+            document.body.classList.add('bg-gray-50');
+            
+            // Initialize dashboard
+            updateStats();
+            renderJobs();
+            renderUsers();
+        }
+        
+        // Admin login form
+        document.getElementById('admin-login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('admin-email').value;
+            const password = document.getElementById('admin-password').value;
+            const errorEl = document.getElementById('login-error');
+            
+            if (email === ADMIN_CREDENTIALS.email && password === ADMIN_CREDENTIALS.password) {
+                localStorage.setItem('saudicareers_is_admin', 'true');
+                localStorage.setItem('saudicareers_user', JSON.stringify({
+                    email: email,
+                    name: 'المشرف',
+                    role: 'admin'
+                }));
+                showDashboard();
+            } else {
+                errorEl.textContent = 'البريد الإلكتروني أو كلمة المرور غير صحيحة';
+                errorEl.classList.remove('hidden');
+            }
+        });
+        
+        // Check auth on load
+        checkAdminAuth();
+        
         // Sample data (replace with real Supabase integration)
         let jobs = JSON.parse(localStorage.getItem('saudicareers_jobs') || '[]');
         let users = JSON.parse(localStorage.getItem('saudicareers_users') || '[]');
@@ -479,13 +567,22 @@
         function logoutAdmin() {
             localStorage.removeItem('saudicareers_user');
             localStorage.removeItem('saudicareers_is_admin');
-            window.location.href = 'index.html';
+            
+            // Show login screen again
+            document.getElementById('admin-dashboard').classList.add('hidden');
+            document.getElementById('admin-login-screen').classList.remove('hidden');
+            document.body.classList.add('bg-gradient-to-br', 'from-emerald-950', 'to-emerald-900');
+            document.body.classList.remove('bg-gray-50');
+            
+            // Clear form
+            document.getElementById('admin-login-form').reset();
+            document.getElementById('login-error').classList.add('hidden');
         }
         
-        // Initialize
-        updateStats();
-        renderJobs();
-        renderUsers();
+        // Initialize if already logged in
+        if (localStorage.getItem('saudicareers_is_admin') === 'true') {
+            showDashboard();
+        }
     </script>
 </body>
 </html>
