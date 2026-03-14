@@ -6,19 +6,16 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#1C1C1E">
-    <title>SaudiCareers</title>
+    <title>SaudiCareers - وظائف حكومية وشبه حكومية</title>
     
     <!-- PWA -->
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="logo.webp">
     
-    <!-- Fonts: SF Pro + SF Arabic -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- SF Symbols via CDN -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sf-font@1.0.0/stylesheet.css">
     
     <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -28,7 +25,6 @@
         theme: {
             extend: {
                 colors: {
-                    // iOS System Colors + Saudi National Identity
                     'ios-bg': '#000000',
                     'ios-card': '#1C1C1E',
                     'ios-card-secondary': '#2C2C2E',
@@ -39,24 +35,85 @@
                     'ios-blue': '#0A84FF',
                     'ios-green': '#30D158',
                     'ios-orange': '#FF9F0A',
-                    'ios-red': '#FF453A',
-                    // Saudi National Colors
                     'saudi-midnight': '#1C3A2F',
                     'saudi-gold': '#D4AF37',
-                    'saudi-gold-light': '#E5C158',
-                    'saudi-green': '#006C35',
-                },
-                fontFamily: {
-                    'sf': ['SF Pro Display', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-                    'sf-arabic': ['SF Arabic', 'Inter', '-apple-system', 'sans-serif'],
                 }
             }
         }
     }
+    
+    // ═══════════════════════════════════════════════════════════════
+    // AUTH & USER STATE
+    // ═══════════════════════════════════════════════════════════════
+    let currentUser = null;
+    
+    // Check auth from localStorage (simple auth for demo)
+    function checkAuth() {
+        const userData = localStorage.getItem('saudicareers_user');
+        if (userData) {
+            currentUser = JSON.parse(userData);
+        }
+        updateUI();
+    }
+    
+    function updateUI() {
+        const guestView = document.getElementById('guest-view');
+        const userView = document.getElementById('user-view');
+        const userNameEl = document.getElementById('user-name');
+        const greetingEl = document.getElementById('greeting-text');
+        
+        if (currentUser) {
+            // Logged in view
+            if (guestView) guestView.classList.add('hidden');
+            if (userView) userView.classList.remove('hidden');
+            if (userNameEl) userNameEl.textContent = currentUser.name || 'مستخدم';
+            if (greetingEl) greetingEl.textContent = getGreeting(currentUser.name);
+        } else {
+            // Guest view
+            if (guestView) guestView.classList.remove('hidden');
+            if (userView) userView.classList.add('hidden');
+            if (greetingEl) greetingEl.textContent = 'اكتشف فرصك في رؤية 2030';
+        }
+    }
+    
+    function getGreeting(name) {
+        const hour = new Date().getHours();
+        let greeting = 'صباح الخير';
+        if (hour >= 12 && hour < 17) greeting = 'مساء الخير';
+        else if (hour >= 17) greeting = 'مساء الخير';
+        return `${greeting}، ${name || 'مستخدم'} 🇸🇦`;
+    }
+    
+    function login(email, password) {
+        // Demo login - in production this would call Supabase
+        if (email && password) {
+            currentUser = { name: email.split('@')[0], email: email };
+            localStorage.setItem('saudicareers_user', JSON.stringify(currentUser));
+            updateUI();
+            closeLoginSheet();
+        }
+    }
+    
+    function register(name, email, password) {
+        if (name && email && password) {
+            currentUser = { name: name, email: email };
+            localStorage.setItem('saudicareers_user', JSON.stringify(currentUser));
+            updateUI();
+            closeRegisterSheet();
+        }
+    }
+    
+    function logout() {
+        currentUser = null;
+        localStorage.removeItem('saudicareers_user');
+        updateUI();
+    }
+    
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', checkAuth);
     </script>
     
     <style>
-    /* iOS System Styles */
     * {
         font-family: 'SF Pro Display', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         -webkit-tap-highlight-color: transparent;
@@ -66,63 +123,63 @@
         background: #000000;
         color: #FFFFFF;
         overflow-x: hidden;
-        padding-bottom: 100px; /* Space for tab bar */
+        padding-bottom: 100px;
     }
     
-    /* Large Title Navigation */
+    /* Navigation */
     .nav-container {
         position: fixed;
         top: 0;
         left: 0;
         right: 0;
         z-index: 100;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
     }
     
-    .nav-container.scrolled {
-        background: rgba(28, 28, 30, 0.72);
-        backdrop-filter: blur(20px) saturate(180%);
-        -webkit-backdrop-filter: blur(20px) saturate(180%);
-    }
-    
-    .large-title {
-        font-size: 34px;
-        font-weight: 700;
-        line-height: 1.2;
-        transition: all 0.3s ease;
-    }
-    
-    .nav-container.scrolled .large-title {
-        font-size: 17px;
+    .nav-title {
+        font-size: 20px;
         font-weight: 600;
     }
     
-    /* Haptic Feedback Emulation */
-    .haptic-btn {
-        transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    .haptic-btn:active {
-        transform: scale(0.97);
-    }
-    
-    /* iOS Cards */
+    /* Cards */
     .ios-card {
         background: #1C1C1E;
-        border-radius: 12px;
+        border-radius: 16px;
         overflow: hidden;
     }
     
-    .ios-card-secondary {
-        background: #2C2C2E;
-        border-radius: 10px;
+    /* Buttons */
+    .btn-primary {
+        background: #0A84FF;
+        color: white;
+        padding: 14px 24px;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        border: none;
     }
     
-    /* Glassmorphism */
-    .glass-ios {
-        background: rgba(28, 28, 30, 0.72);
-        backdrop-filter: blur(20px) saturate(180%);
-        -webkit-backdrop-filter: blur(20px) saturate(180%);
+    .btn-primary:active {
+        transform: scale(0.97);
+        opacity: 0.9;
+    }
+    
+    .btn-secondary {
+        background: #2C2C2E;
+        color: white;
+        padding: 14px 24px;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        border: none;
+    }
+    
+    .btn-secondary:active {
+        transform: scale(0.97);
     }
     
     /* Tab Bar */
@@ -131,11 +188,10 @@
         bottom: 0;
         left: 0;
         right: 0;
-        background: rgba(0, 0, 0, 0.9);
-        backdrop-filter: blur(20px) saturate(180%);
-        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        background: rgba(0, 0, 0, 0.95);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
         border-top: 0.5px solid rgba(255, 255, 255, 0.1);
-        padding-bottom: env(safe-area-inset-bottom, 0);
         z-index: 1000;
     }
     
@@ -144,88 +200,20 @@
         flex-direction: column;
         align-items: center;
         gap: 4px;
-        padding: 8px 12px;
+        padding: 8px 16px;
         color: #EBEBF599;
         transition: color 0.2s ease;
+        cursor: pointer;
+        border: none;
+        background: transparent;
     }
     
     .tab-item.active {
         color: #0A84FF;
     }
     
-    .tab-icon {
-        font-size: 24px;
-    }
-    
-    .tab-label {
-        font-size: 10px;
-        font-weight: 500;
-    }
-    
-    /* Health Ring */
-    .health-ring {
-        position: relative;
-        width: 120px;
-        height: 120px;
-    }
-    
-    .health-ring svg {
-        transform: rotate(-90deg);
-    }
-    
-    .health-ring-bg {
-        fill: none;
-        stroke: #2C2C2E;
-        stroke-width: 10;
-    }
-    
-    .health-ring-progress {
-        fill: none;
-        stroke: #30D158;
-        stroke-width: 10;
-        stroke-linecap: round;
-        transition: stroke-dashoffset 1s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    .health-ring-gold {
-        stroke: #D4AF37;
-    }
-    
-    .health-ring-text {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        text-align: center;
-    }
-    
-    /* iOS List Style */
-    .ios-list {
-        background: #1C1C1E;
-        border-radius: 12px;
-        overflow: hidden;
-    }
-    
-    .ios-list-item {
-        padding: 12px 16px;
-        border-bottom: 0.5px solid #38383A;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-    
-    .ios-list-item:last-child {
-        border-bottom: none;
-    }
-    
-    .ios-list-icon {
-        width: 32px;
-        height: 32px;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
+    .tab-item:active {
+        transform: scale(0.95);
     }
     
     /* Sheet Modal */
@@ -250,7 +238,7 @@
         left: 0;
         right: 0;
         background: #1C1C1E;
-        border-radius: 20px 20px 0 0;
+        border-radius: 24px 24px 0 0;
         z-index: 2001;
         transform: translateY(100%);
         transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
@@ -267,464 +255,419 @@
         height: 5px;
         background: #38383A;
         border-radius: 3px;
-        margin: 8px auto;
+        margin: 12px auto;
     }
     
-    /* Elastic Scroll */
-    .elastic-scroll {
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-        overscroll-behavior-y: contain;
-    }
-    
-    /* Widget Style */
-    .ios-widget {
-        background: linear-gradient(135deg, #1C3A2F 0%, #2C4A3F 100%);
-        border-radius: 22px;
-        padding: 16px;
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .ios-widget::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        right: -50%;
+    /* Form Inputs */
+    .ios-input {
         width: 100%;
-        height: 100%;
-        background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
-    }
-    
-    /* Interactive Wizard Steps */
-    .wizard-step {
-        display: none;
-        animation: fadeIn 0.3s ease;
-    }
-    
-    .wizard-step.active {
-        display: block;
-    }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    
-    /* Progress Bar */
-    .ios-progress {
-        height: 4px;
+        padding: 14px 16px;
         background: #2C2C2E;
-        border-radius: 2px;
-        overflow: hidden;
+        border: 1px solid #38383A;
+        border-radius: 10px;
+        color: white;
+        font-size: 16px;
+        transition: border-color 0.2s ease;
     }
     
-    .ios-progress-fill {
-        height: 100%;
-        background: linear-gradient(90deg, #30D158, #D4AF37);
-        border-radius: 2px;
-        transition: width 0.3s ease;
+    .ios-input:focus {
+        outline: none;
+        border-color: #0A84FF;
     }
     
-    /* Safe Area for Notch */
-    .safe-top {
-        padding-top: env(safe-area-inset-top, 44px);
+    .ios-input::placeholder {
+        color: #EBEBF599;
     }
     
-    /* Hide scrollbar but keep functionality */
+    /* Hidden utility */
+    .hidden {
+        display: none !important;
+    }
+    
+    /* Scrollbar hide */
     .hide-scrollbar::-webkit-scrollbar {
         display: none;
     }
-    .hide-scrollbar {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-    }
     
-    /* ═══════════════════════════════════════════════════════════════
-       ANIMATION PRINCIPLES - From Advisor
-       ═══════════════════════════════════════════════════════════════ */
-    
-    /* ───────────────────────────────────────────────────────────────
-       1. MICRO-INTERACTION FOR BUTTONS (Primary)
-       Purpose: Confirm interaction + build trust
-       ─────────────────────────────────────────────────────────────── */
-    .btn-micro {
-        position: relative;
-        overflow: hidden;
-        transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), 
-                    box-shadow 0.2s ease;
-        will-change: transform;
-    }
-    
-    .btn-micro:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(10, 132, 255, 0.25);
-    }
-    
-    .btn-micro:active {
-        transform: translateY(0) scale(0.98);
-    }
-    
-    /* Ripple Effect */
-    .btn-micro::after {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 0;
-        height: 0;
-        background: rgba(255, 255, 255, 0.25);
-        border-radius: 50%;
-        transform: translate(-50%, -50%);
-        transition: width 0.6s ease, height 0.6s ease;
-        pointer-events: none;
-    }
-    
-    .btn-micro:active::after {
-        width: 300px;
-        height: 300px;
-    }
-    
-    /* ───────────────────────────────────────────────────────────────
-       2. STAGGERED ENTRANCE FOR CARDS
-       Purpose: Reduce cognitive shock when loading job list
-       ─────────────────────────────────────────────────────────────── */
-    .stagger-card {
-        opacity: 0;
-        transform: translateY(20px);
-        animation: staggerFadeUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-        will-change: opacity, transform;
-    }
-    
-    .stagger-card:nth-child(1) { animation-delay: 0.1s; }
-    .stagger-card:nth-child(2) { animation-delay: 0.2s; }
-    .stagger-card:nth-child(3) { animation-delay: 0.3s; }
-    .stagger-card:nth-child(4) { animation-delay: 0.4s; }
-    .stagger-card:nth-child(5) { animation-delay: 0.5s; }
-    .stagger-card:nth-child(6) { animation-delay: 0.6s; }
-    
-    @keyframes staggerFadeUp {
+    /* Job card animation */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
         to {
             opacity: 1;
             transform: translateY(0);
         }
     }
     
-    /* ───────────────────────────────────────────────────────────────
-       3. PROGRESS INDICATOR (Step Indicator)
-       Purpose: Guide user through registration/application steps
-       ─────────────────────────────────────────────────────────────── */
-    .step-indicator {
-        display: flex;
-        gap: 8px;
-        align-items: center;
+    .animate-in {
+        animation: fadeInUp 0.4s ease forwards;
     }
     
-    .step-dot {
-        width: 8px;
-        height: 8px;
-        background: #38383A;
-        border-radius: 4px;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        will-change: width, background;
-    }
-    
-    .step-dot.active {
-        width: 32px;
-        background: #0A84FF;
-    }
-    
-    .step-dot.completed {
-        background: #30D158;
-        width: 8px;
-    }
-    
-    .step-dot.completed::after {
-        content: '✓';
-        font-size: 6px;
-        color: #000;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100%;
-    }
-    
-    /* Step Labels */
-    .step-label {
-        font-size: 11px;
-        color: #EBEBF599;
-        transition: color 0.3s ease;
-    }
-    
-    .step-label.active {
-        color: #0A84FF;
-    }
-    
-    /* ───────────────────────────────────────────────────────────────
-       ACCESSIBILITY: Respect User's Motion Preferences
-       ─────────────────────────────────────────────────────────────── */
-    @media (prefers-reduced-motion: reduce) {
-        *,
-        *::before,
-        *::after {
-            animation-duration: 0.01ms !important;
-            animation-iteration-count: 1 !important;
-            transition-duration: 0.01ms !important;
-            scroll-behavior: auto !important;
-        }
-        
-        .stagger-card {
-            opacity: 1;
-            transform: none;
-            animation: none;
-        }
-    }
-    
-    /* ═══════════════════════════════════════════════════════════════
-       PERFORMANCE NOTES (GPU-Accelerated Only):
-       ✅ transform: scale() / translate() / rotate()
-       ✅ opacity: 0 → 1
-       ❌ Avoid: width, height, margin, top, left
-       ─────────────────────────────────────────────────────────────── */
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
     </style>
 </head>
-<body class="elastic-scroll hide-scrollbar">
+<body class="hide-scrollbar">
     
-    <!-- Large Title Navigation -->
-    <nav class="nav-container safe-top" id="mainNav">
-        <div class="px-4 pt-4 pb-2">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <img src="logo.webp" alt="SaudiCareers" class="w-10 h-10 rounded-xl">
-                    <div>
-                        <h1 class="large-title">SaudiCareers</h1>
-                        <p class="text-ios-label-secondary text-sm nav-subtitle">وظائف حكومية وشبه حكومية</p>
-                    </div>
+    <!-- ═══════════════════════════════════════════════════════════════
+         NAVIGATION - Fixed with proper logo size
+         ═══════════════════════════════════════════════════════════════ -->
+    <nav class="nav-container">
+        <div class="px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <!-- Logo: increased by 25% (from 40px to 50px) -->
+                <img src="logo.webp" alt="SaudiCareers" class="w-[50px] h-[50px] rounded-xl">
+                <div>
+                    <!-- Title: reduced to half size (from 34px to 20px) -->
+                    <h1 class="nav-title">SaudiCareers</h1>
                 </div>
+            </div>
+            
+            <!-- User Menu or Login Button -->
+            <div id="nav-user-section">
+                <!-- Guest: Show login button -->
+                <button id="nav-login-btn" onclick="openLoginSheet()" class="btn-primary text-sm py-2 px-4">
+                    دخول
+                </button>
                 
-                <button class="haptic-btn w-10 h-10 rounded-full bg-ios-card-secondary flex items-center justify-center">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2C10.9 2 10 2.9 10 4V5.09C7.03 5.57 5 8.17 5 11.5V16.29L3.88 17.41C3.38 17.91 3.71 18.75 4.41 18.75H19.59C20.29 18.75 20.62 17.91 20.12 17.41L19 16.29V11.5C19 8.17 16.97 5.57 14 5.09V4C14 2.9 13.1 2 12 2ZM12 22C10.9 22 10 21.1 10 20H14C14 21.1 13.1 22 12 22Z"/>
-                    </svg>
+                <!-- Logged in: Show user avatar -->
+                <button id="nav-user-btn" onclick="toggleUserMenu()" class="hidden w-10 h-10 rounded-full bg-ios-blue flex items-center justify-center text-sm font-bold">
+                    👤
                 </button>
             </div>
         </div>
     </nav>
     
-    <!-- Main Content -->
-    <main class="pt-32 px-4">
+    <!-- ═══════════════════════════════════════════════════════════════
+         MAIN CONTENT
+         ═══════════════════════════════════════════════════════════════ -->
+    <main class="pt-20 px-4">
         
-        <!-- Smart Briefing Widget -->
-        <section class="ios-widget mb-6">
-            <div class="relative z-10">
-                <p class="text-saudi-gold text-sm font-medium mb-1">صباح الخير، أبو علي 🇸🇦</p>
-                <h2 class="text-xl font-bold mb-3">هناك 3 وظائف جديدة تتوافق مع سيرتك الذاتية بنسبة 90%</h2>
-                
-                <div class="flex items-center gap-2 text-ios-label-secondary text-sm">
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2ZM12 11.5C10.62 11.5 9.5 10.38 9.5 9C9.5 7.62 10.62 6.5 12 6.5C13.38 6.5 14.5 7.62 14.5 9C14.5 10.38 13.38 11.5 12 11.5Z"/>
-                    </svg>
-                    <span>الرياض، السعودية</span>
-                </div>
-            </div>
+        <!-- Greeting Widget (Dynamic based on auth) -->
+        <section class="ios-card p-5 mb-5">
+            <p class="text-saudi-gold text-sm font-medium mb-1">مرحباً بك في SaudiCareers 🇸🇦</p>
+            <h2 id="greeting-text" class="text-lg font-bold">اكتشف فرصك في رؤية 2030</h2>
         </section>
         
-        <!-- CV Analysis Health Ring -->
-        <section class="ios-card p-6 mb-6">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-semibold">تحليل السيرة الذاتية</h3>
-                <span class="text-ios-blue text-sm">الذكاء الاصطناعي</span>
-            </div>
+        <!-- ═══════════════════════════════════════════════════════════════
+             GUEST VIEW - Shows signup prompt
+             ═══════════════════════════════════════════════════════════════ -->
+        <div id="guest-view">
             
-            <div class="flex items-center gap-6">
-                <div class="health-ring">
-                    <svg width="120" height="120" viewBox="0 0 120 120">
-                        <circle class="health-ring-bg" cx="60" cy="60" r="50"/>
-                        <circle class="health-ring-progress health-ring-gold" cx="60" cy="60" r="50" 
-                            stroke-dasharray="314" 
-                            stroke-dashoffset="314"
-                            id="healthRing"/>
-                    </svg>
-                    <div class="health-ring-text">
-                        <span class="text-3xl font-bold" id="cvScore">--</span>
-                        <span class="text-xs text-ios-label-secondary block">النقاط</span>
+            <!-- Locked CV Section Preview -->
+            <section class="ios-card p-5 mb-5">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 rounded-xl bg-saudi-midnight flex items-center justify-center">
+                        <svg class="w-6 h-6 text-saudi-gold" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold">تحليل السيرة الذاتية</h3>
+                        <p class="text-ios-label-secondary text-sm">🔒 للأعضاء فقط</p>
                     </div>
                 </div>
                 
-                <div class="flex-1">
-                    <p class="text-ios-label-secondary text-sm mb-3">
-                        ارفع سيرتك الذاتية لتحصل على تقييم ذكي وتوصيات مخصصة
-                    </p>
-                    
-                    <button onclick="openCVWizard()" class="haptic-btn btn-micro w-full bg-ios-blue text-white py-3 rounded-xl font-semibold flex items-center justify-center gap-2">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59L9 16.17Z"/>
-                        </svg>
-                        ابدأ التحليل
+                <p class="text-ios-label-secondary text-sm mb-4">
+                    سجل الآن واحصل على تحليل ذكي لسيرتك الذاتية ومطابقتها مع معايير ATS
+                </p>
+                
+                <button onclick="openRegisterSheet()" class="btn-primary w-full">
+                    🚀 سجل مجاناً للوصول
+                </button>
+            </section>
+            
+            <!-- Guest CTA Banner -->
+            <section class="ios-card p-5 mb-5 bg-gradient-to-r from-saudi-midnight to-saudi-green">
+                <h3 class="font-bold text-lg mb-2">انضم لأكثر من 1,000 باحث عن عمل</h3>
+                <p class="text-sm opacity-90 mb-4">وظائف حكومية وشبه حكومية محدثة يومياً</p>
+                
+                <div class="flex gap-3">
+                    <button onclick="openRegisterSheet()" class="btn-primary flex-1">
+                        اشترك الآن
+                    </button>
+                    <button onclick="openLoginSheet()" class="btn-secondary flex-1">
+                        تسجيل الدخول
                     </button>
                 </div>
-            </div>
-        </section>
+            </section>
+        </div>
         
-        <!-- Vision 2030 Roadmap Widget -->
-        <section class="ios-card p-5 mb-6">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-semibold">خارطة طريق رؤية 2030</h3>
-                <div class="w-8 h-8 rounded-full bg-saudi-midnight flex items-center justify-center">
-                    <svg class="w-4 h-4 text-saudi-gold" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2L2 7L12 12L22 7L12 2ZM2 17L12 22L22 17V12L12 17L2 12V17Z"/>
-                    </svg>
-                </div>
-            </div>
+        <!-- ═══════════════════════════════════════════════════════════════
+             USER VIEW - Shows full features for logged in users
+             ═══════════════════════════════════════════════════════════════ -->
+        <div id="user-view" class="hidden">
             
-            <!-- Roadmap Visualization -->
-            <div class="relative">
-                <div class="ios-progress mb-4">
-                    <div class="ios-progress-fill" style="width: 65%"></div>
+            <!-- Personalized Welcome -->
+            <section class="ios-card p-5 mb-5 bg-gradient-to-r from-saudi-midnight to-saudi-green">
+                <p id="user-greeting" class="text-saudi-gold text-sm font-medium mb-1">صباح الخير</p>
+                <h3 id="user-name" class="text-xl font-bold">مستخدم</h3>
+                <p class="text-sm opacity-90 mt-2">📋 3 وظائف جديدة تتوافق مع سيرتك الذاتية</p>
+            </section>
+            
+            <!-- CV Analyzer (Available for logged in users) -->
+            <section class="ios-card p-5 mb-5">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-semibold">تحليل السيرة الذاتية</h3>
+                    <span class="text-ios-blue text-xs">الذكاء الاصطناعي</span>
                 </div>
                 
-                <div class="flex justify-between text-xs text-ios-label-secondary">
-                    <div class="text-center">
-                        <div class="w-3 h-3 rounded-full bg-saudi-gold mx-auto mb-1"></div>
-                        <span>أنت الآن</span>
+                <div class="flex items-center gap-4">
+                    <!-- Health Ring -->
+                    <div class="relative w-20 h-20">
+                        <svg class="w-full h-full -rotate-90" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="40" fill="none" stroke="#2C2C2E" stroke-width="8"/>
+                            <circle cx="50" cy="50" r="40" fill="none" stroke="#D4AF37" stroke-width="8" 
+                                stroke-linecap="round" 
+                                stroke-dasharray="251"
+                                stroke-dashoffset="15"
+                                id="cv-ring"/>
+                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <span class="text-xl font-bold">94</span>
+                        </div>
                     </div>
-                    <div class="text-center">
-                        <div class="w-3 h-3 rounded-full bg-ios-card-secondary mx-auto mb-1"></div>
-                        <span>2027</span>
-                    </div>
-                    <div class="text-center">
-                        <div class="w-3 h-3 rounded-full bg-ios-card-secondary mx-auto mb-1"></div>
-                        <span>2030 🎯</span>
+                    
+                    <div class="flex-1">
+                        <p class="text-ios-label-secondary text-sm mb-3">سيرتك الذاتية ممتازة! 🎉</p>
+                        
+                        <button onclick="openCVUpload()" class="btn-primary w-full text-sm">
+                            تحديث السيرة الذاتية
+                        </button>
                     </div>
                 </div>
-            </div>
+            </section>
             
-            <p class="text-sm text-ios-label-secondary mt-4">
-                بناءً على مهاراتك، أنت على مسار ممتاز للوصول لمنصب قيادي في أحد مشاريع الرؤية الكبرى
-            </p>
-        </section>
+            <!-- Vision 2030 Roadmap -->
+            <section class="ios-card p-5 mb-5">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-semibold">خارطة طريق رؤية 2030</h3>
+                    <span class="text-saudi-gold text-xs">65% متقدم</span>
+                </div>
+                
+                <div class="h-2 bg-ios-card-secondary rounded-full overflow-hidden mb-3">
+                    <div class="h-full bg-gradient-to-l from-saudi-gold to-ios-green rounded-full" style="width: 65%"></div>
+                </div>
+                
+                <p class="text-ios-label-secondary text-sm">أنت على المسار الصحيح للوصول لمنصب قيادي 🎯</p>
+            </section>
+        </div>
         
-        <!-- Job Listings (iOS List Style) -->
-        <section class="mb-6">
+        <!-- Job Listings (Available for all) -->
+        <section class="mb-5">
             <div class="flex items-center justify-between px-1 mb-3">
-                <h3 class="text-xl font-bold">الوظائف المقترحة</h3>
+                <h3 class="text-lg font-bold">الوظائف المتاحة</h3>
                 <button class="text-ios-blue text-sm">عرض الكل</button>
             </div>
             
-            <div class="ios-list">
+            <div class="space-y-3">
                 <!-- Job 1 -->
-                <div class="ios-list-item haptic-btn stagger-card" onclick="openJobSheet('نيوم', 'مدير مشروع', 'تبوك')"
-003e
-                    <div class="ios-list-icon bg-saudi-midnight text-saudi-gold">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M20 6H16V4C16 2.89 15.11 2 14 2H10C8.89 2 8 2.89 8 4V6H4C2.89 6 2 6.89 2 8V19C2 20.11 2.89 21 4 21H20C21.11 21 22 20.11 22 19V8C22 6.89 21.11 6 20 6ZM10 4H14V6H10V4Z"/>
+                <div class="ios-card p-4 animate-in delay-1" onclick="showJobDetail('نيوم', 'مدير مشروع', 'تبوك', '15000-25000 ريال')">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-xl bg-saudi-midnight flex items-center justify-center">
+                            <span class="text-saudi-gold font-bold">ن</span>
+                        </div>
+                        
+                        <div class="flex-1">
+                            <p class="text-ios-label-secondary text-xs">نيوم</p>
+                            <p class="font-semibold">مدير مشروع</p>
+                            <p class="text-ios-label-secondary text-xs">تبوك • 5-8 سنوات</p>
+                        </div>
+                        
+                        <svg class="w-5 h-5 text-ios-label-tertiary" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8.59 16.59L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.59Z"/>
                         </svg>
                     </div>
-                    
-                    <div class="flex-1">
-                        <p class="text-ios-label-secondary text-xs">نيوم</p>
-                        <p class="font-semibold">مدير مشروع</p>
-                        <p class="text-ios-label-secondary text-xs">تبوك • 5-8 سنوات</p>
-                    </div>
-                    
-                    <svg class="w-5 h-5 text-ios-label-tertiary" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M8.59 16.59L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.59Z"/>
-                    </svg>
                 </div>
                 
                 <!-- Job 2 -->
-                <div class="ios-list-item haptic-btn stagger-card" onclick="openJobSheet('أرامكو', 'مهندس أول', 'الظهران')"
-003e
-                    <div class="ios-list-icon bg-ios-card-secondary text-ios-orange">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20ZM12 6C9.79 6 8 7.79 8 10H10C10 8.9 10.9 8 12 8C13.1 8 14 8.9 14 10C14 11.5 12 12 12 14H14C14 12.5 16 12 16 10C16 7.79 14.21 6 12 6ZM11 16V18H13V16H11Z"/>
+                <div class="ios-card p-4 animate-in delay-2" onclick="showJobDetail('أرامكو', 'مهندس أول', 'الظهران', '20000-35000 ريال')">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-xl bg-ios-orange/20 flex items-center justify-center">
+                            <span class="text-ios-orange font-bold">أ</span>
+                        </div>
+                        
+                        <div class="flex-1">
+                            <p class="text-ios-label-secondary text-xs">أرامكو</p>
+                            <p class="font-semibold">مهندس أول</p>
+                            <p class="text-ios-label-secondary text-xs">الظهران • +10 سنوات</p>
+                        </div>
+                        
+                        <svg class="w-5 h-5 text-ios-label-tertiary" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8.59 16.59L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.59Z"/>
                         </svg>
                     </div>
-                    
-                    <div class="flex-1">
-                        <p class="text-ios-label-secondary text-xs">أرامكو</p>
-                        <p class="font-semibold">مهندس أول</p>
-                        <p class="text-ios-label-secondary text-xs">الظهران • +10 سنوات</p>
-                    </div>
-                    
-                    <svg class="w-5 h-5 text-ios-label-tertiary" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M8.59 16.59L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.59Z"/>
-                    </svg>
                 </div>
                 
                 <!-- Job 3 -->
-                <div class="ios-list-item haptic-btn stagger-card" onclick="openJobSheet('البحر الأحمر', 'أخصائي عمليات', 'أملج')"
-003e
-                    <div class="ios-list-icon bg-ios-card-secondary text-ios-blue">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2ZM12 11.5C10.62 11.5 9.5 10.38 9.5 9C9.5 7.62 10.62 6.5 12 6.5C13.38 6.5 14.5 7.62 14.5 9C14.5 10.38 13.38 11.5 12 11.5Z"/>
+                <div class="ios-card p-4 animate-in delay-3" onclick="showJobDetail('البحر الأحمر', 'أخصائي عمليات', 'أملج', '12000-18000 ريال')">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-xl bg-ios-blue/20 flex items-center justify-center">
+                            <span class="text-ios-blue font-bold">ب</span>
+                        </div>
+                        
+                        <div class="flex-1">
+                            <p class="text-ios-label-secondary text-xs">البحر الأحمر</p>
+                            <p class="font-semibold">أخصائي عمليات</p>
+                            <p class="text-ios-label-secondary text-xs">أملج • 3-5 سنوات</p>
+                        </div>
+                        
+                        <svg class="w-5 h-5 text-ios-label-tertiary" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8.59 16.59L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.59Z"/>
                         </svg>
                     </div>
-                    
-                    <div class="flex-1">
-                        <p class="text-ios-label-secondary text-xs">البحر الأحمر</p>
-                        <p class="font-semibold">أخصائي عمليات</p>
-                        <p class="text-ios-label-secondary text-xs">أملج • 3-5 سنوات</p>
-                    </div>
-                    
-                    <svg class="w-5 h-5 text-ios-label-tertiary" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M8.59 16.59L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.59Z"/>
-                    </svg>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Quick Stats -->
+        <section class="ios-card p-5 mb-5">
+            <h3 class="font-semibold mb-4">إحصائيات سريعة</h3>
+            
+            <div class="grid grid-cols-3 gap-4 text-center">
+                <div>
+                    <p class="text-2xl font-bold text-ios-blue">+500</p>
+                    <p class="text-ios-label-secondary text-xs">وظيفة</p>
+                </div>
+                
+                <div>
+                    <p class="text-2xl font-bold text-ios-green">+50</p>
+                    <p class="text-ios-label-secondary text-xs">جهة</p>
+                </div>
+                
+                <div>
+                    <p class="text-2xl font-bold text-saudi-gold">+1K</p>
+                    <p class="text-ios-label-secondary text-xs">مستخدم</p>
                 </div>
             </div>
         </section>
     </main>
     
-    <!-- iOS Tab Bar -->
+    <!-- ═══════════════════════════════════════════════════════════════
+         TAB BAR - Working navigation
+         ═══════════════════════════════════════════════════════════════ -->
     <nav class="tab-bar">
         <div class="flex justify-around items-center h-16">
-            <button class="tab-item active haptic-btn">
-                <svg class="tab-icon" fill="currentColor" viewBox="0 0 24 24">
+            <button class="tab-item active" onclick="navigateTo('home')">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M10 20V14H14V20H19V12H22L12 3L2 12H5V20H10Z"/>
                 </svg>
-                <span class="tab-label">الرئيسية</span>
+                <span class="text-[10px]">الرئيسية</span>
             </button>
             
-            <button class="tab-item haptic-btn">
-                <svg class="tab-icon" fill="currentColor" viewBox="0 0 24 24">
+            <button class="tab-item" onclick="navigateTo('jobs')">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M20 6H16V4C16 2.89 15.11 2 14 2H10C8.89 2 8 2.89 8 4V6H4C2.89 6 2 6.89 2 8V19C2 20.11 2.89 21 4 21H20C21.11 21 22 20.11 22 19V8C22 6.89 21.11 6 20 6ZM10 4H14V6H10V4Z"/>
                 </svg>
-                <span class="tab-label">الوظائف</span>
+                <span class="text-[10px]">الوظائف</span>
             </button>
             
-            <button class="tab-item haptic-btn">
-                <svg class="tab-icon" fill="currentColor" viewBox="0 0 24 24">
+            <button class="tab-item" onclick="navigateTo('cv')">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2ZM16 18H8V16H16V18ZM16 14H8V12H16V14ZM13 9V3.5L18.5 9H13Z"/>
                 </svg>
-                <span class="tab-label">السيرة</span>
+                <span class="text-[10px]">السيرة</span>
             </button>
             
-            <button class="tab-item haptic-btn">
-                <svg class="tab-icon" fill="currentColor" viewBox="0 0 24 24">
+            <button class="tab-item" onclick="navigateTo('profile')">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"/>
                 </svg>
-                <span class="tab-label">حسابي</span>
+                <span class="text-[10px]">حسابي</span>
             </button>
         </div>
     </nav>
     
-    <!-- Job Detail Sheet -->
-    <div class="sheet-overlay" id="jobSheetOverlay" onclick="closeJobSheet()"></div>
+    <!-- ═══════════════════════════════════════════════════════════════
+         SHEETS / MODALS
+         ═══════════════════════════════════════════════════════════════ -->
     
-    <div class="sheet" id="jobSheet">
+    <!-- Login Sheet -->
+    <div class="sheet-overlay" id="login-sheet-overlay" onclick="closeLoginSheet()"></div>
+    <div class="sheet" id="login-sheet">
+        <div class="sheet-handle"></div>
+        
+        <div class="p-6">
+            <h2 class="text-2xl font-bold mb-2">تسجيل الدخول</h2>
+            <p class="text-ios-label-secondary mb-6">أهلاً بعودتك! سجل دخولك للمتابعة</p>
+            
+            <form onsubmit="event.preventDefault(); handleLoginSubmit();">
+                <div class="mb-4">
+                    <label class="block text-sm mb-2">البريد الإلكتروني</label>
+                    <input type="email" id="login-email" class="ios-input" placeholder="your@email.com" required>
+                </div>
+                
+                <div class="mb-6">
+                    <label class="block text-sm mb-2">كلمة المرور</label>
+                    <input type="password" id="login-password" class="ios-input" placeholder="••••••••" required>
+                </div>
+                
+                <button type="submit" class="btn-primary w-full mb-4">
+                    دخول
+                </button>
+            </form>
+            
+            <p class="text-center text-sm text-ios-label-secondary">
+                ليس لديك حساب؟ 
+                <button onclick="closeLoginSheet(); openRegisterSheet();" class="text-ios-blue">سجل الآن</button>
+            </p>
+        </div>
+    </div>
+    
+    <!-- Register Sheet -->
+    <div class="sheet-overlay" id="register-sheet-overlay" onclick="closeRegisterSheet()"></div>
+    <div class="sheet" id="register-sheet">
+        <div class="sheet-handle"></div>
+        
+        <div class="p-6">
+            <h2 class="text-2xl font-bold mb-2">إنشاء حساب</h2>
+            <p class="text-ios-label-secondary mb-6">انضم لنا واكتشف فرصك في رؤية 2030</p>
+            
+            <form onsubmit="event.preventDefault(); handleRegisterSubmit();">
+                <div class="mb-4">
+                    <label class="block text-sm mb-2">الاسم الكامل</label>
+                    <input type="text" id="register-name" class="ios-input" placeholder="محمد أحمد" required>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm mb-2">البريد الإلكتروني</label>
+                    <input type="email" id="register-email" class="ios-input" placeholder="your@email.com" required>
+                </div>
+                
+                <div class="mb-6">
+                    <label class="block text-sm mb-2">كلمة المرور</label>
+                    <input type="password" id="register-password" class="ios-input" placeholder="••••••••" required minlength="6">
+                </div>
+                
+                <button type="submit" class="btn-primary w-full mb-4">
+                    🚀 إنشاء حساب
+                </button>
+            </form>
+            
+            <p class="text-center text-sm text-ios-label-secondary">
+                لديك حساب بالفعل؟ 
+                <button onclick="closeRegisterSheet(); openLoginSheet();" class="text-ios-blue">تسجيل الدخول</button>
+            </p>
+        </div>
+    </div>
+    
+    <!-- Job Detail Sheet -->
+    <div class="sheet-overlay" id="job-sheet-overlay" onclick="closeJobSheet()"></div>
+    <div class="sheet" id="job-sheet">
         <div class="sheet-handle"></div>
         
         <div class="p-6">
             <div class="flex items-center gap-4 mb-6">
                 <div class="w-16 h-16 rounded-2xl bg-saudi-midnight flex items-center justify-center">
-                    <svg class="w-8 h-8 text-saudi-gold" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M20 6H16V4C16 2.89 15.11 2 14 2H10C8.89 2 8 2.89 8 4V6H4C2.89 6 2 6.89 2 8V19C2 20.11 2.89 21 4 21H20C21.11 21 22 20.11 22 19V8C22 6.89 21.11 6 20 6ZM10 4H14V6H10V4Z"/>
-                    </svg>
+                    <span id="job-logo" class="text-saudi-gold text-2xl font-bold">ن</span>
                 </div>
                 
                 <div>
-                    <h2 class="text-2xl font-bold" id="sheetJobTitle"></h2>
-                    <p class="text-ios-label-secondary" id="sheetCompany"></p>
+                    <h2 id="job-title" class="text-xl font-bold">مدير مشروع</h2>
+                    <p id="job-company" class="text-ios-label-secondary">نيوم</p>
                 </div>
             </div>
             
@@ -733,249 +676,215 @@
                     <svg class="w-5 h-5 text-ios-label-secondary" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2ZM12 11.5C10.62 11.5 9.5 10.38 9.5 9C9.5 7.62 10.62 6.5 12 6.5C13.38 6.5 14.5 7.62 14.5 9C14.5 10.38 13.38 11.5 12 11.5Z"/>
                     </svg>
-                    <span id="sheetLocation"></span>
+                    <span id="job-location">تبوك</span>
                 </div>
                 
                 <div class="flex items-center gap-3">
                     <svg class="w-5 h-5 text-ios-label-secondary" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M11.99 2C6.47 2 2 6.48 2 12C2 17.52 6.47 22 11.99 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 11.99 2ZM12 20C7.58 20 4 16.42 4 12C4 7.58 7.58 4 12 4C16.42 4 20 7.58 20 12C20 16.42 16.42 20 12 20ZM12.5 7H11V13L16.25 16.15L17 14.92L12.5 12.25V7Z"/>
+                        <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.58 20 4 16.42 4 12C4 7.58 7.58 4 12 4C16.42 4 20 7.58 20 12C20 16.42 16.41 20 12 20ZM12 6C9.79 6 8 7.79 8 10H10C10 8.9 10.9 8 12 8C13.1 8 14 8.9 14 10C14 11.5 12 12 12 14H14C14 12.5 16 12 16 10C16 7.79 14.21 6 12 6ZM11 16V18H13V16H11Z"/>
                     </svg>
-                    <span>5-8 سنوات خبرة</span>
-                </div>
-                
-                <div class="flex items-center gap-3">
-                    <svg class="w-5 h-5 text-ios-label-secondary" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20ZM12 6C9.79 6 8 7.79 8 10H10C10 8.9 10.9 8 12 8C13.1 8 14 8.9 14 10C14 11.5 12 12 12 14H14C14 12.5 16 12 16 10C16 7.79 14.21 6 12 6ZM11 16V18H13V16H11Z"/>
-                    </svg>
-                    <span>رواتب تنافسية + بدلات</span>
+                    <span id="job-salary">15000-25000 ريال</span>
                 </div>
             </div>
             
-            <button class="haptic-btn w-full bg-ios-blue text-white py-4 rounded-xl font-semibold text-lg">
+            <button onclick="applyForJob()" class="btn-primary w-full">
                 التقديم على الوظيفة
             </button>
         </div>
     </div>
     
-    <!-- CV Analysis Wizard -->
-    <div class="sheet-overlay" id="cvWizardOverlay" onclick="closeCVWizard()"></div>
-    
-    <div class="sheet" id="cvWizard">
+    <!-- User Menu Sheet -->
+    <div class="sheet-overlay" id="user-menu-overlay" onclick="closeUserMenu()"></div>
+    <div class="sheet" id="user-menu">
         <div class="sheet-handle"></div>
         
         <div class="p-6">
-            <!-- Step 1: Upload -->
-            <div class="wizard-step active" id="step1">
-                <!-- Step Indicator -->
-                <div class="flex items-center justify-center gap-6 mb-6">
-                    <div class="step-indicator">
-                        <div class="step-dot active"></div>
-                        <div class="step-dot"></div>
-                        <div class="step-dot"></div>
-                    </div>
-                </div>
-                
-                <h2 class="text-2xl font-bold mb-2">تحليل السيرة الذاتية</h2>
-                <p class="text-ios-label-secondary mb-6">ارفع سيرتك الذاتية بصيغة PDF</p>
-                
-                <div class="border-2 border-dashed border-ios-border rounded-2xl p-8 text-center mb-6">
-                    <svg class="w-16 h-16 mx-auto mb-4 text-ios-label-secondary" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4C9.11 4 6.6 5.64 5.35 8.04C2.34 8.36 0 10.91 0 14C0 17.31 2.69 20 6 20H19C21.76 20 24 17.76 24 15C24 12.36 21.95 10.22 19.35 10.04ZM14 13V17H10V13H7L12 8L17 13H14Z"/>
+            <h3 class="text-xl font-bold mb-4">القائمة</h3>
+            
+            <div class="space-y-3">
+                <button onclick="navigateTo('profile'); closeUserMenu();" class="w-full text-right p-4 ios-card flex items-center justify-between">
+                    <span>الملف الشخصي</span>
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8.59 16.59L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.59Z"/>
                     </svg>
-                    
-                    <p class="text-ios-label-secondary">اسحب الملف هنا أو اضغط للاختيار</p>
-                </div>
-                
-                <button onclick="goToStep(2)" class="haptic-btn w-full bg-ios-blue text-white py-4 rounded-xl font-semibold">
-                    التالي
                 </button>
-            </div>
-            
-            <!-- Step 2: Analyzing -->
-            <div class="wizard-step" id="step2">
-                <!-- Step Indicator -->
-                <div class="flex items-center justify-center gap-6 mb-6">
-                    <div class="step-indicator">
-                        <div class="step-dot completed"></div>
-                        <div class="step-dot active"></div>
-                        <div class="step-dot"></div>
-                    </div>
-                </div>
                 
-                <h2 class="text-2xl font-bold mb-6 text-center">جاري التحليل...</h2>
-                
-                <div class="flex justify-center mb-6">
-                    <div class="health-ring">
-                        <svg width="120" height="120" viewBox="0 0 120 120">
-                            <circle class="health-ring-bg" cx="60" cy="60" r="50"/>
-                            <circle class="health-ring-progress health-ring-gold" cx="60" cy="60" r="50" 
-                                stroke-dasharray="314" 
-                                stroke-dashoffset="0"
-                                id="wizardRing"/>
-                        </svg>
-                        
-                        <div class="health-ring-text">
-                            <span class="text-3xl font-bold">94</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="space-y-3">
-                    <div class="flex items-center gap-3 text-ios-green">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59L9 16.17Z"/>
-                        </svg>
-                        <span>تحليل الكلمات المفتاحية</span>
-                    </div>
-                    
-                    <div class="flex items-center gap-3 text-ios-green">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59L9 16.17Z"/>
-                        </svg>
-                        <span>مطابقة معايير ATS</span>
-                    </div>
-                    
-                    <div class="flex items-center gap-3 text-ios-green">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59L9 16.17Z"/>
-                        </svg>
-                        <span>تقييم التنسيق</span>
-                    </div>
-                </div>
-                
-                <button onclick="goToStep(3)" class="haptic-btn w-full bg-ios-blue text-white py-4 rounded-xl font-semibold mt-6">
-                    عرض النتائج
+                <button onclick="navigateTo('settings'); closeUserMenu();" class="w-full text-right p-4 ios-card flex items-center justify-between">
+                    <span>الإعدادات</span>
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19.14 12.94C19.18 12.64 19.2 12.33 19.2 12C19.2 11.68 19.18 11.36 19.14 11.06L21.54 9.15C21.76 8.98 21.82 8.67 21.67 8.43L19.4 4.93C19.26 4.68 18.95 4.59 18.69 4.7L15.86 5.82C15.37 5.47 14.85 5.18 14.29 4.96L13.87 1.98C13.82 1.72 13.59 1.5 13.32 1.5H9.68C9.41 1.5 9.18 1.72 9.13 1.98L8.71 4.96C8.15 5.18 7.63 5.47 7.14 5.82L4.31 4.7C4.05 4.59 3.74 4.68 3.6 4.93L1.33 8.43C1.18 8.67 1.24 8.98 1.46 9.15L3.86 11.06C3.82 11.36 3.8 11.68 3.8 12C3.8 12.33 3.82 12.64 3.86 12.94L1.46 14.85C1.24 15.02 1.18 15.33 1.33 15.57L3.6 19.07C3.74 19.32 4.05 19.41 4.31 19.3L7.14 18.18C7.63 18.53 8.15 18.82 8.71 19.04L9.13 22.02C9.18 22.28 9.41 22.5 9.68 22.5H13.32C13.59 22.5 13.82 22.28 13.87 22.02L14.29 19.04C14.85 18.82 15.37 18.53 15.86 18.18L18.69 19.3C18.95 19.41 19.26 19.32 19.4 19.07L21.67 15.57C21.82 15.33 21.76 15.02 21.54 14.85L19.14 12.94ZM12 15.5C10.07 15.5 8.5 13.93 8.5 12C8.5 10.07 10.07 8.5 12 8.5C13.93 8.5 15.5 10.07 15.5 12C15.5 13.93 13.93 15.5 12 15.5Z"/>
+                    </svg>
                 </button>
-            </div>
-            
-            <!-- Step 3: Results -->
-            <div class="wizard-step" id="step3">
-                <!-- Step Indicator -->
-                <div class="flex items-center justify-center gap-6 mb-6">
-                    <div class="step-indicator">
-                        <div class="step-dot completed"></div>
-                        <div class="step-dot completed"></div>
-                        <div class="step-dot active"></div>
-                    </div>
-                </div>
                 
-                <h2 class="text-2xl font-bold mb-2 text-center">نتائج التحليل</h2>
-                
-                <p class="text-ios-label-secondary text-center mb-6">سيرتك الذاتية ممتازة! 🎉</p>
-                
-                <div class="ios-card-secondary p-4 rounded-xl mb-4">
-                    <h4 class="font-semibold mb-2">نقاط القوة</h4>
-                    
-                    <ul class="text-sm text-ios-label-secondary space-y-1">
-                        <li>✓ هيكل واضح ومنظم</li>
-                        <li>✓ كلمات مفتاحية قوية</li>
-                        <li>✓ تناسب معايير السوق السعودي</li>
-                    </ul>
-                </div>
-                
-                <div class="ios-card-secondary p-4 rounded-xl mb-6">
-                    <h4 class="font-semibold mb-2">توصيات للتحسين</h4>
-                    
-                    <ul class="text-sm text-ios-label-secondary space-y-1">
-                        <li>• أضف المزيد من الإنجازات الكمية</li>
-                        <li>• قسم المهارات حسب الأولوية</li>
-                    </ul>
-                </div>
-                
-                <button onclick="closeCVWizard()" class="haptic-btn w-full bg-ios-blue text-white py-4 rounded-xl font-semibold">
-                    تم
+                <button onclick="logout(); closeUserMenu();" class="w-full text-right p-4 ios-card flex items-center justify-between text-ios-red">
+                    <span>تسجيل الخروج</span>
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M17 7L15.59 8.41L18.17 11H8V13H18.17L15.59 15.59L17 17L22 12L17 7ZM4 5H12V3H4C2.9 3 2 3.9 2 5V19C2 20.1 2.9 21 4 21H12V19H4V5Z"/>
+                    </svg>
                 </button>
             </div>
         </div>
     </div>
     
     <script>
-        // Register Service Worker for PWA
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
-        }
-        
-        // Large Title Navigation Scroll Effect
-        const nav = document.getElementById('mainNav');
-        const subtitle = document.querySelector('.nav-subtitle');
-        
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                nav.classList.add('scrolled');
-                subtitle.style.opacity = '0';
-            } else {
-                nav.classList.remove('scrolled');
-                subtitle.style.opacity = '1';
+        // ═══════════════════════════════════════════════════════════════
+        // NAVIGATION FUNCTIONS
+        // ═══════════════════════════════════════════════════════════════
+        function navigateTo(page) {
+            // Update active tab
+            document.querySelectorAll('.tab-item').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            
+            // Handle navigation
+            switch(page) {
+                case 'home':
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    break;
+                case 'jobs':
+                    alert('صفحة الوظائف - قيد التطوير');
+                    break;
+                case 'cv':
+                    if (!currentUser) {
+                        openLoginSheet();
+                    } else {
+                        openCVUpload();
+                    }
+                    break;
+                case 'profile':
+                    if (!currentUser) {
+                        openLoginSheet();
+                    } else {
+                        alert('الملف الشخصي - قيد التطوير');
+                    }
+                    break;
             }
-        }, { passive: true });
-        
-        // Health Ring Animation
-        function animateHealthRing() {
-            const ring = document.getElementById('healthRing');
-            const score = document.getElementById('cvScore');
-            const targetScore = 94;
-            const circumference = 314;
-            const offset = circumference - (targetScore / 100) * circumference;
-            
-            setTimeout(() => {
-                ring.style.strokeDashoffset = offset;
-            }, 500);
-            
-            // Animate score counter
-            let current = 0;
-            const timer = setInterval(() => {
-                current += 2;
-                score.textContent = current;
-                if (current >= targetScore) {
-                    score.textContent = targetScore;
-                    clearInterval(timer);
-                }
-            }, 30);
         }
         
-        // Animate on page load
-        window.addEventListener('load', animateHealthRing);
+        // ═══════════════════════════════════════════════════════════════
+        // SHEET FUNCTIONS
+        // ═══════════════════════════════════════════════════════════════
+        function openLoginSheet() {
+            document.getElementById('login-sheet-overlay').classList.add('active');
+            document.getElementById('login-sheet').classList.add('active');
+        }
         
-        // Job Sheet Functions
-        function openJobSheet(company, title, location) {
-            document.getElementById('sheetCompany').textContent = company;
-            document.getElementById('sheetJobTitle').textContent = title;
-            document.getElementById('sheetLocation').textContent = location;
+        function closeLoginSheet() {
+            document.getElementById('login-sheet-overlay').classList.remove('active');
+            document.getElementById('login-sheet').classList.remove('active');
+        }
+        
+        function openRegisterSheet() {
+            document.getElementById('register-sheet-overlay').classList.add('active');
+            document.getElementById('register-sheet').classList.add('active');
+        }
+        
+        function closeRegisterSheet() {
+            document.getElementById('register-sheet-overlay').classList.remove('active');
+            document.getElementById('register-sheet').classList.remove('active');
+        }
+        
+        function showJobDetail(company, title, location, salary) {
+            document.getElementById('job-company').textContent = company;
+            document.getElementById('job-title').textContent = title;
+            document.getElementById('job-location').textContent = location;
+            document.getElementById('job-salary').textContent = salary;
+            document.getElementById('job-logo').textContent = company.charAt(0);
             
-            document.getElementById('jobSheetOverlay').classList.add('active');
-            document.getElementById('jobSheet').classList.add('active');
+            document.getElementById('job-sheet-overlay').classList.add('active');
+            document.getElementById('job-sheet').classList.add('active');
         }
         
         function closeJobSheet() {
-            document.getElementById('jobSheetOverlay').classList.remove('active');
-            document.getElementById('jobSheet').classList.remove('active');
+            document.getElementById('job-sheet-overlay').classList.remove('active');
+            document.getElementById('job-sheet').classList.remove('active');
         }
         
-        // CV Wizard Functions
-        function openCVWizard() {
-            document.getElementById('cvWizardOverlay').classList.add('active');
-            document.getElementById('cvWizard').classList.add('active');
-            goToStep(1);
+        function toggleUserMenu() {
+            document.getElementById('user-menu-overlay').classList.add('active');
+            document.getElementById('user-menu').classList.add('active');
         }
         
-        function closeCVWizard() {
-            document.getElementById('cvWizardOverlay').classList.remove('active');
-            document.getElementById('cvWizard').classList.remove('active');
+        function closeUserMenu() {
+            document.getElementById('user-menu-overlay').classList.remove('active');
+            document.getElementById('user-menu').classList.remove('active');
         }
         
-        function goToStep(step) {
-            document.querySelectorAll('.wizard-step').forEach(s => s.classList.remove('active'));
-            document.getElementById('step' + step).classList.add('active');
+        function openCVUpload() {
+            if (!currentUser) {
+                openLoginSheet();
+                return;
+            }
+            alert('رفع السيرة الذاتية - قيد التطوير');
         }
         
-        // Haptic feedback simulation
-        document.querySelectorAll('.haptic-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                if (navigator.vibrate) {
-                    navigator.vibrate(10);
+        // ═══════════════════════════════════════════════════════════════
+        // FORM HANDLERS
+        // ═══════════════════════════════════════════════════════════════
+        function handleLoginSubmit() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            if (email && password) {
+                login(email, password);
+                document.getElementById('login-email').value = '';
+                document.getElementById('login-password').value = '';
+            }
+        }
+        
+        function handleRegisterSubmit() {
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            
+            if (name && email && password) {
+                register(name, email, password);
+                document.getElementById('register-name').value = '';
+                document.getElementById('register-email').value = '';
+                document.getElementById('register-password').value = '';
+            }
+        }
+        
+        function applyForJob() {
+            if (!currentUser) {
+                closeJobSheet();
+                setTimeout(() => openLoginSheet(), 300);
+            } else {
+                alert('تم إرسال طلبك بنجاح! 🎉');
+                closeJobSheet();
+            }
+        }
+        
+        // Override updateUI to also update nav buttons
+        const originalUpdateUI = updateUI;
+        updateUI = function() {
+            originalUpdateUI();
+            
+            // Update nav buttons
+            const loginBtn = document.getElementById('nav-login-btn');
+            const userBtn = document.getElementById('nav-user-btn');
+            
+            if (currentUser) {
+                if (loginBtn) loginBtn.classList.add('hidden');
+                if (userBtn) {
+                    userBtn.classList.remove('hidden');
+                    userBtn.textContent = currentUser.name.charAt(0).toUpperCase();
                 }
-            });
-        });
+            } else {
+                if (loginBtn) loginBtn.classList.remove('hidden');
+                if (userBtn) userBtn.classList.add('hidden');
+            }
+            
+            // Update user greeting in user-view
+            const userGreeting = document.getElementById('user-greeting');
+            if (userGreeting && currentUser) {
+                const hour = new Date().getHours();
+                let greeting = 'صباح الخير';
+                if (hour >= 12) greeting = 'مساء الخير';
+                userGreeting.textContent = `${greeting} 🇸🇦`;
+            }
+        }
     </script>
 </body>
 </html>
