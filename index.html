@@ -142,7 +142,8 @@
                     <a href="index.html#cv-analyzer" class="hover:text-gold-500 transition-colors">تحليل السيرة الذاتية</a>
                     <a href="#employers" class="hover:text-gold-500 transition-colors">لأصحاب العمل</a>
                     <a href="#about" class="hover:text-gold-500 transition-colors">عن المنصة</a>
-                    <button onclick="showLoginModal()" class="bg-emerald-950 text-white px-8 py-2.5 rounded-full hover:bg-emerald-900 transition-all shadow-lg hover:shadow-emerald-950/20">دخول</button>
+                    <button onclick="showLoginModal()" id="auth-btn" class="bg-emerald-950 text-white px-8 py-2.5 rounded-full hover:bg-emerald-900 transition-all shadow-lg hover:shadow-emerald-950/20">دخول</button>
+                    <span id="welcome-message" class="hidden text-sm font-bold text-emerald-950 ml-2"></span>
                 </div>
                 
                 <!-- Mobile Toggle -->
@@ -161,7 +162,7 @@
                 <a href="index.html#cv-analyzer" class="block py-2 text-emerald-950 font-bold hover:text-gold-500">تحليل السيرة الذاتية</a>
                 <a href="#employers" class="block py-2 text-emerald-950 font-bold hover:text-gold-500">لأصحاب العمل</a>
                 <a href="#about" class="block py-2 text-emerald-950 font-bold hover:text-gold-500">عن المنصة</a>
-                <button onclick="showLoginModal()" class="w-full bg-emerald-950 text-white py-3 rounded-xl font-bold">دخول</button>
+                <button onclick="showLoginModal()" id="mobile-auth-btn" class="w-full bg-emerald-950 text-white py-3 rounded-xl font-bold">دخول</button>
             </div>
         </div>
     </nav>
@@ -708,12 +709,6 @@
             document.body.style.overflow = '';
         }
         
-        function handleLogin(e) {
-            e.preventDefault();
-            alert('مرحباً! سيتم توجيهك للوحة التحكم قريباً.');
-            closeLoginModal();
-        }
-        
         // Employer Modal
         function showEmployerModal() {
             document.getElementById('employer-modal').classList.remove('hidden');
@@ -912,5 +907,6 @@
             });
         });
     </script>
+    <script src="auth.js"></script>
 </body>
 </html>
