@@ -339,6 +339,153 @@
         -ms-overflow-style: none;
         scrollbar-width: none;
     }
+    
+    /* ═══════════════════════════════════════════════════════════════
+       ANIMATION PRINCIPLES - From Advisor
+       ═══════════════════════════════════════════════════════════════ */
+    
+    /* ───────────────────────────────────────────────────────────────
+       1. MICRO-INTERACTION FOR BUTTONS (Primary)
+       Purpose: Confirm interaction + build trust
+       ─────────────────────────────────────────────────────────────── */
+    .btn-micro {
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                    box-shadow 0.2s ease;
+        will-change: transform;
+    }
+    
+    .btn-micro:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(10, 132, 255, 0.25);
+    }
+    
+    .btn-micro:active {
+        transform: translateY(0) scale(0.98);
+    }
+    
+    /* Ripple Effect */
+    .btn-micro::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: rgba(255, 255, 255, 0.25);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: width 0.6s ease, height 0.6s ease;
+        pointer-events: none;
+    }
+    
+    .btn-micro:active::after {
+        width: 300px;
+        height: 300px;
+    }
+    
+    /* ───────────────────────────────────────────────────────────────
+       2. STAGGERED ENTRANCE FOR CARDS
+       Purpose: Reduce cognitive shock when loading job list
+       ─────────────────────────────────────────────────────────────── */
+    .stagger-card {
+        opacity: 0;
+        transform: translateY(20px);
+        animation: staggerFadeUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        will-change: opacity, transform;
+    }
+    
+    .stagger-card:nth-child(1) { animation-delay: 0.1s; }
+    .stagger-card:nth-child(2) { animation-delay: 0.2s; }
+    .stagger-card:nth-child(3) { animation-delay: 0.3s; }
+    .stagger-card:nth-child(4) { animation-delay: 0.4s; }
+    .stagger-card:nth-child(5) { animation-delay: 0.5s; }
+    .stagger-card:nth-child(6) { animation-delay: 0.6s; }
+    
+    @keyframes staggerFadeUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* ───────────────────────────────────────────────────────────────
+       3. PROGRESS INDICATOR (Step Indicator)
+       Purpose: Guide user through registration/application steps
+       ─────────────────────────────────────────────────────────────── */
+    .step-indicator {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+    
+    .step-dot {
+        width: 8px;
+        height: 8px;
+        background: #38383A;
+        border-radius: 4px;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        will-change: width, background;
+    }
+    
+    .step-dot.active {
+        width: 32px;
+        background: #0A84FF;
+    }
+    
+    .step-dot.completed {
+        background: #30D158;
+        width: 8px;
+    }
+    
+    .step-dot.completed::after {
+        content: '✓';
+        font-size: 6px;
+        color: #000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+    }
+    
+    /* Step Labels */
+    .step-label {
+        font-size: 11px;
+        color: #EBEBF599;
+        transition: color 0.3s ease;
+    }
+    
+    .step-label.active {
+        color: #0A84FF;
+    }
+    
+    /* ───────────────────────────────────────────────────────────────
+       ACCESSIBILITY: Respect User's Motion Preferences
+       ─────────────────────────────────────────────────────────────── */
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+            scroll-behavior: auto !important;
+        }
+        
+        .stagger-card {
+            opacity: 1;
+            transform: none;
+            animation: none;
+        }
+    }
+    
+    /* ═══════════════════════════════════════════════════════════════
+       PERFORMANCE NOTES (GPU-Accelerated Only):
+       ✅ transform: scale() / translate() / rotate()
+       ✅ opacity: 0 → 1
+       ❌ Avoid: width, height, margin, top, left
+       ─────────────────────────────────────────────────────────────── */
     </style>
 </head>
 <body class="elastic-scroll hide-scrollbar">
@@ -409,7 +556,7 @@
                         ارفع سيرتك الذاتية لتحصل على تقييم ذكي وتوصيات مخصصة
                     </p>
                     
-                    <button onclick="openCVWizard()" class="haptic-btn w-full bg-ios-blue text-white py-3 rounded-xl font-semibold flex items-center justify-center gap-2">
+                    <button onclick="openCVWizard()" class="haptic-btn btn-micro w-full bg-ios-blue text-white py-3 rounded-xl font-semibold flex items-center justify-center gap-2">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59L9 16.17Z"/>
                         </svg>
@@ -466,7 +613,7 @@
             
             <div class="ios-list">
                 <!-- Job 1 -->
-                <div class="ios-list-item haptic-btn" onclick="openJobSheet('نيوم', 'مدير مشروع', 'تبوك')"
+                <div class="ios-list-item haptic-btn stagger-card" onclick="openJobSheet('نيوم', 'مدير مشروع', 'تبوك')"
 003e
                     <div class="ios-list-icon bg-saudi-midnight text-saudi-gold">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -486,7 +633,7 @@
                 </div>
                 
                 <!-- Job 2 -->
-                <div class="ios-list-item haptic-btn" onclick="openJobSheet('أرامكو', 'مهندس أول', 'الظهران')"
+                <div class="ios-list-item haptic-btn stagger-card" onclick="openJobSheet('أرامكو', 'مهندس أول', 'الظهران')"
 003e
                     <div class="ios-list-icon bg-ios-card-secondary text-ios-orange">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -506,7 +653,7 @@
                 </div>
                 
                 <!-- Job 3 -->
-                <div class="ios-list-item haptic-btn" onclick="openJobSheet('البحر الأحمر', 'أخصائي عمليات', 'أملج')"
+                <div class="ios-list-item haptic-btn stagger-card" onclick="openJobSheet('البحر الأحمر', 'أخصائي عمليات', 'أملج')"
 003e
                     <div class="ios-list-icon bg-ios-card-secondary text-ios-blue">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -619,6 +766,15 @@
         <div class="p-6">
             <!-- Step 1: Upload -->
             <div class="wizard-step active" id="step1">
+                <!-- Step Indicator -->
+                <div class="flex items-center justify-center gap-6 mb-6">
+                    <div class="step-indicator">
+                        <div class="step-dot active"></div>
+                        <div class="step-dot"></div>
+                        <div class="step-dot"></div>
+                    </div>
+                </div>
+                
                 <h2 class="text-2xl font-bold mb-2">تحليل السيرة الذاتية</h2>
                 <p class="text-ios-label-secondary mb-6">ارفع سيرتك الذاتية بصيغة PDF</p>
                 
@@ -637,6 +793,15 @@
             
             <!-- Step 2: Analyzing -->
             <div class="wizard-step" id="step2">
+                <!-- Step Indicator -->
+                <div class="flex items-center justify-center gap-6 mb-6">
+                    <div class="step-indicator">
+                        <div class="step-dot completed"></div>
+                        <div class="step-dot active"></div>
+                        <div class="step-dot"></div>
+                    </div>
+                </div>
+                
                 <h2 class="text-2xl font-bold mb-6 text-center">جاري التحليل...</h2>
                 
                 <div class="flex justify-center mb-6">
@@ -685,6 +850,15 @@
             
             <!-- Step 3: Results -->
             <div class="wizard-step" id="step3">
+                <!-- Step Indicator -->
+                <div class="flex items-center justify-center gap-6 mb-6">
+                    <div class="step-indicator">
+                        <div class="step-dot completed"></div>
+                        <div class="step-dot completed"></div>
+                        <div class="step-dot active"></div>
+                    </div>
+                </div>
+                
                 <h2 class="text-2xl font-bold mb-2 text-center">نتائج التحليل</h2>
                 
                 <p class="text-ios-label-secondary text-center mb-6">سيرتك الذاتية ممتازة! 🎉</p>
