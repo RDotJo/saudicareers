@@ -1,998 +1,807 @@
 <!DOCTYPE html>
-<html dir="rtl" lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>SaudiCareers | وظائف حكومية وشبه حكومية في السعودية</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#1C1C1E">
+    <title>SaudiCareers</title>
     
-    <!-- SEO Meta Tags -->
-    <meta name="description" content="منصة SaudiCareers - وظائف حكومية وشبه حكومية في السعودية. مطابقة ذكية بالذكاء الاصطناعي لفرص عمل في نيوم، أرامكو، البحر الأحمر، والقطاعات الحكومية"/>
-    <meta name="keywords" content="وظائف حكومية السعودية, وظائف نيوم, وظائف أرامكو, توظيف السعودية, رؤية 2030, سيرة ذاتية"/>
-    <meta name="author" content="SaudiCareers"/>
-    <meta name="robots" content="index, follow"/>
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="logo.webp">
     
-    <!-- Open Graph / Social -->
-    <meta property="og:type" content="website"/>
-    <meta property="og:title" content="SaudiCareers | وظائف حكومية وشبه حكومية"/>
-    <meta property="og:description" content="منصة وظائف حكومية في السعودية مدعومة بالذكاء الاصطناعي"/>
-    <meta property="og:image" content="images/hero.webp"/>
-    <meta property="og:locale" content="ar_SA"/>
+    <!-- Fonts: SF Pro + SF Arabic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇸🇦</text></svg>">
+    <!-- SF Symbols via CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sf-font@1.0.0/stylesheet.css">
     
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com" rel="preconnect"/>
-    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&amp;family=Cairo:wght@400;600;700;900&amp;display=swap" rel="stylesheet"/>
-    
-    <!-- Preload Critical Resources -->
-    <link rel="preload" href="logo.webp" as="image" type="image/webp">
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&display=swap" as="style">
-    
-    <!-- Structured Data -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        "name": "SaudiCareers",
-        "url": "https://www.saudicareers.site",
-        "description": "منصة وظائف حكومية وشبه حكومية في السعودية مدعومة بالذكاء الاصطناعي",
-        "inLanguage": "ar",
-        "publisher": {
-            "@type": "Organization",
-            "name": "SaudiCareers",
-            "logo": {
-                "@type": "ImageObject",
-                "url": "https://www.saudicareers.site/logo.webp"
-            }
-        },
-        "potentialAction": {
-            "@type": "SearchAction",
-            "target": "https://www.saudicareers.site/jobs?q={search_term_string}",
-            "query-input": "required name=search_term_string"
-        }
-    }
-    </script>
-    
-    <!-- Tailwind CSS -->
+    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
-    
-    <!-- Tailwind Config - Flat Design System -->
     <script>
     tailwind.config = {
         theme: {
             extend: {
                 colors: {
-                    primary: { DEFAULT: '#2563EB', 50: '#EFF6FF', 100: '#DBEAFE', 600: '#2563EB', 700: '#1D4ED8' },
-                    cta: { DEFAULT: '#F97316', 500: '#F97316', 600: '#EA580C' },
-                    text: { DEFAULT: '#1E293B', muted: '#64748B' },
-                    bg: { DEFAULT: '#F8FAFC', card: '#FFFFFF' },
-                    // Legacy aliases for compatibility
-                    emerald: { 950: '#1E293B', 900: '#2563EB', 800: '#3B82F6' },
-                    gold: { 400: '#F97316', 500: '#EA580C', 600: '#C2410C' },
-                    offwhite: '#F8FAFC',
+                    // iOS System Colors + Saudi National Identity
+                    'ios-bg': '#000000',
+                    'ios-card': '#1C1C1E',
+                    'ios-card-secondary': '#2C2C2E',
+                    'ios-border': '#38383A',
+                    'ios-label': '#FFFFFF',
+                    'ios-label-secondary': '#EBEBF599',
+                    'ios-label-tertiary': '#EBEBF54D',
+                    'ios-blue': '#0A84FF',
+                    'ios-green': '#30D158',
+                    'ios-orange': '#FF9F0A',
+                    'ios-red': '#FF453A',
+                    // Saudi National Colors
+                    'saudi-midnight': '#1C3A2F',
+                    'saudi-gold': '#D4AF37',
+                    'saudi-gold-light': '#E5C158',
+                    'saudi-green': '#006C35',
                 },
                 fontFamily: {
-                    sans: ['Almarai', 'Cairo', 'sans-serif'],
-                },
+                    'sf': ['SF Pro Display', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+                    'sf-arabic': ['SF Arabic', 'Inter', '-apple-system', 'sans-serif'],
+                }
             }
         }
     }
     </script>
     
-    <!-- Custom Styles - Flat Design -->
     <style>
-    :root { scroll-behavior: smooth }
-    body { 
-        background-color: #F8FAFC; 
-        color: #1E293B;
-        font-family: 'Almarai', 'Cairo', sans-serif;
-    }
-    .sadu-pattern { 
-        background-image: radial-gradient(#2563EB 0.5px, transparent 0.5px); 
-        background-size: 20px 20px; 
-        opacity: 0.05 
-    }
-    .glass-card { 
-        background: #FFFFFF; 
-        border: 1px solid #E2E8F0; 
-        transition: all 150ms ease;
-    }
-    .glass-card:hover {
-        border-color: #CBD5E1;
-    }
-    /* Flat Design - No shadows, clean transitions */
-    .btn-primary {
-        background-color: #2563EB;
-        color: white;
-        transition: background-color 150ms ease, opacity 150ms ease;
-    }
-    .btn-primary:hover {
-        background-color: #1D4ED8;
-    }
-    .btn-cta {
-        background-color: #F97316;
-        color: white;
-        transition: background-color 150ms ease, opacity 150ms ease;
-    }
-    .btn-cta:hover {
-        background-color: #EA580C;
-    }
-    /* Cursor pointer on all interactive elements */
-    button, a, [role="button"], input[type="submit"], input[type="button"] {
-        cursor: pointer;
-    }
-    /* Focus states for accessibility */
-    button:focus-visible, a:focus-visible, input:focus-visible {
-        outline: 2px solid #2563EB;
-        outline-offset: 2px;
-    }
-    /* Reduced motion support */
-    @media (prefers-reduced-motion: reduce) {
-        *, *::before, *::after {
-            animation-duration: 0.01ms !important;
-            animation-iteration-count: 1 !important;
-            transition-duration: 0.01ms !important;
-        }
-    }
-    .gradient-text { 
-        background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%); 
-        -webkit-background-clip: text; 
-        -webkit-text-fill-color: transparent 
-    }
-    @keyframes float { 
-        0%, 100% { transform: translateY(0); } 
-        50% { transform: translateY(-10px); } 
-    }
-    .animate-float { animation: float 6s ease-in-out infinite }
-    .glow-node { display: none } /* Removed glow for flat design */
-    .reveal { 
-        opacity: 0; 
-        transform: translateY(30px); 
-        transition: opacity 0.3s ease, transform 0.3s ease 
-    }
-    .reveal.active { opacity: 1; transform: translateY(0) }
-    
-    /* Custom scrollbar - Flat Design */
-    ::-webkit-scrollbar { width: 8px }
-    ::-webkit-scrollbar-track { background: #F8FAFC }
-    ::-webkit-scrollbar-thumb { background: #2563EB; border-radius: 4px }
-    ::-webkit-scrollbar-thumb:hover { background: #1D4ED8 }
-    
-    /* Upload zone - Flat Design */
-    .upload-zone {
-        border: 2px dashed #CBD5E1;
-        background: #F8FAFC;
-        transition: all 150ms ease;
-    }
-    .upload-zone:hover, .upload-zone.dragover {
-        border-color: #2563EB;
-        background: #EFF6FF;
+    /* iOS System Styles */
+    * {
+        font-family: 'SF Pro Display', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        -webkit-tap-highlight-color: transparent;
     }
     
-    /* Fade In Animation for Jobs */
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    body {
+        background: #000000;
+        color: #FFFFFF;
+        overflow-x: hidden;
+        padding-bottom: 100px; /* Space for tab bar */
+    }
+    
+    /* Large Title Navigation */
+    .nav-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .nav-container.scrolled {
+        background: rgba(28, 28, 30, 0.72);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+    }
+    
+    .large-title {
+        font-size: 34px;
+        font-weight: 700;
+        line-height: 1.2;
+        transition: all 0.3s ease;
+    }
+    
+    .nav-container.scrolled .large-title {
+        font-size: 17px;
+        font-weight: 600;
+    }
+    
+    /* Haptic Feedback Emulation */
+    .haptic-btn {
+        transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .haptic-btn:active {
+        transform: scale(0.97);
+    }
+    
+    /* iOS Cards */
+    .ios-card {
+        background: #1C1C1E;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    
+    .ios-card-secondary {
+        background: #2C2C2E;
+        border-radius: 10px;
+    }
+    
+    /* Glassmorphism */
+    .glass-ios {
+        background: rgba(28, 28, 30, 0.72);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+    }
+    
+    /* Tab Bar */
+    .tab-bar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0, 0, 0, 0.9);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        border-top: 0.5px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: env(safe-area-inset-bottom, 0);
+        z-index: 1000;
+    }
+    
+    .tab-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        padding: 8px 12px;
+        color: #EBEBF599;
+        transition: color 0.2s ease;
+    }
+    
+    .tab-item.active {
+        color: #0A84FF;
+    }
+    
+    .tab-icon {
+        font-size: 24px;
+    }
+    
+    .tab-label {
+        font-size: 10px;
+        font-weight: 500;
+    }
+    
+    /* Health Ring */
+    .health-ring {
+        position: relative;
+        width: 120px;
+        height: 120px;
+    }
+    
+    .health-ring svg {
+        transform: rotate(-90deg);
+    }
+    
+    .health-ring-bg {
+        fill: none;
+        stroke: #2C2C2E;
+        stroke-width: 10;
+    }
+    
+    .health-ring-progress {
+        fill: none;
+        stroke: #30D158;
+        stroke-width: 10;
+        stroke-linecap: round;
+        transition: stroke-dashoffset 1s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .health-ring-gold {
+        stroke: #D4AF37;
+    }
+    
+    .health-ring-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+    }
+    
+    /* iOS List Style */
+    .ios-list {
+        background: #1C1C1E;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    
+    .ios-list-item {
+        padding: 12px 16px;
+        border-bottom: 0.5px solid #38383A;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .ios-list-item:last-child {
+        border-bottom: none;
+    }
+    
+    .ios-list-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+    }
+    
+    /* Sheet Modal */
+    .sheet-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 2000;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .sheet-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    .sheet {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #1C1C1E;
+        border-radius: 20px 20px 0 0;
+        z-index: 2001;
+        transform: translateY(100%);
+        transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+    
+    .sheet.active {
+        transform: translateY(0);
+    }
+    
+    .sheet-handle {
+        width: 36px;
+        height: 5px;
+        background: #38383A;
+        border-radius: 3px;
+        margin: 8px auto;
+    }
+    
+    /* Elastic Scroll */
+    .elastic-scroll {
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-y: contain;
+    }
+    
+    /* Widget Style */
+    .ios-widget {
+        background: linear-gradient(135deg, #1C3A2F 0%, #2C4A3F 100%);
+        border-radius: 22px;
+        padding: 16px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .ios-widget::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+    }
+    
+    /* Interactive Wizard Steps */
+    .wizard-step {
+        display: none;
+        animation: fadeIn 0.3s ease;
+    }
+    
+    .wizard-step.active {
+        display: block;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Progress Bar */
+    .ios-progress {
+        height: 4px;
+        background: #2C2C2E;
+        border-radius: 2px;
+        overflow: hidden;
+    }
+    
+    .ios-progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #30D158, #D4AF37);
+        border-radius: 2px;
+        transition: width 0.3s ease;
+    }
+    
+    /* Safe Area for Notch */
+    .safe-top {
+        padding-top: env(safe-area-inset-top, 44px);
+    }
+    
+    /* Hide scrollbar but keep functionality */
+    .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    .hide-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
     }
     </style>
 </head>
-
-<body class="overflow-x-hidden">
-    <!-- Navigation - Flat Design -->
-    <nav class="fixed top-0 w-full z-50 glass-card border-b border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-20 items-center">
-                <!-- Logo -->
-                <a href="index.html" class="flex items-center space-x-2 space-x-reverse">
-                    <img alt="SaudiCareers" class="h-16 w-auto" loading="eager" src="logo.webp">
-                </a>
-                
-                <!-- Desktop Links -->
-                <div class="hidden md:flex items-center space-x-8 space-x-reverse text-sm font-bold text-text">
-                    <a class="hover:text-primary transition-colors duration-150" href="index.html#jobs">الوظائف</a>
-                    <a class="hover:text-primary transition-colors duration-150" href="index.html#cv-analyzer">تحليل السيرة الذاتية</a>
-                    <a class="hover:text-primary transition-colors duration-150" href="#employers">لأصحاب العمل</a>
-                    <a class="hover:text-primary transition-colors duration-150" href="#about">عن المنصة</a>
-                    
-                    <!-- Auth Buttons -->
-                    <div class="flex items-center gap-3" id="auth-section">
-                        <!-- First Time Visitor -->
-                        <div class="hidden" id="first-time-cta">
-                            <span class="text-xs text-cta font-bold">🎁 جرب مجاناً</span>
-                            <button class="btn-cta px-6 py-2.5 rounded-xl font-bold" onclick="showRegisterModal()">
-                                اشترك الآن
-                            </button>
-                        </div>
-                        
-                        <!-- Returning Visitor -->
-                        <button class="hidden btn-primary px-8 py-2.5 rounded-xl font-bold" id="auth-btn" onclick="showLoginModal()">دخول</button>
-                        
-                        <!-- Logged In User -->
-                        <div class="hidden flex items-center gap-3" id="user-section">
-                            <a class="flex items-center gap-2 bg-bg px-4 py-2 rounded-xl hover:bg-gray-100 transition-colors duration-150" href="profile.html"
-                               style="border: 1px solid #E2E8F0;">
-                                <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-sm font-bold">
-                                    <span id="user-initial">م</span>
-                                </div>
-                                <span class="text-sm font-bold text-text" id="user-name">مرحباً</span>
-                                <i class="fas fa-chevron-down text-xs text-gray-400"></i>
-                            </a>
-                            <button class="text-gray-400 hover:text-red-500 transition-colors duration-150" onclick="logout()" title="خروج">
-                                <i class="fas fa-sign-out-alt"></i>
-                            </button>
-                        </div>
+<body class="elastic-scroll hide-scrollbar">
+    
+    <!-- Large Title Navigation -->
+    <nav class="nav-container safe-top" id="mainNav">
+        <div class="px-4 pt-4 pb-2">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <img src="logo.webp" alt="SaudiCareers" class="w-10 h-10 rounded-xl">
+                    <div>
+                        <h1 class="large-title">SaudiCareers</h1>
+                        <p class="text-ios-label-secondary text-sm nav-subtitle">وظائف حكومية وشبه حكومية</p>
                     </div>
                 </div>
                 
-                <!-- Mobile Toggle -->
-                <div class="md:hidden">
-                    <button class="text-text p-2" onclick="toggleMobileMenu()">
-                        <i class="fas fa-bars text-2xl"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Mobile Menu -->
-        <div class="hidden md:hidden glass-card border-t border-gray-200" id="mobile-menu">
-            <div class="px-4 py-4 space-y-3">
-                <a class="block py-2 text-text font-bold hover:text-primary transition-colors duration-150" href="index.html#jobs">الوظائف</a>
-                <a class="block py-2 text-text font-bold hover:text-primary transition-colors duration-150" href="index.html#cv-analyzer">تحليل السيرة الذاتية</a>
-                <a class="block py-2 text-text font-bold hover:text-primary transition-colors duration-150" href="#employers">لأصحاب العمل</a>
-                <a class="block py-2 text-text font-bold hover:text-primary transition-colors duration-150" href="#about">عن المنصة</a>
-                <button class="w-full btn-primary py-3 rounded-xl font-bold" id="mobile-auth-btn" onclick="showLoginModal()">دخول</button>
+                <button class="haptic-btn w-10 h-10 rounded-full bg-ios-card-secondary flex items-center justify-center">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C10.9 2 10 2.9 10 4V5.09C7.03 5.57 5 8.17 5 11.5V16.29L3.88 17.41C3.38 17.91 3.71 18.75 4.41 18.75H19.59C20.29 18.75 20.62 17.91 20.12 17.41L19 16.29V11.5C19 8.17 16.97 5.57 14 5.09V4C14 2.9 13.1 2 12 2ZM12 22C10.9 22 10 21.1 10 20H14C14 21.1 13.1 22 12 22Z"/>
+                    </svg>
+                </button>
             </div>
         </div>
     </nav>
-
-    <main class="pt-20">
-        <!-- Hero Section -->
-        <section class="relative min-h-[90vh] flex items-center py-20 px-4 overflow-hidden bg-bg" id="hero">
-            <div class="absolute top-0 left-0 w-1/2 h-full bg-primary/5 skew-x-12 transform -translate-x-20 z-0"></div>
-            <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center relative z-10">
-                <!-- Hero Text -->
-                <div class="reveal active">
-                    <span class="inline-block py-1.5 px-4 rounded-full bg-cta/10 text-cta font-bold text-xs mb-6 border border-cta/20 uppercase tracking-widest">
-                        <i class="fas fa-wand-magic-sparkles ml-1"></i> مدعوم بالذكاء الاصطناعي الوطني
-                    </span>
-                    <h1 class="text-5xl lg:text-7xl font-extrabold text-text leading-tight mb-6">
-                        وظائف حكومية <br/>
-                        <span class="gradient-text">وشبه حكومية</span> <br/>
-                        في مكان واحد
-                    </h1>
-                    <p class="text-lg text-text-muted mb-10 max-w-lg leading-relaxed">
-                        نربط الكفاءات الوطنية بأهم المشاريع الكبرى في المملكة عبر تقنيات المطابقة الذكية لتحقيق مستهدفات رؤية 2030.
-                    </p>
-                    <div class="flex flex-col sm:flex-row gap-4">
-                        <a href="#jobs" class="btn-primary px-10 py-4 rounded-xl font-bold flex items-center justify-center group transition-all duration-150">
-                            استكشف الوظائف
-                            <i class="fas fa-chevron-left mr-2 group-hover:mr-4 transition-all"></i>
-                        </a>
-                        <a href="#cv-analyzer" class="border-2 border-cta text-cta px-10 py-4 rounded-xl font-bold hover:bg-cta hover:text-white transition-all duration-150 text-center">
-                            حلل سيرتك الذاتية
-                        </a>
+    
+    <!-- Main Content -->
+    <main class="pt-32 px-4">
+        
+        <!-- Smart Briefing Widget -->
+        <section class="ios-widget mb-6">
+            <div class="relative z-10">
+                <p class="text-saudi-gold text-sm font-medium mb-1">صباح الخير، أبو علي 🇸🇦</p>
+                <h2 class="text-xl font-bold mb-3">هناك 3 وظائف جديدة تتوافق مع سيرتك الذاتية بنسبة 90%</h2>
+                
+                <div class="flex items-center gap-2 text-ios-label-secondary text-sm">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2ZM12 11.5C10.62 11.5 9.5 10.38 9.5 9C9.5 7.62 10.62 6.5 12 6.5C13.38 6.5 14.5 7.62 14.5 9C14.5 10.38 13.38 11.5 12 11.5Z"/>
+                    </svg>
+                    <span>الرياض، السعودية</span>
+                </div>
+            </div>
+        </section>
+        
+        <!-- CV Analysis Health Ring -->
+        <section class="ios-card p-6 mb-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold">تحليل السيرة الذاتية</h3>
+                <span class="text-ios-blue text-sm">الذكاء الاصطناعي</span>
+            </div>
+            
+            <div class="flex items-center gap-6">
+                <div class="health-ring">
+                    <svg width="120" height="120" viewBox="0 0 120 120">
+                        <circle class="health-ring-bg" cx="60" cy="60" r="50"/>
+                        <circle class="health-ring-progress health-ring-gold" cx="60" cy="60" r="50" 
+                            stroke-dasharray="314" 
+                            stroke-dashoffset="314"
+                            id="healthRing"/>
+                    </svg>
+                    <div class="health-ring-text">
+                        <span class="text-3xl font-bold" id="cvScore">--</span>
+                        <span class="text-xs text-ios-label-secondary block">النقاط</span>
                     </div>
                 </div>
                 
-                <!-- AI Illustration -->
-                <div class="relative reveal active" style="transition-delay: 200ms;">
-                    <div class="relative w-full aspect-square max-w-lg mx-auto">
-                        <!-- Flat Design - No glow -->
-                        
-                        <!-- Floating Cards -->
-                        <div class="absolute top-10 right-0 w-64 glass-card p-4 rounded-2xl z-20" style="border: 1px solid #E2E8F0;">
-                            <div class="flex items-center space-x-3 space-x-reverse mb-3">
-                                <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white">
-                                    <i class="fas fa-check-circle text-xs"></i>
-                                </div>
-                                <div class="h-2 w-24 bg-gray-200 rounded"></div>
-                            </div>
-                            <div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
-                                <div class="bg-cta h-full w-[94%] transition-all duration-1000"></div>
-                            </div>
-                            <p class="text-[10px] mt-2 font-bold text-text uppercase tracking-tighter">مطابقة الذكاء الاصطناعي: 94%</p>
-                        </div>
-                        
-                        <div class="absolute bottom-20 left-0 w-56 glass-card p-4 rounded-2xl z-20" style="border: 1px solid #E2E8F0;">
-                            <div class="flex justify-between items-center mb-4">
-                                <span class="text-xs font-bold text-text">نمو المسار المهني</span>
-                                <i class="fas fa-chart-line text-primary"></i>
-                            </div>
-                            <div class="flex items-end space-x-1 space-x-reverse h-12">
-                                <div class="w-2 bg-primary/20 h-[40%] rounded-t"></div>
-                                <div class="w-2 bg-primary/40 h-[60%] rounded-t"></div>
-                                <div class="w-2 bg-primary/60 h-[85%] rounded-t"></div>
-                                <div class="w-2 bg-cta h-[100%] rounded-t"></div>
-                            </div>
-                        </div>
-                        
-                        <!-- Central Hub -->
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <div class="w-48 h-48 rounded-full border-2 border-dashed border-primary/30 flex items-center justify-center">
-                                <div class="w-32 h-32 bg-primary rounded-full flex items-center justify-center relative">
-                                    <div class="text-center">
-                                        <div class="text-2xl font-black text-white tracking-tighter mb-1">2030</div>
-                                        <div class="text-[6px] text-white/80 font-bold uppercase tracking-widest">Vision Engine</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Connecting Dots - Flat Design -->
-                        <div class="absolute top-1/4 left-1/4 w-3 h-3 bg-cta rounded-full"></div>
-                        <div class="absolute bottom-1/3 right-1/4 w-4 h-4 bg-primary rounded-full"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Stats Section -->
-        <section class="py-16 bg-white border-y border-gray-200 reveal">
-            <div class="max-w-7xl mx-auto px-6">
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
-                    <div class="flex flex-col items-center text-center">
-                        <div class="text-4xl font-black text-text mb-1" data-count="200">+0</div>
-                        <div class="text-sm text-primary font-bold">وظيفة نشطة</div>
-                    </div>
-                    <div class="flex flex-col items-center text-center">
-                        <div class="text-4xl font-black text-text mb-1" data-count="15">+0</div>
-                        <div class="text-sm text-primary font-bold">جهة حكومية</div>
-                    </div>
-                    <div class="flex flex-col items-center text-center">
-                        <div class="text-4xl font-black text-text mb-1" data-count="70" data-suffix="%">0%</div>
-                        <div class="text-sm text-primary font-bold">دقة المطابقة</div>
-                    </div>
-                    <div class="flex flex-col items-center text-center">
-                        <div class="text-4xl font-black text-text mb-1" data-count="1000">+0</div>
-                        <div class="text-sm text-primary font-bold">مستفيد مسجل</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Job Listings Section -->
-        <section class="py-24 px-4 bg-white/50 relative" id="jobs">
-            <div class="max-w-7xl mx-auto">
-                <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6 reveal">
-                    <div>
-                        <h2 class="text-4xl font-extrabold text-emerald-950 mb-4">وظائف مميزة</h2>
-                        <p class="text-gray-500 font-medium">أحدث الفرص في أهم الوجهات الوطنية ضمن رؤية المملكة</p>
-                    </div>
-                    <button onclick="loadMoreJobs()" class="text-gold-500 font-bold hover:underline flex items-center">
-                        <span>عرض الكل</span>
-                        <i class="fas fa-arrow-left mr-2 text-sm"></i>
+                <div class="flex-1">
+                    <p class="text-ios-label-secondary text-sm mb-3">
+                        ارفع سيرتك الذاتية لتحصل على تقييم ذكي وتوصيات مخصصة
+                    </p>
+                    
+                    <button onclick="openCVWizard()" class="haptic-btn w-full bg-ios-blue text-white py-3 rounded-xl font-semibold flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59L9 16.17Z"/>
+                        </svg>
+                        ابدأ التحليل
                     </button>
                 </div>
+            </div>
+        </section>
+        
+        <!-- Vision 2030 Roadmap Widget -->
+        <section class="ios-card p-5 mb-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold">خارطة طريق رؤية 2030</h3>
+                <div class="w-8 h-8 rounded-full bg-saudi-midnight flex items-center justify-center">
+                    <svg class="w-4 h-4 text-saudi-gold" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2L2 7L12 12L22 7L12 2ZM2 17L12 22L22 17V12L12 17L2 12V17Z"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <!-- Roadmap Visualization -->
+            <div class="relative">
+                <div class="ios-progress mb-4">
+                    <div class="ios-progress-fill" style="width: 65%"></div>
+                </div>
                 
-                <div class="grid md:grid-cols-3 gap-8" id="jobs-container">
-                    <!-- Job 1 -->
-                    <div class="glass-card rounded-3xl overflow-hidden group hover:-translate-y-2 transition-all duration-500">
-                        <div class="relative h-56 overflow-hidden">
-                            <img alt="مدير مشروع" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" src="images/job1.webp" loading="lazy">
-                            <div class="absolute top-4 right-4 bg-emerald-950 text-white text-[10px] font-bold py-1 px-3 rounded-full uppercase">نيوم</div>
-                        </div>
-                        <div class="p-8">
-                            <h3 class="text-xl font-bold text-emerald-950 mb-4">مدير مشروع (Project Manager)</h3>
-                            <div class="flex flex-col space-y-3 text-gray-500 text-sm mb-6">
-                                <span><i class="fas fa-map-marker-alt text-gold-500 ml-2"></i> تبوك، المملكة العربية السعودية</span>
-                                <span><i class="fas fa-clock text-gold-500 ml-2"></i> 5-8 سنوات خبرة</span>
-                                <span><i class="fas fa-money-bill-wave text-gold-500 ml-2"></i> رواتب تنافسية</span>
-                            </div>
-                            <button class="w-full py-3 rounded-xl border border-emerald-950/20 text-emerald-950 font-bold hover:bg-emerald-950 hover:text-white transition-all">التفاصيل والتقديم</button>
-                        </div>
+                <div class="flex justify-between text-xs text-ios-label-secondary">
+                    <div class="text-center">
+                        <div class="w-3 h-3 rounded-full bg-saudi-gold mx-auto mb-1"></div>
+                        <span>أنت الآن</span>
                     </div>
-                    
-                    <!-- Job 2 -->
-                    <div class="glass-card rounded-3xl overflow-hidden group hover:-translate-y-2 transition-all duration-500">
-                        <div class="relative h-56 overflow-hidden">
-                            <img alt="مهندس أول" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" src="images/job2.webp" loading="lazy">
-                            <div class="absolute top-4 right-4 bg-emerald-950 text-white text-[10px] font-bold py-1 px-3 rounded-full uppercase">أرامكو</div>
-                        </div>
-                        <div class="p-8">
-                            <h3 class="text-xl font-bold text-emerald-950 mb-4">مهندس أول (Senior Engineer)</h3>
-                            <div class="flex flex-col space-y-3 text-gray-500 text-sm mb-6">
-                                <span><i class="fas fa-map-marker-alt text-gold-500 ml-2"></i> الظهران، المملكة العربية السعودية</span>
-                                <span><i class="fas fa-clock text-gold-500 ml-2"></i> +10 سنوات خبرة</span>
-                                <span><i class="fas fa-star text-gold-500 ml-2"></i> حوافز استثنائية</span>
-                            </div>
-                            <button class="w-full py-3 rounded-xl border border-emerald-950/20 text-emerald-950 font-bold hover:bg-emerald-950 hover:text-white transition-all">التفاصيل والتقديم</button>
-                        </div>
+                    <div class="text-center">
+                        <div class="w-3 h-3 rounded-full bg-ios-card-secondary mx-auto mb-1"></div>
+                        <span>2027</span>
                     </div>
-                    
-                    <!-- Job 3 -->
-                    <div class="glass-card rounded-3xl overflow-hidden group hover:-translate-y-2 transition-all duration-500">
-                        <div class="relative h-56 overflow-hidden">
-                            <img alt="أخصائي عمليات" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" src="images/job3.webp" loading="lazy">
-                            <div class="absolute top-4 right-4 bg-emerald-950 text-white text-[10px] font-bold py-1 px-3 rounded-full uppercase">البحر الأحمر</div>
-                        </div>
-                        <div class="p-8">
-                            <h3 class="text-xl font-bold text-emerald-950 mb-4">أخصائي عمليات (Operations Specialist)</h3>
-                            <div class="flex flex-col space-y-3 text-gray-500 text-sm mb-6">
-                                <span><i class="fas fa-map-marker-alt text-gold-500 ml-2"></i> أملج، المملكة العربية السعودية</span>
-                                <span><i class="fas fa-clock text-gold-500 ml-2"></i> 3-5 سنوات خبرة</span>
-                                <span><i class="fas fa-house-user text-gold-500 ml-2"></i> مزايا سكنية</span>
-                            </div>
-                            <button class="w-full py-3 rounded-xl border border-emerald-950/20 text-emerald-950 font-bold hover:bg-emerald-950 hover:text-white transition-all">التفاصيل والتقديم</button>
-                        </div>
+                    <div class="text-center">
+                        <div class="w-3 h-3 rounded-full bg-ios-card-secondary mx-auto mb-1"></div>
+                        <span>2030 🎯</span>
                     </div>
                 </div>
             </div>
+            
+            <p class="text-sm text-ios-label-secondary mt-4">
+                بناءً على مهاراتك، أنت على مسار ممتاز للوصول لمنصب قيادي في أحد مشاريع الرؤية الكبرى
+            </p>
         </section>
-
-        <!-- CV Analyzer Section -->
-        <section class="py-28 bg-white relative" id="cv-analyzer">
-            <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
-                <!-- Upload Area -->
-                <div class="order-2 lg:order-1 reveal">
-                    <div class="glass-card p-8 md:p-12 rounded-[2rem] border border-emerald-950/5 shadow-xl">
-                        <div class="text-center mb-8">
-                            <div class="w-20 h-20 mx-auto bg-emerald-950/5 rounded-2xl flex items-center justify-center mb-4">
-                                <i class="fas fa-file-upload text-3xl text-emerald-950"></i>
-                            </div>
-                            <h3 class="text-2xl font-bold text-emerald-950 mb-2">ارفع سيرتك الذاتية</h3>
-                            <p class="text-gray-500 text-sm">PDF, DOC, أو DOCX - الحد الأقصى 5MB</p>
-                        </div>
-                        
-                        <form id="cv-upload-form" class="space-y-6">
-                            <div id="upload-zone" class="upload-zone rounded-2xl p-12 text-center cursor-pointer relative">
-                                <input type="file" id="cv-file" name="cv" accept=".pdf,.doc,.docx" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" required>
-                                <i class="fas fa-cloud-upload-alt text-5xl text-gold-500 mb-4"></i>
-                                <p class="text-gray-600 font-medium mb-2">اسحب الملف هنا أو اضغط للاختيار</p>
-                                <p class="text-gray-400 text-sm" id="file-name">لم يتم اختيار ملف</p>
-                            </div>
-                            
-                            <div id="analysis-result" class="hidden">
-                                <div class="bg-emerald-950/5 rounded-2xl p-6 mb-4">
-                                    <div class="flex items-center justify-between mb-4">
-                                        <span class="font-bold text-emerald-950">مؤشر توافق ATS</span>
-                                        <span class="text-2xl font-black text-emerald-950" id="ats-score">85%</span>
-                                    </div>
-                                    <div class="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
-                                        <div id="ats-bar" class="h-full bg-gradient-to-r from-emerald-950 to-gold-500 w-0 transition-all duration-1000"></div>
-                                    </div>
-                                </div>
-                                
-                                <div class="space-y-4">
-                                    <div>
-                                        <div class="flex justify-between text-xs font-bold mb-1 text-gray-500">
-                                            <span>الكلمات المفتاحية</span>
-                                            <span>90%</span>
-                                        </div>
-                                        <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-                                            <div class="h-full bg-emerald-950 w-[90%]"></div>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="flex justify-between text-xs font-bold mb-1 text-gray-500">
-                                            <span>التنسيق الهيكلي</span>
-                                            <span>75%</span>
-                                        </div>
-                                        <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-                                            <div class="h-full bg-gold-500 w-[75%]"></div>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="flex justify-between text-xs font-bold mb-1 text-gray-500">
-                                            <span>المهارات التقنية</span>
-                                            <span>82%</span>
-                                        </div>
-                                        <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-                                            <div class="h-full bg-emerald-950 w-[82%]"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="mt-6 p-4 bg-white rounded-xl border border-emerald-950/10">
-                                    <p class="text-sm text-gray-600 leading-relaxed">
-                                        <i class="fas fa-lightbulb text-gold-500 ml-2"></i>
-                                        "نوصي بإضافة مهارات إدارة المشاريع (PMP) لزيادة فرصة قبولك في مشاريع رؤية 2030 بنسبة 15%."
-                                    </p>
-                                </div>
-                            </div>
-                            
-                            <button type="submit" id="analyze-btn" class="w-full py-4 bg-emerald-950 text-white rounded-xl font-bold hover:bg-emerald-900 transition-all shadow-lg flex items-center justify-center gap-2">
-                                <span>تحليل السيرة الذاتية</span>
-                                <i class="fas fa-wand-magic-sparkles"></i>
-                            </button>
-                        </form>
+        
+        <!-- Job Listings (iOS List Style) -->
+        <section class="mb-6">
+            <div class="flex items-center justify-between px-1 mb-3">
+                <h3 class="text-xl font-bold">الوظائف المقترحة</h3>
+                <button class="text-ios-blue text-sm">عرض الكل</button>
+            </div>
+            
+            <div class="ios-list">
+                <!-- Job 1 -->
+                <div class="ios-list-item haptic-btn" onclick="openJobSheet('نيوم', 'مدير مشروع', 'تبوك')"
+003e
+                    <div class="ios-list-icon bg-saudi-midnight text-saudi-gold">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20 6H16V4C16 2.89 15.11 2 14 2H10C8.89 2 8 2.89 8 4V6H4C2.89 6 2 6.89 2 8V19C2 20.11 2.89 21 4 21H20C21.11 21 22 20.11 22 19V8C22 6.89 21.11 6 20 6ZM10 4H14V6H10V4Z"/>
+                        </svg>
                     </div>
+                    
+                    <div class="flex-1">
+                        <p class="text-ios-label-secondary text-xs">نيوم</p>
+                        <p class="font-semibold">مدير مشروع</p>
+                        <p class="text-ios-label-secondary text-xs">تبوك • 5-8 سنوات</p>
+                    </div>
+                    
+                    <svg class="w-5 h-5 text-ios-label-tertiary" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8.59 16.59L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.59Z"/>
+                    </svg>
                 </div>
                 
-                <!-- Text Content -->
-                <div class="order-1 lg:order-2 reveal">
-                    <h2 class="text-4xl md:text-5xl font-extrabold mb-8 leading-tight text-emerald-950">
-                        حلل سيرتك الذاتية <br/>
-                        <span class="gradient-text">بالذكاء الاصطناعي</span>
-                    </h2>
-                    <p class="text-gray-600 mb-12 text-lg leading-relaxed">
-                        ارفع كفاءة ملفك الشخصي ليتناسب مع أنظمة الفرز الآلي في كبرى الجهات الحكومية والشركات الوطنية.
-                    </p>
-                    
-                    <div class="space-y-8">
-                        <div class="flex gap-5 group">
-                            <div class="flex-shrink-0 w-12 h-12 bg-emerald-950/5 text-emerald-950 rounded-2xl flex items-center justify-center font-black text-lg group-hover:bg-emerald-950 group-hover:text-white transition-all">١</div>
-                            <div>
-                                <h5 class="font-extrabold text-xl mb-1 text-emerald-950">رفع الملف</h5>
-                                <p class="text-gray-500 leading-relaxed">ارفع سيرتك الذاتية الحالية بصيغة PDF أو Word لنقوم بمعالجتها.</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-5 group">
-                            <div class="flex-shrink-0 w-12 h-12 bg-emerald-950/5 text-emerald-950 rounded-2xl flex items-center justify-center font-black text-lg group-hover:bg-emerald-950 group-hover:text-white transition-all">٢</div>
-                            <div>
-                                <h5 class="font-extrabold text-xl mb-1 text-emerald-950">تحليل الذكاء الاصطناعي</h5>
-                                <p class="text-gray-500 leading-relaxed">تقييم شامل للمحتوى والكلمات المفتاحية والتنسيق وفق المعايير العالمية.</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-5 group">
-                            <div class="flex-shrink-0 w-12 h-12 bg-emerald-950/5 text-emerald-950 rounded-2xl flex items-center justify-center font-black text-lg group-hover:bg-emerald-950 group-hover:text-white transition-all">٣</div>
-                            <div>
-                                <h5 class="font-extrabold text-xl mb-1 text-emerald-950">تحسين مهني</h5>
-                                <p class="text-gray-500 leading-relaxed">تعديل المحتوى بناءً على توصيات الخبراء والأنظمة الذكية.</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-5 group">
-                            <div class="flex-shrink-0 w-12 h-12 bg-emerald-950/5 text-emerald-950 rounded-2xl flex items-center justify-center font-black text-lg group-hover:bg-emerald-950 group-hover:text-white transition-all">٤</div>
-                            <div>
-                                <h5 class="font-extrabold text-xl mb-1 text-emerald-950">تحميل النسخة النهائية</h5>
-                                <p class="text-gray-500 leading-relaxed">احصل على سيرتك الذاتية المطورة والجاهزة للتقديم مباشرة.</p>
-                            </div>
-                        </div>
+                <!-- Job 2 -->
+                <div class="ios-list-item haptic-btn" onclick="openJobSheet('أرامكو', 'مهندس أول', 'الظهران')"
+003e
+                    <div class="ios-list-icon bg-ios-card-secondary text-ios-orange">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20ZM12 6C9.79 6 8 7.79 8 10H10C10 8.9 10.9 8 12 8C13.1 8 14 8.9 14 10C14 11.5 12 12 12 14H14C14 12.5 16 12 16 10C16 7.79 14.21 6 12 6ZM11 16V18H13V16H11Z"/>
+                        </svg>
                     </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Features Section -->
-        <section class="py-24 px-4 bg-emerald-950 text-white overflow-hidden relative" id="about">
-            <div class="absolute inset-0 sadu-pattern opacity-5"></div>
-            <div class="max-w-7xl mx-auto relative z-10">
-                <div class="text-center mb-20 reveal">
-                    <h2 class="text-4xl md:text-5xl font-extrabold mb-6">لماذا تختار <span class="text-gold-500">SaudiCareers</span>؟</h2>
-                    <p class="text-emerald-100/70 max-w-2xl mx-auto text-lg">نجمع بين أحدث تقنيات الذكاء الاصطناعي والرؤى المحلية العميقة لتسريع نموك المهني.</p>
+                    
+                    <div class="flex-1">
+                        <p class="text-ios-label-secondary text-xs">أرامكو</p>
+                        <p class="font-semibold">مهندس أول</p>
+                        <p class="text-ios-label-secondary text-xs">الظهران • +10 سنوات</p>
+                    </div>
+                    
+                    <svg class="w-5 h-5 text-ios-label-tertiary" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8.59 16.59L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.59Z"/>
+                    </svg>
                 </div>
                 
-                <div class="grid md:grid-cols-3 gap-12">
-                    <div class="text-center reveal" style="transition-delay: 100ms;">
-                        <div class="w-20 h-20 mx-auto bg-white/5 rounded-2xl flex items-center justify-center mb-8 border border-white/10 group transition-all duration-300 hover:bg-gold-500/20">
-                            <i class="fas fa-robot text-3xl text-gold-500 group-hover:scale-110 transition-transform"></i>
-                        </div>
-                        <h3 class="text-2xl font-bold mb-4">تحليل ذكي للسيرة الذاتية</h3>
-                        <p class="text-emerald-100/60 leading-relaxed">يحلل ذكاؤنا الاصطناعي سيرتك الذاتية مقابل متطلبات السوق السعودي، مقدماً خطوات عملية للتحسين.</p>
+                <!-- Job 3 -->
+                <div class="ios-list-item haptic-btn" onclick="openJobSheet('البحر الأحمر', 'أخصائي عمليات', 'أملج')"
+003e
+                    <div class="ios-list-icon bg-ios-card-secondary text-ios-blue">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2ZM12 11.5C10.62 11.5 9.5 10.38 9.5 9C9.5 7.62 10.62 6.5 12 6.5C13.38 6.5 14.5 7.62 14.5 9C14.5 10.38 13.38 11.5 12 11.5Z"/>
+                        </svg>
                     </div>
                     
-                    <div class="text-center reveal" style="transition-delay: 300ms;">
-                        <div class="w-20 h-20 mx-auto bg-white/5 rounded-2xl flex items-center justify-center mb-8 border border-white/10 group transition-all duration-300 hover:bg-gold-500/20">
-                            <i class="fas fa-shield-halved text-3xl text-gold-500 group-hover:scale-110 transition-transform"></i>
-                        </div>
-                        <h3 class="text-2xl font-bold mb-4">فرص موثوقة</h3>
-                        <p class="text-emerald-100/60 leading-relaxed">يتم التحقق من كل وظيفة للتأكد من أصالتها وتوافقها مع أهداف برنامج التحول الوطني.</p>
+                    <div class="flex-1">
+                        <p class="text-ios-label-secondary text-xs">البحر الأحمر</p>
+                        <p class="font-semibold">أخصائي عمليات</p>
+                        <p class="text-ios-label-secondary text-xs">أملج • 3-5 سنوات</p>
                     </div>
                     
-                    <div class="text-center reveal" style="transition-delay: 500ms;">
-                        <div class="w-20 h-20 mx-auto bg-white/5 rounded-2xl flex items-center justify-center mb-8 border border-white/10 group transition-all duration-300 hover:bg-gold-500/20">
-                            <i class="fas fa-handshake text-3xl text-gold-500 group-hover:scale-110 transition-transform"></i>
-                        </div>
-                        <h3 class="text-2xl font-bold mb-4">اتصال مباشر</h3>
-                        <p class="text-emerald-100/60 leading-relaxed">تجاوز نماذج التقديم التقليدية. نسهل الاتصال المباشر بين أفضل المواهب وقادة الموارد البشرية.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- For Employers Section -->
-        <section class="py-24 px-4 bg-emerald-950/5" id="employers">
-            <div class="max-w-7xl mx-auto">
-                <div class="glass-card rounded-[3rem] p-12 md:p-16 overflow-hidden relative reveal">
-                    <div class="absolute top-0 right-0 w-96 h-96 bg-emerald-950/5 rounded-full -mr-48 -mt-48"></div>
-                    <div class="grid lg:grid-cols-2 gap-12 items-center relative z-10">
-                        <div>
-                            <span class="inline-block py-1 px-3 rounded-full bg-emerald-950 text-white text-xs font-bold mb-4">لأصحاب العمل</span>
-                            <h2 class="text-4xl font-extrabold text-emerald-950 mb-6">توظف أفضل الكفاءات الوطنية</h2>
-                            <p class="text-gray-600 mb-8 leading-relaxed">انضم لشبكة من الجهات الحكومية والشركات الرائدة في رؤية 2030. نوفر لك وصولاً مباشراً لأفضل المواهب السعودية.</p>
-                            
-                            <div class="space-y-4 mb-8">
-                                <div class="flex items-center gap-3">
-                                    <i class="fas fa-check-circle text-emerald-950"></i>
-                                    <span class="text-gray-700">نشر وظائف غير محدود</span>
-                                </div>
-                                <div class="flex items-center gap-3">
-                                    <i class="fas fa-check-circle text-emerald-950"></i>
-                                    <span class="text-gray-700">مطابقة ذكية للمرشحين</span>
-                                </div>
-                                <div class="flex items-center gap-3">
-                                    <i class="fas fa-check-circle text-emerald-950"></i>
-                                    <span class="text-gray-700">تقارير تحليلية متقدمة</span>
-                                </div>
-                            </div>
-                            
-                            <button onclick="showEmployerModal()" class="bg-gold-500 text-white px-10 py-4 rounded-xl font-bold hover:bg-gold-600 transition-all shadow-lg">
-                                انضم كجهة توظيف
-                            </button>
-                        </div>
-                        
-                        <div class="relative">
-                            <img src="images/team.webp" alt="فريق عمل سعودي" class="rounded-2xl shadow-2xl w-full object-cover h-96" loading="lazy">
-                            <div class="absolute -bottom-6 -left-6 bg-white p-6 rounded-2xl shadow-xl">
-                                <div class="flex items-center gap-4">
-                                    <div class="w-14 h-14 bg-emerald-950 rounded-xl flex items-center justify-center">
-                                        <i class="fas fa-users text-gold-500 text-2xl"></i>
-                                    </div>
-                                    <div>
-                                        <div class="text-2xl font-black text-emerald-950">+50</div>
-                                        <div class="text-gray-500 text-sm">جهة موثوقة</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <svg class="w-5 h-5 text-ios-label-tertiary" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8.59 16.59L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.59Z"/>
+                    </svg>
                 </div>
             </div>
         </section>
     </main>
-
-    <!-- Footer -->
-    <footer class="bg-offwhite pt-24 pb-12 px-4 border-t border-emerald-950/5">
-        <div class="max-w-7xl mx-auto">
-            <div class="grid md:grid-cols-4 gap-12 mb-16">
-                <div class="col-span-1 md:col-span-1">
-                    <a href="index.html" class="flex items-center space-x-2 space-x-reverse mb-8">
-                        <img src="logo.webp" alt="SaudiCareers" class="h-12 w-auto" loading="lazy">
-                    </a>
-                    <p class="text-gray-500 text-sm leading-relaxed mb-6">
-                        تمكين الجيل القادم من المهنيين السعوديين بالذكاء والرؤية الطموحة.
-                    </p>
-                    <div class="flex space-x-4 space-x-reverse">
-                        <a href="#" class="w-10 h-10 rounded-full bg-emerald-950/5 flex items-center justify-center text-emerald-950 hover:bg-emerald-950 hover:text-white transition-all"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="w-10 h-10 rounded-full bg-emerald-950/5 flex items-center justify-center text-emerald-950 hover:bg-emerald-950 hover:text-white transition-all"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="#" class="w-10 h-10 rounded-full bg-emerald-950/5 flex items-center justify-center text-emerald-950 hover:bg-emerald-950 hover:text-white transition-all"><i class="fab fa-instagram"></i></a>
-                    </div>
+    
+    <!-- iOS Tab Bar -->
+    <nav class="tab-bar">
+        <div class="flex justify-around items-center h-16">
+            <button class="tab-item active haptic-btn">
+                <svg class="tab-icon" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M10 20V14H14V20H19V12H22L12 3L2 12H5V20H10Z"/>
+                </svg>
+                <span class="tab-label">الرئيسية</span>
+            </button>
+            
+            <button class="tab-item haptic-btn">
+                <svg class="tab-icon" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M20 6H16V4C16 2.89 15.11 2 14 2H10C8.89 2 8 2.89 8 4V6H4C2.89 6 2 6.89 2 8V19C2 20.11 2.89 21 4 21H20C21.11 21 22 20.11 22 19V8C22 6.89 21.11 6 20 6ZM10 4H14V6H10V4Z"/>
+                </svg>
+                <span class="tab-label">الوظائف</span>
+            </button>
+            
+            <button class="tab-item haptic-btn">
+                <svg class="tab-icon" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2ZM16 18H8V16H16V18ZM16 14H8V12H16V14ZM13 9V3.5L18.5 9H13Z"/>
+                </svg>
+                <span class="tab-label">السيرة</span>
+            </button>
+            
+            <button class="tab-item haptic-btn">
+                <svg class="tab-icon" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"/>
+                </svg>
+                <span class="tab-label">حسابي</span>
+            </button>
+        </div>
+    </nav>
+    
+    <!-- Job Detail Sheet -->
+    <div class="sheet-overlay" id="jobSheetOverlay" onclick="closeJobSheet()"></div>
+    
+    <div class="sheet" id="jobSheet">
+        <div class="sheet-handle"></div>
+        
+        <div class="p-6">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-16 h-16 rounded-2xl bg-saudi-midnight flex items-center justify-center">
+                    <svg class="w-8 h-8 text-saudi-gold" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M20 6H16V4C16 2.89 15.11 2 14 2H10C8.89 2 8 2.89 8 4V6H4C2.89 6 2 6.89 2 8V19C2 20.11 2.89 21 4 21H20C21.11 21 22 20.11 22 19V8C22 6.89 21.11 6 20 6ZM10 4H14V6H10V4Z"/>
+                    </svg>
                 </div>
                 
                 <div>
-                    <h4 class="font-bold text-emerald-950 mb-6 uppercase tracking-widest text-xs">للباحثين عن عمل</h4>
-                    <ul class="space-y-4 text-gray-500 text-sm">
-                        <li><a href="#cv-analyzer" class="hover:text-gold-500 transition-colors">أداة تحليل السيرة الذاتية</a></li>
-                        <li><a href="#" class="hover:text-gold-500 transition-colors">تنبيهات الوظائف</a></li>
-                        <li><a href="#" class="hover:text-gold-500 transition-colors">ورش عمل مهنية</a></li>
-                        <li><a href="#" class="hover:text-gold-500 transition-colors">تطوير المهارات</a></li>
-                    </ul>
-                </div>
-                
-                <div>
-                    <h4 class="font-bold text-emerald-950 mb-6 uppercase tracking-widest text-xs">لأصحاب العمل</h4>
-                    <ul class="space-y-4 text-gray-500 text-sm">
-                        <li><a href="#" class="hover:text-gold-500 transition-colors">نشر وظيفة</a></li>
-                        <li><a href="#" class="hover:text-gold-500 transition-colors">البحث عن كفاءات</a></li>
-                        <li><a href="#" class="hover:text-gold-500 transition-colors">حلول التوظيف المؤسسي</a></li>
-                        <li><a href="#" class="hover:text-gold-500 transition-colors">الذكاء الاصطناعي للتوظيف</a></li>
-                    </ul>
-                </div>
-                
-                <div>
-                    <h4 class="font-bold text-emerald-950 mb-6 uppercase tracking-widest text-xs">تواصل معنا</h4>
-                    <ul class="space-y-4 text-gray-500 text-sm">
-                        <li class="flex items-center gap-2"><i class="fas fa-envelope text-gold-500"></i> info@saudicareers.site</li>
-                        <li class="flex items-center gap-2"><i class="fas fa-phone text-gold-500"></i> 9200 XXXXX</li>
-                        <li class="flex items-center gap-2"><i class="fas fa-location-dot text-gold-500"></i> الرياض، المملكة العربية السعودية</li>
-                    </ul>
+                    <h2 class="text-2xl font-bold" id="sheetJobTitle"></h2>
+                    <p class="text-ios-label-secondary" id="sheetCompany"></p>
                 </div>
             </div>
             
-            <div class="pt-12 border-t border-emerald-950/5 flex flex-col md:flex-row justify-between items-center text-gray-400 text-[10px] font-bold uppercase tracking-[0.2em]">
-                <p>© 2024 SaudiCareers. جميع الحقوق محفوظة لـ رؤية 2030.</p>
-                <div class="flex space-x-8 space-x-reverse mt-4 md:mt-0">
-                    <a href="privacy.html" class="hover:text-emerald-950 transition-colors">سياسة الخصوصية</a>
-                    <a href="terms.html" class="hover:text-emerald-950 transition-colors">شروط الاستخدام</a>
-                    <a href="#" class="hover:text-emerald-950 transition-colors">الدعم الفني</a>
+            <div class="space-y-4 mb-6">
+                <div class="flex items-center gap-3">
+                    <svg class="w-5 h-5 text-ios-label-secondary" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2ZM12 11.5C10.62 11.5 9.5 10.38 9.5 9C9.5 7.62 10.62 6.5 12 6.5C13.38 6.5 14.5 7.62 14.5 9C14.5 10.38 13.38 11.5 12 11.5Z"/>
+                    </svg>
+                    <span id="sheetLocation"></span>
+                </div>
+                
+                <div class="flex items-center gap-3">
+                    <svg class="w-5 h-5 text-ios-label-secondary" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M11.99 2C6.47 2 2 6.48 2 12C2 17.52 6.47 22 11.99 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 11.99 2ZM12 20C7.58 20 4 16.42 4 12C4 7.58 7.58 4 12 4C16.42 4 20 7.58 20 12C20 16.42 16.42 20 12 20ZM12.5 7H11V13L16.25 16.15L17 14.92L12.5 12.25V7Z"/>
+                    </svg>
+                    <span>5-8 سنوات خبرة</span>
+                </div>
+                
+                <div class="flex items-center gap-3">
+                    <svg class="w-5 h-5 text-ios-label-secondary" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20ZM12 6C9.79 6 8 7.79 8 10H10C10 8.9 10.9 8 12 8C13.1 8 14 8.9 14 10C14 11.5 12 12 12 14H14C14 12.5 16 12 16 10C16 7.79 14.21 6 12 6ZM11 16V18H13V16H11Z"/>
+                    </svg>
+                    <span>رواتب تنافسية + بدلات</span>
                 </div>
             </div>
-        </div>
-    </footer>
-
-    <!-- Login Modal -->
-    <div id="login-modal" class="fixed inset-0 z-[60] hidden">
-        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeLoginModal()"></div>
-        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md p-4">
-            <div class="bg-white rounded-3xl p-8 shadow-2xl relative">
-                <button onclick="closeLoginModal()" class="absolute top-4 left-4 w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors">
-                    <i class="fas fa-times text-gray-600"></i>
-                </button>
-                
-                <div class="text-center mb-8">
-                    <div class="w-16 h-16 bg-emerald-950 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-arrow-trend-up text-gold-500 text-2xl"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold text-emerald-950">تسجيل الدخول</h3>
-                    <p class="text-gray-500 text-sm mt-2">أهلاً بك مجدداً في SaudiCareers</p>
-                </div>
-                
-                <form class="space-y-4" onsubmit="handleLogin(event)">
-                    <div>
-                        <label class="block text-sm font-bold text-emerald-950 mb-2">البريد الإلكتروني</label>
-                        <input type="email" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-950 focus:outline-none transition-colors" placeholder="your@email.com">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold text-emerald-950 mb-2">كلمة المرور</label>
-                        <input type="password" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-950 focus:outline-none transition-colors" placeholder="••••••••">
-                    </div>
-                    <button type="submit" class="w-full py-4 bg-emerald-950 text-white rounded-xl font-bold hover:bg-emerald-900 transition-all">
-                        دخول
-                    </button>
-                </form>
-                
-                <div class="mt-6 text-center">
-                    <p class="text-gray-500 text-sm">ليس لديك حساب؟ <a href="#" class="text-gold-500 font-bold hover:underline">سجل الآن</a></p>
-                </div>
-            </div>
+            
+            <button class="haptic-btn w-full bg-ios-blue text-white py-4 rounded-xl font-semibold text-lg">
+                التقديم على الوظيفة
+            </button>
         </div>
     </div>
-
-    <!-- Employer Modal -->
-    <div id="employer-modal" class="fixed inset-0 z-[60] hidden">
-        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeEmployerModal()"></div>
-        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-lg p-4">
-            <div class="bg-white rounded-3xl p-8 shadow-2xl relative">
-                <button onclick="closeEmployerModal()" class="absolute top-4 left-4 w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors">
-                    <i class="fas fa-times text-gray-600"></i>
-                </button>
+    
+    <!-- CV Analysis Wizard -->
+    <div class="sheet-overlay" id="cvWizardOverlay" onclick="closeCVWizard()"></div>
+    
+    <div class="sheet" id="cvWizard">
+        <div class="sheet-handle"></div>
+        
+        <div class="p-6">
+            <!-- Step 1: Upload -->
+            <div class="wizard-step active" id="step1">
+                <h2 class="text-2xl font-bold mb-2">تحليل السيرة الذاتية</h2>
+                <p class="text-ios-label-secondary mb-6">ارفع سيرتك الذاتية بصيغة PDF</p>
                 
-                <div class="text-center mb-8">
-                    <div class="w-16 h-16 bg-gold-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-building text-white text-2xl"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold text-emerald-950">انضم كجهة توظيف</h3>
-                    <p class="text-gray-500 text-sm mt-2">املأ البيانات وسنتواصل معك خلال 24 ساعة</p>
-                </div>
-                
-                <form class="space-y-4" onsubmit="handleEmployerSubmit(event)">
-                    <div>
-                        <label class="block text-sm font-bold text-emerald-950 mb-2">اسم الجهة/الشركة</label>
-                        <input type="text" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-950 focus:outline-none transition-colors">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold text-emerald-950 mb-2">البريد الإلكتروني</label>
-                        <input type="email" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-950 focus:outline-none transition-colors">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold text-emerald-950 mb-2">رقم التواصل</label>
-                        <input type="tel" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-950 focus:outline-none transition-colors">
-                    </div>
-                    <button type="submit" class="w-full py-4 bg-gold-500 text-white rounded-xl font-bold hover:bg-gold-600 transition-all">
-                        إرسال الطلب
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Scripts -->
-    <script>
-        // Mobile Menu Toggle
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
-        }
-        
-        // Login Modal
-        function showLoginModal() {
-            document.getElementById('login-modal').classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        }
-        
-        function closeLoginModal() {
-            document.getElementById('login-modal').classList.add('hidden');
-            document.body.style.overflow = '';
-        }
-        
-        // Employer Modal
-        function showEmployerModal() {
-            document.getElementById('employer-modal').classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        }
-        
-        function closeEmployerModal() {
-            document.getElementById('employer-modal').classList.add('hidden');
-            document.body.style.overflow = '';
-        }
-        
-        function handleEmployerSubmit(e) {
-            e.preventDefault();
-            alert('تم استلام طلبك بنجاح! سنتواصل معك خلال 24 ساعة.');
-            closeEmployerModal();
-        }
-        
-        // Scroll Reveal
-        document.addEventListener('DOMContentLoaded', () => {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('active');
-                    }
-                });
-            }, { threshold: 0.1 });
-            
-            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-            
-            // Counter Animation
-            const counters = document.querySelectorAll('[data-count]');
-            counters.forEach(counter => {
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            const target = parseInt(counter.getAttribute('data-count'));
-                            const suffix = counter.getAttribute('data-suffix') || '+';
-                            let current = 0;
-                            const increment = target / 50;
-                            const timer = setInterval(() => {
-                                current += increment;
-                                if (current >= target) {
-                                    counter.textContent = suffix === '%' ? target + '%' : '+' + target;
-                                    clearInterval(timer);
-                                } else {
-                                    counter.textContent = suffix === '%' ? Math.floor(current) + '%' : '+' + Math.floor(current);
-                                }
-                            }, 30);
-                            observer.unobserve(counter);
-                        }
-                    });
-                });
-                observer.observe(counter);
-            });
-        });
-        
-        // Jobs Data
-        const jobsData = [
-            {
-                id: 1,
-                title: 'مدير مشروع (Project Manager)',
-                company: 'نيوم',
-                location: 'تبوك، المملكة العربية السعودية',
-                experience: '5-8 سنوات خبرة',
-                salary: 'رواتب تنافسية',
-                image: 'images/job1.webp',
-                badge: 'نيوم'
-            },
-            {
-                id: 2,
-                title: 'مهندس أول (Senior Engineer)',
-                company: 'أرامكو',
-                location: 'الظهران، المملكة العربية السعودية',
-                experience: '+10 سنوات خبرة',
-                salary: 'حوافز استثنائية',
-                image: 'images/job2.webp',
-                badge: 'أرامكو'
-            },
-            {
-                id: 3,
-                title: 'أخصائي عمليات (Operations Specialist)',
-                company: 'البحر الأحمر الدولية',
-                location: 'أملج، المملكة العربية السعودية',
-                experience: '3-5 سنوات خبرة',
-                salary: 'مزايا سكنية',
-                image: 'images/job3.webp',
-                badge: 'البحر الأحمر'
-            }
-        ];
-        
-        // Render Jobs
-        function renderJobs() {
-            const container = document.getElementById('jobs-container');
-            container.innerHTML = jobsData.map((job, index) => `
-                <div class="glass-card rounded-3xl overflow-hidden group hover:-translate-y-2 transition-all duration-500" style="animation: fadeInUp 0.6s ease-out ${index * 0.15}s both;">
-                    <div class="relative h-56 overflow-hidden">
-                        <img alt="${job.title}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" src="${job.image}">
-                        <div class="absolute top-4 right-4 bg-emerald-950 text-white text-[10px] font-bold py-1 px-3 rounded-full uppercase">${job.badge}</div>
-                    </div>
-                    <div class="p-8">
-                        <h3 class="text-xl font-bold text-emerald-950 mb-4">${job.title}</h3>
-                        <div class="flex flex-col space-y-3 text-gray-500 text-sm mb-6">
-                            <span><i class="fas fa-map-marker-alt text-gold-500 ml-2"></i> ${job.location}</span>
-                            <span><i class="fas fa-clock text-gold-500 ml-2"></i> ${job.experience}</span>
-                            <span><i class="fas fa-money-bill-wave text-gold-500 ml-2"></i> ${job.salary}</span>
-                        </div>
-                        <button onclick="applyForJob(${job.id})" class="w-full py-3 rounded-xl border border-emerald-950/20 text-emerald-950 font-bold hover:bg-emerald-950 hover:text-white transition-all">
-                            التفاصيل والتقديم
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
-        
-        function applyForJob(jobId) {
-            alert('سيتم توجيهك لصفحة التقديم على الوظيفة.');
-        }
-        
-        function loadMoreJobs() {
-            alert('سيتم عرض المزيد من الوظائف قريباً!');
-        }
-        
-        // CV Upload
-        document.addEventListener('DOMContentLoaded', () => {
-            renderJobs();
-            
-            const fileInput = document.getElementById('cv-file');
-            const fileNameDisplay = document.getElementById('file-name');
-            const uploadZone = document.getElementById('upload-zone');
-            const form = document.getElementById('cv-upload-form');
-            const resultDiv = document.getElementById('analysis-result');
-            const analyzeBtn = document.getElementById('analyze-btn');
-            const atsBar = document.getElementById('ats-bar');
-            
-            fileInput.addEventListener('change', (e) => {
-                if (e.target.files.length > 0) {
-                    fileNameDisplay.textContent = e.target.files[0].name;
-                    fileNameDisplay.classList.add('text-emerald-950', 'font-bold');
-                }
-            });
-            
-            // Drag and Drop
-            uploadZone.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                uploadZone.classList.add('dragover');
-            });
-            
-            uploadZone.addEventListener('dragleave', () => {
-                uploadZone.classList.remove('dragover');
-            });
-            
-            uploadZone.addEventListener('drop', (e) => {
-                e.preventDefault();
-                uploadZone.classList.remove('dragover');
-                const files = e.dataTransfer.files;
-                if (files.length > 0) {
-                    fileInput.files = files;
-                    fileNameDisplay.textContent = files[0].name;
-                    fileNameDisplay.classList.add('text-emerald-950', 'font-bold');
-                }
-            });
-            
-            form.addEventListener('submit', (e) => {
-                e.preventDefault();
-                
-                if (!fileInput.files.length) {
-                    alert('الرجاء اختيار ملف أولاً');
-                    return;
-                }
-                
-                analyzeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحليل...';
-                analyzeBtn.disabled = true;
-                
-                // Simulate analysis
-                setTimeout(() => {
-                    resultDiv.classList.remove('hidden');
-                    setTimeout(() => {
-                        atsBar.style.width = '85%';
-                    }, 100);
+                <div class="border-2 border-dashed border-ios-border rounded-2xl p-8 text-center mb-6">
+                    <svg class="w-16 h-16 mx-auto mb-4 text-ios-label-secondary" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4C9.11 4 6.6 5.64 5.35 8.04C2.34 8.36 0 10.91 0 14C0 17.31 2.69 20 6 20H19C21.76 20 24 17.76 24 15C24 12.36 21.95 10.22 19.35 10.04ZM14 13V17H10V13H7L12 8L17 13H14Z"/>
+                    </svg>
                     
-                    analyzeBtn.innerHTML = '<span>تم التحليل بنجاح</span> <i class="fas fa-check-circle"></i>';
-                    analyzeBtn.classList.remove('bg-emerald-950');
-                    analyzeBtn.classList.add('bg-green-600');
-                }, 2000);
-            });
-        });
+                    <p class="text-ios-label-secondary">اسحب الملف هنا أو اضغط للاختيار</p>
+                </div>
+                
+                <button onclick="goToStep(2)" class="haptic-btn w-full bg-ios-blue text-white py-4 rounded-xl font-semibold">
+                    التالي
+                </button>
+            </div>
+            
+            <!-- Step 2: Analyzing -->
+            <div class="wizard-step" id="step2">
+                <h2 class="text-2xl font-bold mb-6 text-center">جاري التحليل...</h2>
+                
+                <div class="flex justify-center mb-6">
+                    <div class="health-ring">
+                        <svg width="120" height="120" viewBox="0 0 120 120">
+                            <circle class="health-ring-bg" cx="60" cy="60" r="50"/>
+                            <circle class="health-ring-progress health-ring-gold" cx="60" cy="60" r="50" 
+                                stroke-dasharray="314" 
+                                stroke-dashoffset="0"
+                                id="wizardRing"/>
+                        </svg>
+                        
+                        <div class="health-ring-text">
+                            <span class="text-3xl font-bold">94</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="space-y-3">
+                    <div class="flex items-center gap-3 text-ios-green">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59L9 16.17Z"/>
+                        </svg>
+                        <span>تحليل الكلمات المفتاحية</span>
+                    </div>
+                    
+                    <div class="flex items-center gap-3 text-ios-green">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59L9 16.17Z"/>
+                        </svg>
+                        <span>مطابقة معايير ATS</span>
+                    </div>
+                    
+                    <div class="flex items-center gap-3 text-ios-green">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59L9 16.17Z"/>
+                        </svg>
+                        <span>تقييم التنسيق</span>
+                    </div>
+                </div>
+                
+                <button onclick="goToStep(3)" class="haptic-btn w-full bg-ios-blue text-white py-4 rounded-xl font-semibold mt-6">
+                    عرض النتائج
+                </button>
+            </div>
+            
+            <!-- Step 3: Results -->
+            <div class="wizard-step" id="step3">
+                <h2 class="text-2xl font-bold mb-2 text-center">نتائج التحليل</h2>
+                
+                <p class="text-ios-label-secondary text-center mb-6">سيرتك الذاتية ممتازة! 🎉</p>
+                
+                <div class="ios-card-secondary p-4 rounded-xl mb-4">
+                    <h4 class="font-semibold mb-2">نقاط القوة</h4>
+                    
+                    <ul class="text-sm text-ios-label-secondary space-y-1">
+                        <li>✓ هيكل واضح ومنظم</li>
+                        <li>✓ كلمات مفتاحية قوية</li>
+                        <li>✓ تناسب معايير السوق السعودي</li>
+                    </ul>
+                </div>
+                
+                <div class="ios-card-secondary p-4 rounded-xl mb-6">
+                    <h4 class="font-semibold mb-2">توصيات للتحسين</h4>
+                    
+                    <ul class="text-sm text-ios-label-secondary space-y-1">
+                        <li>• أضف المزيد من الإنجازات الكمية</li>
+                        <li>• قسم المهارات حسب الأولوية</li>
+                    </ul>
+                </div>
+                
+                <button onclick="closeCVWizard()" class="haptic-btn w-full bg-ios-blue text-white py-4 rounded-xl font-semibold">
+                    تم
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Register Service Worker for PWA
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
         
-        // Smooth scroll for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Large Title Navigation Scroll Effect
+        const nav = document.getElementById('mainNav');
+        const subtitle = document.querySelector('.nav-subtitle');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+                subtitle.style.opacity = '0';
+            } else {
+                nav.classList.remove('scrolled');
+                subtitle.style.opacity = '1';
+            }
+        }, { passive: true });
+        
+        // Health Ring Animation
+        function animateHealthRing() {
+            const ring = document.getElementById('healthRing');
+            const score = document.getElementById('cvScore');
+            const targetScore = 94;
+            const circumference = 314;
+            const offset = circumference - (targetScore / 100) * circumference;
+            
+            setTimeout(() => {
+                ring.style.strokeDashoffset = offset;
+            }, 500);
+            
+            // Animate score counter
+            let current = 0;
+            const timer = setInterval(() => {
+                current += 2;
+                score.textContent = current;
+                if (current >= targetScore) {
+                    score.textContent = targetScore;
+                    clearInterval(timer);
+                }
+            }, 30);
+        }
+        
+        // Animate on page load
+        window.addEventListener('load', animateHealthRing);
+        
+        // Job Sheet Functions
+        function openJobSheet(company, title, location) {
+            document.getElementById('sheetCompany').textContent = company;
+            document.getElementById('sheetJobTitle').textContent = title;
+            document.getElementById('sheetLocation').textContent = location;
+            
+            document.getElementById('jobSheetOverlay').classList.add('active');
+            document.getElementById('jobSheet').classList.add('active');
+        }
+        
+        function closeJobSheet() {
+            document.getElementById('jobSheetOverlay').classList.remove('active');
+            document.getElementById('jobSheet').classList.remove('active');
+        }
+        
+        // CV Wizard Functions
+        function openCVWizard() {
+            document.getElementById('cvWizardOverlay').classList.add('active');
+            document.getElementById('cvWizard').classList.add('active');
+            goToStep(1);
+        }
+        
+        function closeCVWizard() {
+            document.getElementById('cvWizardOverlay').classList.remove('active');
+            document.getElementById('cvWizard').classList.remove('active');
+        }
+        
+        function goToStep(step) {
+            document.querySelectorAll('.wizard-step').forEach(s => s.classList.remove('active'));
+            document.getElementById('step' + step).classList.add('active');
+        }
+        
+        // Haptic feedback simulation
+        document.querySelectorAll('.haptic-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (navigator.vibrate) {
+                    navigator.vibrate(10);
                 }
             });
         });
     </script>
-    <script src="auth.js"></script>
 </body>
 </html>
