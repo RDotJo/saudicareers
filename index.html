@@ -142,8 +142,33 @@
                     <a href="index.html#cv-analyzer" class="hover:text-gold-500 transition-colors">تحليل السيرة الذاتية</a>
                     <a href="#employers" class="hover:text-gold-500 transition-colors">لأصحاب العمل</a>
                     <a href="#about" class="hover:text-gold-500 transition-colors">عن المنصة</a>
-                    <button onclick="showLoginModal()" id="auth-btn" class="bg-emerald-950 text-white px-8 py-2.5 rounded-full hover:bg-emerald-900 transition-all shadow-lg hover:shadow-emerald-950/20">دخول</button>
-                    <span id="welcome-message" class="hidden text-sm font-bold text-emerald-950 ml-2"></span>
+                    <!-- Auth Buttons -->
+                    <div id="auth-section" class="flex items-center gap-3">
+                        <!-- First Time Visitor -->
+                        <div id="first-time-cta" class="hidden">
+                            <span class="text-xs text-gold-500 font-bold">🎁 جرب مجاناً</span>
+                            <button onclick="showRegisterModal()" class="bg-gradient-to-r from-gold-500 to-gold-600 text-white px-6 py-2.5 rounded-full font-bold hover:shadow-lg hover:scale-105 transition-all animate-pulse">
+                                اشترك الآن
+                            </button>
+                        </div>
+                        
+                        <!-- Returning Visitor -->
+                        <button onclick="showLoginModal()" id="auth-btn" class="hidden bg-emerald-950 text-white px-8 py-2.5 rounded-full hover:bg-emerald-900 transition-all shadow-lg">دخول</button>
+                        
+                        <!-- Logged In User -->
+                        <div id="user-section" class="hidden flex items-center gap-3">
+                            <a href="profile.html" class="flex items-center gap-2 bg-emerald-950/5 px-4 py-2 rounded-full hover:bg-emerald-950/10 transition-all">
+                                <div class="w-8 h-8 bg-emerald-950 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                                    <span id="user-initial">م</span>
+                                </div>
+                                <span id="user-name" class="text-sm font-bold text-emerald-950">مرحباً</span>
+                                <i class="fas fa-chevron-down text-xs text-gray-400"></i>
+                            </a>
+                            <button onclick="logout()" class="text-gray-400 hover:text-red-500 transition-colors" title="خروج">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 
                 <!-- Mobile Toggle -->

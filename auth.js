@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     await initSupabase();
     await checkUserSession();
     setupAuthListeners();
+    handleVisitorType();
 });
 
 async function initSupabase() {
@@ -31,6 +32,40 @@ function loadScript(src) {
     });
 }
 
+// Check visitor type and show appropriate CTA
+function handleVisitorType() {
+    // If logged in, don't show visitor CTAs
+    if (currentUser) return;
+    
+    const firstTimeCta = document.getElementById('first-time-cta');
+    const authBtn = document.getElementById('auth-btn');
+    
+    // Check if visited before
+    const hasVisited = localStorage.getItem('saudicareers_visited');
+    const visitDate = localStorage.getItem('saudicareers_visit_date');
+    
+    if (!hasVisited) {
+        // First time visitor - Show attractive signup CTA
+        if (firstTimeCta) firstTimeCta.classList.remove('hidden');
+        
+        // Mark as visited
+        localStorage.setItem('saudicareers_visited', 'true');
+        localStorage.setItem('saudicareers_visit_date', new Date().toISOString());
+    } else {
+        // Returning visitor - Show login button
+        if (authBtn) authBtn.classList.remove('hidden');
+        
+        // Check if it's been more than a week - could show special message
+        if (visitDate) {
+            const daysSince = Math.floor((Date.now() - new Date(visitDate).getTime()) / (1000 * 60 * 60 * 24));
+            if (daysSince > 7) {
+                // Returning after a week - could show "Welcome back" message
+                console.log('Welcome back after', daysSince, 'days');
+            }
+        }
+    }
+}
+
 async function checkUserSession() {
     if (!supabaseClient) return;
     
@@ -39,8 +74,6 @@ async function checkUserSession() {
     if (session) {
         currentUser = session.user;
         updateUIForLoggedInUser();
-    } else {
-        updateUIForGuest();
     }
 }
 
@@ -53,61 +86,42 @@ function setupAuthListeners() {
             updateUIForLoggedInUser();
         } else if (event === 'SIGNED_OUT') {
             currentUser = null;
-            updateUIForGuest();
+            window.location.reload();
         }
     });
 }
 
 function updateUIForLoggedInUser() {
-    // Show CV Analyzer section - reload to show full version
+    // Hide visitor CTAs
+    const firstTimeCta = document.getElementById('first-time-cta');
+    const authBtn = document.getElementById('auth-btn');
+    const userSection = document.getElementById('user-section');
+    
+    if (firstTimeCta) firstTimeCta.classList.add('hidden');
+    if (authBtn) authBtn.classList.add('hidden');
+    
+    // Show user section
+    if (userSection) {
+        userSection.classList.remove('hidden');
+        
+        // Update user name
+        const userName = document.getElementById('user-name');
+        const userInitial = document.getElementById('user-initial');
+        
+        if (currentUser) {
+            const name = currentUser.user_metadata?.full_name || currentUser.email?.split('@')[0] || 'مستخدم';
+            if (userName) userName.textContent = name;
+            if (userInitial) userInitial.textContent = name.charAt(0).toUpperCase();
+        }
+    }
+    
+    // Show full CV analyzer
     const cvSection = document.getElementById('cv-analyzer');
-    if (cvSection) {
-        cvSection.style.display = 'block';
-        // Reload to show the real CV analyzer
-        window.location.reload();
-    }
-    
-    // Update nav buttons
-    const loginBtn = document.getElementById('auth-btn');
-    if (loginBtn) {
-        loginBtn.textContent = 'خروج';
-        loginBtn.onclick = logout;
-    }
-    
-    // Update mobile button
-    const mobileBtn = document.getElementById('mobile-auth-btn');
-    if (mobileBtn) {
-        mobileBtn.textContent = 'خروج';
-        mobileBtn.onclick = logout;
-    }
-    
-    // Show welcome message
-    const welcomeMsg = document.getElementById('welcome-message');
-    if (welcomeMsg && currentUser) {
-        welcomeMsg.textContent = `مرحباً`;
-        welcomeMsg.style.display = 'inline';
-    }
-}
-
-function updateUIForGuest() {
-    // Hide CV Analyzer section or show login prompt
-    const cvSection = document.getElementById('cv-analyzer');
-    if (cvSection) {
-        // Show blurred/preview version
-        cvSection.innerHTML = getGuestCVSectionHTML();
-    }
-    
-    // Reset nav buttons
-    const loginBtn = document.querySelector('button[onclick="logout()"]');
-    if (loginBtn) {
-        loginBtn.textContent = 'دخول';
-        loginBtn.onclick = showLoginModal;
-    }
-    
-    // Hide welcome message
-    const welcomeMsg = document.getElementById('welcome-message');
-    if (welcomeMsg) {
-        welcomeMsg.style.display = 'none';
+    if (cvSection && !window.location.href.includes('profile')) {
+        // Reload to show full version if currently showing guest version
+        if (cvSection.innerHTML.includes('fa-lock')) {
+            window.location.reload();
+        }
     }
 }
 
@@ -131,7 +145,8 @@ async function handleLogin(e) {
         alert('خطأ في تسجيل الدخول: ' + error.message);
     } else {
         closeLoginModal();
-        alert('تم تسجيل الدخول بنجاح!');
+        // Update last login
+        localStorage.setItem('saudicareers_last_login', new Date().toISOString());
     }
 }
 
@@ -160,8 +175,11 @@ async function handleRegister(e) {
     if (error) {
         alert('خطأ في التسجيل: ' + error.message);
     } else {
-        alert('تم إنشاء الحساب! تحقق من بريدك الإلكتروني.');
-        closeLoginModal();
+        closeRegisterModal();
+        // Mark as registered
+        localStorage.setItem('saudicareers_registered', 'true');
+        localStorage.setItem('saudicareers_visit_date', new Date().toISOString());
+        alert('تم إنشاء الحساب بنجاح! مرحباً بك في SaudiCareers 🎉');
     }
 }
 
@@ -169,54 +187,44 @@ async function logout() {
     if (!supabaseClient) return;
     
     await supabaseClient.auth.signOut();
-    alert('تم تسجيل الخروج');
+    localStorage.removeItem('saudicareers_last_login');
     window.location.reload();
 }
 
-function getGuestCVSectionHTML() {
-    return `
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="glass-card p-12 rounded-[3rem] text-center relative overflow-hidden">
-                <div class="absolute inset-0 bg-emerald-950/5 backdrop-blur-sm flex items-center justify-center">
-                    <div class="text-center p-8">
-                        <i class="fas fa-lock text-6xl text-emerald-950/30 mb-6"></i>
-                        <h3 class="text-3xl font-bold text-emerald-950 mb-4">ميزة تحليل السيرة الذاتية</h3>
-                        <p class="text-gray-600 mb-8 max-w-md mx-auto">سجل دخول أو أنشئ حساب جديد للوصول لأداة تحليل السيرة الذاتية بالذكاء الاصطناعي</p>
-                        <div class="flex gap-4 justify-center">
-                            <button onclick="showLoginModal()" class="bg-emerald-950 text-white px-10 py-4 rounded-xl font-bold hover:bg-emerald-900 transition-all">
-                                تسجيل الدخول
-                            </button>
-                            <button onclick="showRegisterModal()" class="border-2 border-gold-500 text-gold-500 px-10 py-4 rounded-xl font-bold hover:bg-gold-500 hover:text-white transition-all">
-                                إنشاء حساب
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <!-- Blurred preview content -->
-                <div class="blur-sm opacity-30 pointer-events-none">
-                    <h2 class="text-5xl font-extrabold mb-8 leading-tight text-emerald-950">حلل سيرتك الذاتية <br/><span class="gradient-text">بالذكاء الاصطناعي</span></h2>
-                    <div class="grid lg:grid-cols-2 gap-16">
-                        <div class="bg-offwhite p-10 rounded-[3rem]">...</div>
-                        <div class="space-y-8">...</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
+// Modal Functions
+function showLoginModal() {
+    const modal = document.getElementById('login-modal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeLoginModal() {
+    const modal = document.getElementById('login-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+    }
 }
 
 function showRegisterModal() {
-    // Create register modal if not exists
     if (!document.getElementById('register-modal')) {
         createRegisterModal();
     }
-    document.getElementById('register-modal').classList.remove('hidden');
-    document.body.style.overflow = 'hidden';
+    const modal = document.getElementById('register-modal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
 }
 
 function closeRegisterModal() {
-    document.getElementById('register-modal').classList.add('hidden');
-    document.body.style.overflow = '';
+    const modal = document.getElementById('register-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+    }
 }
 
 function createRegisterModal() {
@@ -232,11 +240,11 @@ function createRegisterModal() {
                 </button>
                 
                 <div class="text-center mb-8">
-                    <div class="w-16 h-16 bg-gold-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-user-plus text-white text-2xl"></i>
+                    <div class="w-16 h-16 bg-gradient-to-r from-gold-500 to-gold-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                        <i class="fas fa-gift text-white text-2xl"></i>
                     </div>
-                    <h3 class="text-2xl font-bold text-emerald-950">إنشاء حساب جديد</h3>
-                    <p class="text-gray-500 text-sm mt-2">ابدأ رحلتك المهنية مع SaudiCareers</p>
+                    <h3 class="text-2xl font-bold text-emerald-950">ابدأ رحلتك المهنية الآن 🚀</h3>
+                    <p class="text-gray-500 text-sm mt-2">جميع الخدمات مجانية - سجل في أقل من دقيقة</p>
                 </div>
                 
                 <form class="space-y-4" onsubmit="handleRegister(event)">
@@ -253,8 +261,8 @@ function createRegisterModal() {
                         <input type="password" required minlength="6" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-950 focus:outline-none transition-colors" placeholder="••••••••">
                         <p class="text-gray-400 text-xs mt-1">6 أحرف على الأقل</p>
                     </div>
-                    <button type="submit" class="w-full py-4 bg-gold-500 text-white rounded-xl font-bold hover:bg-gold-600 transition-all">
-                        إنشاء الحساب
+                    <button type="submit" class="w-full py-4 bg-gradient-to-r from-emerald-950 to-emerald-900 text-white rounded-xl font-bold hover:shadow-lg transition-all">
+                        🎉 احصل على جميع الخدمات مجاناً
                     </button>
                 </form>
                 
@@ -267,66 +275,46 @@ function createRegisterModal() {
     document.body.appendChild(modal);
 }
 
-// CV Analysis with OpenAI
-async function analyzeCV(file) {
-    if (!currentUser) {
-        showLoginModal();
-        return;
-    }
-    
-    // Show loading
-    const analyzeBtn = document.getElementById('analyze-btn');
-    analyzeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحليل...';
-    analyzeBtn.disabled = true;
-    
-    try {
-        // Read file content
-        const text = await extractTextFromPDF(file);
-        
-        // Send to backend for analysis
-        const response = await fetch('/api/analyze-cv', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ cvText: text, userId: currentUser.id })
-        });
-        
-        const result = await response.json();
-        displayAnalysisResult(result);
-        
-    } catch (error) {
-        // Fallback to simulation for now
-        setTimeout(() => {
-            displayAnalysisResult({
-                atsScore: Math.floor(Math.random() * 20) + 70,
-                keywords: Math.floor(Math.random() * 15) + 80,
-                formatting: Math.floor(Math.random() * 20) + 70,
-                skills: Math.floor(Math.random() * 15) + 75,
-                recommendation: "نوصي بإضافة المزيد من الكلمات المفتاحية المتعلقة بالوظائف الحكومية."
-            });
-        }, 2000);
-    }
-}
-
-async function extractTextFromPDF(file) {
-    // This would use PDF.js in production
-    // For now, return file name as placeholder
-    return `CV: ${file.name}`;
-}
-
-function displayAnalysisResult(result) {
-    const resultDiv = document.getElementById('analysis-result');
-    const atsBar = document.getElementById('ats-bar');
-    const atsScore = document.getElementById('ats-score');
-    const analyzeBtn = document.getElementById('analyze-btn');
-    
-    resultDiv.classList.remove('hidden');
-    atsScore.textContent = result.atsScore + '%';
-    
-    setTimeout(() => {
-        atsBar.style.width = result.atsScore + '%';
-    }, 100);
-    
-    analyzeBtn.innerHTML = '<span>تم التحليل بنجاح</span> <i class="fas fa-check-circle"></i>';
-    analyzeBtn.classList.remove('bg-emerald-950');
-    analyzeBtn.classList.add('bg-green-600');
+// Guest CV Section
+function getGuestCVSectionHTML() {
+    return `
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="glass-card p-12 rounded-[3rem] text-center relative overflow-hidden border-2 border-gold-500/20">
+                <!-- Badge -->
+                <div class="absolute top-6 right-6 bg-gold-500 text-white text-xs font-bold py-1 px-3 rounded-full animate-pulse">
+                    🔒 للأعضاء فقط
+                </div>
+                
+                <div class="relative z-10">
+                    <div class="w-24 h-24 mx-auto bg-emerald-950/10 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-lock text-5xl text-emerald-950"></i>
+                    </div>
+                    <h3 class="text-3xl font-bold text-emerald-950 mb-4">أداة تحليل السيرة الذاتية بالذكاء الاصطناعي 🤖</h3>
+                    
+                    <ul class="text-gray-600 mb-8 space-y-3 max-w-md mx-auto text-right">
+                        <li class="flex items-center gap-2"><i class="fas fa-check-circle text-gold-500"></i> تحليل متوافق مع أنظمة ATS</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check-circle text-gold-500"></i> كلمات مفتاحية مخصصة للسوق السعودي</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check-circle text-gold-500"></i> نصائح لتحسين فرصك في رؤية 2030</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check-circle text-gold-500"></i> تقرير مفصل خلال ثوانٍ</li>
+                    </ul>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <button onclick="showRegisterModal()" class="bg-gradient-to-r from-gold-500 to-gold-600 text-white px-10 py-4 rounded-xl font-bold hover:shadow-xl hover:scale-105 transition-all animate-pulse">
+                            🚀 اشترك الآن مجاناً
+                        </button>
+                        <button onclick="showLoginModal()" class="border-2 border-emerald-950 text-emerald-950 px-10 py-4 rounded-xl font-bold hover:bg-emerald-950 hover:text-white transition-all">
+                            لدي حساب بالفعل
+                        </button>
+                    </div>
+                    
+                    <p class="text-gray-400 text-sm mt-6">✨ أكثر من 1,000 مستفيد حللوا سيرهم الذاتية معنا</p>
+                </div>
+                
+                <!-- Blurred preview in background -->
+                <div class="absolute inset-0 blur-sm opacity-10 pointer-events-none -z-10">
+                    <div class="bg-offwhite p-10 rounded-[3rem] border border-emerald-950/5"></div>
+                </div>
+            </div>
+        </div>
+    `;
 }
