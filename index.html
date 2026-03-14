@@ -107,6 +107,18 @@
         border-color: #004d2c;
         background: rgba(0, 77, 44, 0.05);
     }
+    
+    /* Fade In Animation for Jobs */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
     </style>
 </head>
 
@@ -747,7 +759,7 @@
         function renderJobs() {
             const container = document.getElementById('jobs-container');
             container.innerHTML = jobsData.map((job, index) => `
-                <div class="glass-card rounded-3xl overflow-hidden group hover:-translate-y-2 transition-all duration-500 reveal" style="transition-delay: ${index * 150}ms;">
+                <div class="glass-card rounded-3xl overflow-hidden group hover:-translate-y-2 transition-all duration-500" style="animation: fadeInUp 0.6s ease-out ${index * 0.15}s both;">
                     <div class="relative h-56 overflow-hidden">
                         <img alt="${job.title}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" src="${job.image}">
                         <div class="absolute top-4 right-4 bg-emerald-950 text-white text-[10px] font-bold py-1 px-3 rounded-full uppercase">${job.badge}</div>
