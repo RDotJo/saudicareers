@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم | SaudiCareers</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'emerald-950': '#022c22',
+                        'gold-500': '#f59e0b',
+                        'gold-600': '#d97706',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
+        * { font-family: 'Tajawal', sans-serif; }
+        .sidebar { transition: all 0.3s ease; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(2, 44, 34, 0.1);
+        }
+        .stat-card { transition: all 0.3s ease; }
+        .stat-card:hover { transform: translateY(-4px); }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Admin Check -->
+    <script>
+        // Check if user is admin
+        const currentUser = JSON.parse(localStorage.getItem('saudicareers_user') || '{}');
+        const isAdmin = currentUser.email === 'admin@saudicareers.site' || localStorage.getItem('saudicareers_is_admin') === 'true';
+        
+        if (!isAdmin) {
+            document.body.innerHTML = `
+                <div class="min-h-screen flex items-center justify-center bg-emerald-950">
+                    <div class="text-center text-white">
+                        <i class="fas fa-lock text-6xl mb-4"></i>
+                        <h1 class="text-3xl font-bold mb-4">غير مصرح</h1>
+                        <p class="mb-6">يجب تسجيل الدخول كمشرف</p>
+                        <a href="index.html" class="text-gold-500 hover:underline">العودة للرئيسية</a>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside class="sidebar w-72 bg-emerald-950 text-white fixed h-full right-0 top-0 z-50">
+            <div class="p-6 border-b border-white/10">
+                <div class="flex items-center gap-3">
+                    <img src="logo.webp" alt="SaudiCareers" class="h-12 w-auto">
+                    <div>
+                        <h2 class="font-bold">SaudiCareers</h2>
+                        <p class="text-xs text-gray-400">لوحة التحكم</p>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="p-4">
+                <div class="mb-6">
+                    <p class="text-xs text-gray-500 uppercase mb-3 px-4">القائمة الرئيسية</p>
+                    <a href="#dashboard" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl bg-gold-500/20 text-gold-500 font-bold">
+                        <i class="fas fa-chart-line"></i>
+                        <span>الإحصائيات</span>
+                    </a>
+                    <a href="#jobs" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10 text-gray-300 mt-1">
+                        <i class="fas fa-briefcase"></i>
+                        <span>الوظائف</span>
+                        <span id="jobs-count" class="mr-auto bg-gold-500 text-white text-xs px-2 py-1 rounded-full">0</span>
+                    </a>
+                    <a href="#users" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10 text-gray-300 mt-1">
+                        <i class="fas fa-users"></i>
+                        <span>المستخدمين</span>
+                        <span id="users-count" class="mr-auto bg-emerald-600 text-white text-xs px-2 py-1 rounded-full">0</span>
+                    </a>
+                    <a href="#applications" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10 text-gray-300 mt-1">
+                        <i class="fas fa-file-alt"></i>
+                        <span>الطلبات</span>
+                        <span id="apps-count" class="mr-auto bg-blue-500 text-white text-xs px-2 py-1 rounded-full">0</span>
+                    </a>
+                </div>
+                
+                <div class="mb-6">
+                    <p class="text-xs text-gray-500 uppercase mb-3 px-4">الإعدادات</p>
+                    <a href="#settings" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10 text-gray-300">
+                        <i class="fas fa-cog"></i>
+                        <span>إعدادات الموقع</span>
+                    </a>
+                </div>
+            </nav>
+            
+            <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-white/10">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-gold-500 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user-shield text-white"></i>
+                    </div>
+                    <div>
+                        <p class="font-bold text-sm">المشرف</p>
+                        <button onclick="logoutAdmin()" class="text-xs text-red-400 hover:text-red-300">تسجيل الخروج</button>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 mr-72 p-8">
+            <!-- Header -->
+            <header class="flex justify-between items-center mb-8">
+                <div>
+                    <h1 class="text-2xl font-bold text-emerald-950">لوحة التحكم</h1>
+                    <p class="text-gray-500">نظرة عامة على أداء المنصة</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span id="current-date" class="text-gray-600"></span>
+                    <a href="index.html" target="_blank" class="bg-emerald-950 text-white px-4 py-2 rounded-xl hover:bg-emerald-900 transition-colors">
+                        <i class="fas fa-external-link-alt ml-2"></i>
+                        زيارة الموقع
+                    </a>
+                </div>
+            </header>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="stat-card glass-card p-6 rounded-2xl">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm">إجمالي المستخدمين</p>
+                            <h3 id="total-users" class="text-3xl font-bold text-emerald-950 mt-1">0</h3>
+                            <p class="text-green-600 text-sm mt-1">
+                                <i class="fas fa-arrow-up"></i> +12% هذا الشهر
+                            </p>
+                        </div>
+                        <div class="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center">
+                            <i class="fas fa-users text-2xl text-blue-600"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card glass-card p-6 rounded-2xl">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm">الوظائف النشطة</p>
+                            <h3 id="active-jobs" class="text-3xl font-bold text-emerald-950 mt-1">0</h3>
+                            <p class="text-green-600 text-sm mt-1">
+                                <i class="fas fa-arrow-up"></i> +5 جديدة
+                            </p>
+                        </div>
+                        <div class="w-14 h-14 bg-gold-100 rounded-2xl flex items-center justify-center">
+                            <i class="fas fa-briefcase text-2xl text-gold-600"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card glass-card p-6 rounded-2xl">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm">طلبات التقديم</p>
+                            <h3 id="total-apps" class="text-3xl font-bold text-emerald-950 mt-1">0</h3>
+                            <p class="text-gray-500 text-sm mt-1">هذا الأسبوع</p>
+                        </div>
+                        <div class="w-14 h-14 bg-purple-100 rounded-2xl flex items-center justify-center">
+                            <i class="fas fa-file-alt text-2xl text-purple-600"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card glass-card p-6 rounded-2xl">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm">تحليلات CV</p>
+                            <h3 id="cv-analyses" class="text-3xl font-bold text-emerald-950 mt-1">0</h3>
+                            <p class="text-green-600 text-sm mt-1">
+                                <i class="fas fa-arrow-up"></i> نشط
+                            </p>
+                        </div>
+                        <div class="w-14 h-14 bg-emerald-100 rounded-2xl flex items-center justify-center">
+                            <i class="fas fa-robot text-2xl text-emerald-600"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Jobs Management Section -->
+            <section id="jobs-section" class="mb-8">
+                <div class="glass-card rounded-2xl overflow-hidden">
+                    <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                        <div>
+                            <h2 class="text-xl font-bold text-emerald-950">إدارة الوظائف</h2>
+                            <p class="text-gray-500 text-sm">إضافة وتعديل وحذف الوظائف المنشورة</p>
+                        </div>
+                        <button onclick="showAddJobModal()" class="bg-gold-500 text-white px-6 py-3 rounded-xl font-bold hover:bg-gold-600 transition-colors">
+                            <i class="fas fa-plus ml-2"></i>
+                            إضافة وظيفة جديدة
+                        </button>
+                    </div>
+                    
+                    <div class="p-6">
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="text-right border-b border-gray-200">
+                                        <th class="pb-4 text-gray-600 font-medium">الوظيفة</th>
+                                        <th class="pb-4 text-gray-600 font-medium">الجهة</th>
+                                        <th class="pb-4 text-gray-600 font-medium">الموقع</th>
+                                        <th class="pb-4 text-gray-600 font-medium">المتقدمين</th>
+                                        <th class="pb-4 text-gray-600 font-medium">الحالة</th>
+                                        <th class="pb-4 text-gray-600 font-medium">الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="jobs-table-body">
+                                    <!-- Jobs will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Users Section -->
+            <section id="users-section" class="mb-8">
+                <div class="glass-card rounded-2xl overflow-hidden">
+                    <div class="p-6 border-b border-gray-200">
+                        <h2 class="text-xl font-bold text-emerald-950">المستخدمين المسجلين</h2>
+                    </div>
+                    <div class="p-6">
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="text-right border-b border-gray-200">
+                                        <th class="pb-4 text-gray-600 font-medium">المستخدم</th>
+                                        <th class="pb-4 text-gray-600 font-medium">البريد</th>
+                                        <th class="pb-4 text-gray-600 font-medium">تاريخ التسجيل</th>
+                                        <th class="pb-4 text-gray-600 font-medium">آخر دخول</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="users-table-body">
+                                    <!-- Users will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Add Job Modal -->
+    <div id="add-job-modal" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeAddJobModal()"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl p-4">
+            <div class="bg-white rounded-3xl p-8 shadow-2xl max-h-[90vh] overflow-y-auto">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold text-emerald-950">إضافة وظيفة جديدة</h3>
+                    <button onclick="closeAddJobModal()" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200">
+                        <i class="fas fa-times text-gray-600"></i>
+                    </button>
+                </div>
+                
+                <form id="add-job-form" class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-bold text-emerald-950 mb-2">اسم الوظيفة</label>
+                            <input type="text" name="title" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-950 focus:outline-none" placeholder="مثال: مدير مشروع">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-emerald-950 mb-2">الجهة</label>
+                            <select name="company" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-950 focus:outline-none">
+                                <option value="">اختر الجهة</option>
+                                <option value="نيوم">نيوم</option>
+                                <option value="أرامكو">أرامكو</option>
+                                <option value="البحر الأحمر">البحر الأحمر</option>
+                                <option value="القدية">القدية</option>
+                                <option value="صندوق الاستثمارات">صندوق الاستثمارات</option>
+                                <option value="وزارة الصحة">وزارة الصحة</option>
+                                <option value="سدايا">سدايا</option>
+                                <option value="أخرى">أخرى</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-bold text-emerald-950 mb-2">الموقع</label>
+                            <input type="text" name="location" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-950 focus:outline-none" placeholder="مثال: الرياض">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-emerald-950 mb-2">سنوات الخبرة</label>
+                            <input type="text" name="experience" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-950 focus:outline-none" placeholder="مثال: 3-5 سنوات">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-bold text-emerald-950 mb-2">الراتب/المزايا</label>
+                        <input type="text" name="salary" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-950 focus:outline-none" placeholder="مثال: راتب تنافسي + بدلات">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-bold text-emerald-950 mb-2">وصف الوظيفة</label>
+                        <textarea name="description" rows="4" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-950 focus:outline-none" placeholder="تفاصيل الوظيفة والمتطلبات..."></textarea>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-bold text-emerald-950 mb-2">رابط صورة الوظيفة</label>
+                        <input type="url" name="image" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-950 focus:outline-none" placeholder="https://example.com/image.webp">
+                        <p class="text-xs text-gray-400 mt-1">اختياري - سيستخدم شعار الجهة افتراضياً</p>
+                    </div>
+                    
+                    <button type="submit" class="w-full py-4 bg-emerald-950 text-white rounded-xl font-bold hover:bg-emerald-900 transition-colors">
+                        <i class="fas fa-plus ml-2"></i>
+                        نشر الوظيفة
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data (replace with real Supabase integration)
+        let jobs = JSON.parse(localStorage.getItem('saudicareers_jobs') || '[]');
+        let users = JSON.parse(localStorage.getItem('saudicareers_users') || '[]');
+        let applications = JSON.parse(localStorage.getItem('saudicareers_applications') || '[]');
+        
+        // Initialize with sample jobs if empty
+        if (jobs.length === 0) {
+            jobs = [
+                { id: 1, title: 'مدير مشروع', company: 'نيوم', location: 'تبوك', experience: '5-8 سنوات', salary: 'رواتب تنافسية', status: 'active', applicants: 12 },
+                { id: 2, title: 'مهندس أول', company: 'أرامكو', location: 'الظهران', experience: '+10 سنوات', salary: 'حوافز استثنائية', status: 'active', applicants: 8 },
+                { id: 3, title: 'أخصائي عمليات', company: 'البحر الأحمر', location: 'أملج', experience: '3-5 سنوات', salary: 'مزايا سكنية', status: 'active', applicants: 5 }
+            ];
+            localStorage.setItem('saudicareers_jobs', JSON.stringify(jobs));
+        }
+        
+        // Update date
+        document.getElementById('current-date').textContent = new Date().toLocaleDateString('ar-SA', { 
+            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+        });
+        
+        // Update stats
+        function updateStats() {
+            document.getElementById('total-users').textContent = users.length || 156;
+            document.getElementById('active-jobs').textContent = jobs.filter(j => j.status === 'active').length;
+            document.getElementById('total-apps').textContent = applications.length || 43;
+            document.getElementById('cv-analyses').textContent = localStorage.getItem('saudicareers_cv_analyses') || 89;
+            
+            document.getElementById('jobs-count').textContent = jobs.length;
+            document.getElementById('users-count').textContent = users.length || 156;
+            document.getElementById('apps-count').textContent = applications.length || 43;
+        }
+        
+        // Render jobs table
+        function renderJobs() {
+            const tbody = document.getElementById('jobs-table-body');
+            tbody.innerHTML = jobs.map(job => `
+                <tr class="border-b border-gray-100 hover:bg-gray-50">
+                    <td class="py-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-briefcase text-emerald-600"></i>
+                            </div>
+                            <span class="font-bold text-emerald-950">${job.title}</span>
+                        </div>
+                    </td>
+                    <td class="py-4 text-gray-600">${job.company}</td>
+                    <td class="py-4 text-gray-600">${job.location}</td>
+                    <td class="py-4">
+                        <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">${job.applicants || 0}</span>
+                    </td>
+                    <td class="py-4">
+                        <span class="${job.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'} px-3 py-1 rounded-full text-sm">
+                            ${job.status === 'active' ? 'نشطة' : 'متوقفة'}
+                        </span>
+                    </td>
+                    <td class="py-4">
+                        <button onclick="editJob(${job.id})" class="text-blue-600 hover:text-blue-800 ml-3">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button onclick="deleteJob(${job.id})" class="text-red-600 hover:text-red-800">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        // Render users table
+        function renderUsers() {
+            const tbody = document.getElementById('users-table-body');
+            const sampleUsers = [
+                { name: 'محمد أحمد', email: 'mohammed@example.com', date: '2024-03-10', lastLogin: '2024-03-14' },
+                { name: 'سارة علي', email: 'sara@example.com', date: '2024-03-12', lastLogin: '2024-03-15' },
+                { name: 'خالد محمد', email: 'khaled@example.com', date: '2024-03-08', lastLogin: '2024-03-13' }
+            ];
+            
+            tbody.innerHTML = (users.length ? users : sampleUsers).map(user => `
+                <tr class="border-b border-gray-100 hover:bg-gray-50">
+                    <td class="py-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-gold-100 rounded-full flex items-center justify-center">
+                                <span class="font-bold text-gold-600">${user.name.charAt(0)}</span>
+                            </div>
+                            <span class="font-bold text-emerald-950">${user.name}</span>
+                        </div>
+                    </td>
+                    <td class="py-4 text-gray-600">${user.email}</td>
+                    <td class="py-4 text-gray-500">${new Date(user.date).toLocaleDateString('ar-SA')}</td>
+                    <td class="py-4 text-gray-500">${new Date(user.lastLogin).toLocaleDateString('ar-SA')}</td>
+                </tr>
+            `).join('');
+        }
+        
+        // Modal functions
+        function showAddJobModal() {
+            document.getElementById('add-job-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeAddJobModal() {
+            document.getElementById('add-job-modal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+        
+        // Add job form
+        document.getElementById('add-job-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const newJob = {
+                id: Date.now(),
+                title: formData.get('title'),
+                company: formData.get('company'),
+                location: formData.get('location'),
+                experience: formData.get('experience'),
+                salary: formData.get('salary'),
+                description: formData.get('description'),
+                image: formData.get('image') || `images/job${Math.floor(Math.random() * 3) + 1}.webp`,
+                status: 'active',
+                applicants: 0,
+                date: new Date().toISOString()
+            };
+            
+            jobs.push(newJob);
+            localStorage.setItem('saudicareers_jobs', JSON.stringify(jobs));
+            
+            renderJobs();
+            updateStats();
+            closeAddJobModal();
+            e.target.reset();
+            
+            alert('تم إضافة الوظيفة بنجاح! 🎉');
+        });
+        
+        function deleteJob(id) {
+            if (confirm('هل أنت متأكد من حذف هذه الوظيفة؟')) {
+                jobs = jobs.filter(j => j.id !== id);
+                localStorage.setItem('saudicareers_jobs', JSON.stringify(jobs));
+                renderJobs();
+                updateStats();
+            }
+        }
+        
+        function editJob(id) {
+            const job = jobs.find(j => j.id === id);
+            if (job) {
+                // Fill form and show modal (simplified)
+                alert('تعديل الوظيفة: ' + job.title);
+            }
+        }
+        
+        function logoutAdmin() {
+            localStorage.removeItem('saudicareers_user');
+            localStorage.removeItem('saudicareers_is_admin');
+            window.location.href = 'index.html';
+        }
+        
+        // Initialize
+        updateStats();
+        renderJobs();
+        renderUsers();
+    </script>
+</body>
+</html>
