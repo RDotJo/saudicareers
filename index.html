@@ -61,15 +61,20 @@
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
     
-    <!-- Tailwind Config -->
+    <!-- Tailwind Config - Flat Design System -->
     <script>
     tailwind.config = {
         theme: {
             extend: {
                 colors: {
-                    emerald: { 950: '#004d2c', 900: '#006341', 800: '#007a4d' },
-                    gold: { 400: '#d4af37', 500: '#c5a059', 600: '#b8944f' },
-                    offwhite: '#fcfbf7',
+                    primary: { DEFAULT: '#2563EB', 50: '#EFF6FF', 100: '#DBEAFE', 600: '#2563EB', 700: '#1D4ED8' },
+                    cta: { DEFAULT: '#F97316', 500: '#F97316', 600: '#EA580C' },
+                    text: { DEFAULT: '#1E293B', muted: '#64748B' },
+                    bg: { DEFAULT: '#F8FAFC', card: '#FFFFFF' },
+                    // Legacy aliases for compatibility
+                    emerald: { 950: '#1E293B', 900: '#2563EB', 800: '#3B82F6' },
+                    gold: { 400: '#F97316', 500: '#EA580C', 600: '#C2410C' },
+                    offwhite: '#F8FAFC',
                 },
                 fontFamily: {
                     sans: ['Almarai', 'Cairo', 'sans-serif'],
@@ -79,27 +84,63 @@
     }
     </script>
     
-    <!-- Custom Styles -->
+    <!-- Custom Styles - Flat Design -->
     <style>
     :root { scroll-behavior: smooth }
     body { 
-        background-color: #fcfbf7; 
-        color: #1a1a1a;
+        background-color: #F8FAFC; 
+        color: #1E293B;
         font-family: 'Almarai', 'Cairo', sans-serif;
     }
     .sadu-pattern { 
-        background-image: radial-gradient(#c5a059 0.5px, transparent 0.5px); 
+        background-image: radial-gradient(#2563EB 0.5px, transparent 0.5px); 
         background-size: 20px 20px; 
-        opacity: 0.1 
+        opacity: 0.05 
     }
     .glass-card { 
-        background: rgba(255, 255, 255, 0.8); 
-        backdrop-filter: blur(12px); 
-        border: 1px solid rgba(255, 255, 255, 0.3); 
-        box-shadow: 0 8px 32px rgba(0, 77, 44, 0.08)
+        background: #FFFFFF; 
+        border: 1px solid #E2E8F0; 
+        transition: all 150ms ease;
+    }
+    .glass-card:hover {
+        border-color: #CBD5E1;
+    }
+    /* Flat Design - No shadows, clean transitions */
+    .btn-primary {
+        background-color: #2563EB;
+        color: white;
+        transition: background-color 150ms ease, opacity 150ms ease;
+    }
+    .btn-primary:hover {
+        background-color: #1D4ED8;
+    }
+    .btn-cta {
+        background-color: #F97316;
+        color: white;
+        transition: background-color 150ms ease, opacity 150ms ease;
+    }
+    .btn-cta:hover {
+        background-color: #EA580C;
+    }
+    /* Cursor pointer on all interactive elements */
+    button, a, [role="button"], input[type="submit"], input[type="button"] {
+        cursor: pointer;
+    }
+    /* Focus states for accessibility */
+    button:focus-visible, a:focus-visible, input:focus-visible {
+        outline: 2px solid #2563EB;
+        outline-offset: 2px;
+    }
+    /* Reduced motion support */
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
     }
     .gradient-text { 
-        background: linear-gradient(135deg, #004d2c 0%, #c5a059 100%); 
+        background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%); 
         -webkit-background-clip: text; 
         -webkit-text-fill-color: transparent 
     }
@@ -108,33 +149,29 @@
         50% { transform: translateY(-10px); } 
     }
     .animate-float { animation: float 6s ease-in-out infinite }
-    @keyframes pulse-glow { 
-        0%, 100% { box-shadow: 0 0 5px rgba(197, 160, 89, 0.2); } 
-        50% { box-shadow: 0 0 20px rgba(197, 160, 89, 0.5); } 
-    }
-    .glow-node { animation: pulse-glow 3s infinite }
+    .glow-node { display: none } /* Removed glow for flat design */
     .reveal { 
         opacity: 0; 
         transform: translateY(30px); 
-        transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1) 
+        transition: opacity 0.3s ease, transform 0.3s ease 
     }
     .reveal.active { opacity: 1; transform: translateY(0) }
     
-    /* Custom scrollbar */
+    /* Custom scrollbar - Flat Design */
     ::-webkit-scrollbar { width: 8px }
-    ::-webkit-scrollbar-track { background: #fcfbf7 }
-    ::-webkit-scrollbar-thumb { background: #004d2c; border-radius: 4px }
-    ::-webkit-scrollbar-thumb:hover { background: #006341 }
+    ::-webkit-scrollbar-track { background: #F8FAFC }
+    ::-webkit-scrollbar-thumb { background: #2563EB; border-radius: 4px }
+    ::-webkit-scrollbar-thumb:hover { background: #1D4ED8 }
     
-    /* Upload zone */
+    /* Upload zone - Flat Design */
     .upload-zone {
-        border: 2px dashed #c5a059;
-        background: rgba(197, 160, 89, 0.05);
-        transition: all 0.3s ease;
+        border: 2px dashed #CBD5E1;
+        background: #F8FAFC;
+        transition: all 150ms ease;
     }
     .upload-zone:hover, .upload-zone.dragover {
-        border-color: #004d2c;
-        background: rgba(0, 77, 44, 0.05);
+        border-color: #2563EB;
+        background: #EFF6FF;
     }
     
     /* Fade In Animation for Jobs */
@@ -152,44 +189,46 @@
 </head>
 
 <body class="overflow-x-hidden">
-    <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 glass-card border-b border-emerald-950/5">
+    <!-- Navigation - Flat Design -->
+    <nav class="fixed top-0 w-full z-50 glass-card border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20 items-center">
                 <!-- Logo -->
                 <a href="index.html" class="flex items-center space-x-2 space-x-reverse">
-                    <img src="logo.webp" alt="SaudiCareers" class="h-16 w-auto" loading="eager">
+                    <img alt="SaudiCareers" class="h-16 w-auto" loading="eager" src="logo.webp">
                 </a>
                 
                 <!-- Desktop Links -->
-                <div class="hidden md:flex items-center space-x-8 space-x-reverse text-sm font-bold text-emerald-950">
-                    <a href="index.html#jobs" class="hover:text-gold-500 transition-colors">الوظائف</a>
-                    <a href="index.html#cv-analyzer" class="hover:text-gold-500 transition-colors">تحليل السيرة الذاتية</a>
-                    <a href="#employers" class="hover:text-gold-500 transition-colors">لأصحاب العمل</a>
-                    <a href="#about" class="hover:text-gold-500 transition-colors">عن المنصة</a>
+                <div class="hidden md:flex items-center space-x-8 space-x-reverse text-sm font-bold text-text">
+                    <a class="hover:text-primary transition-colors duration-150" href="index.html#jobs">الوظائف</a>
+                    <a class="hover:text-primary transition-colors duration-150" href="index.html#cv-analyzer">تحليل السيرة الذاتية</a>
+                    <a class="hover:text-primary transition-colors duration-150" href="#employers">لأصحاب العمل</a>
+                    <a class="hover:text-primary transition-colors duration-150" href="#about">عن المنصة</a>
+                    
                     <!-- Auth Buttons -->
-                    <div id="auth-section" class="flex items-center gap-3">
+                    <div class="flex items-center gap-3" id="auth-section">
                         <!-- First Time Visitor -->
-                        <div id="first-time-cta" class="hidden">
-                            <span class="text-xs text-gold-500 font-bold">🎁 جرب مجاناً</span>
-                            <button onclick="showRegisterModal()" class="bg-gradient-to-r from-gold-500 to-gold-600 text-white px-6 py-2.5 rounded-full font-bold hover:shadow-lg hover:scale-105 transition-all animate-pulse">
+                        <div class="hidden" id="first-time-cta">
+                            <span class="text-xs text-cta font-bold">🎁 جرب مجاناً</span>
+                            <button class="btn-cta px-6 py-2.5 rounded-xl font-bold" onclick="showRegisterModal()">
                                 اشترك الآن
                             </button>
                         </div>
                         
                         <!-- Returning Visitor -->
-                        <button onclick="showLoginModal()" id="auth-btn" class="hidden bg-emerald-950 text-white px-8 py-2.5 rounded-full hover:bg-emerald-900 transition-all shadow-lg">دخول</button>
+                        <button class="hidden btn-primary px-8 py-2.5 rounded-xl font-bold" id="auth-btn" onclick="showLoginModal()">دخول</button>
                         
                         <!-- Logged In User -->
-                        <div id="user-section" class="hidden flex items-center gap-3">
-                            <a href="profile.html" class="flex items-center gap-2 bg-emerald-950/5 px-4 py-2 rounded-full hover:bg-emerald-950/10 transition-all">
-                                <div class="w-8 h-8 bg-emerald-950 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                        <div class="hidden flex items-center gap-3" id="user-section">
+                            <a class="flex items-center gap-2 bg-bg px-4 py-2 rounded-xl hover:bg-gray-100 transition-colors duration-150" href="profile.html"
+                               style="border: 1px solid #E2E8F0;">
+                                <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-sm font-bold">
                                     <span id="user-initial">م</span>
                                 </div>
-                                <span id="user-name" class="text-sm font-bold text-emerald-950">مرحباً</span>
+                                <span class="text-sm font-bold text-text" id="user-name">مرحباً</span>
                                 <i class="fas fa-chevron-down text-xs text-gray-400"></i>
                             </a>
-                            <button onclick="logout()" class="text-gray-400 hover:text-red-500 transition-colors" title="خروج">
+                            <button class="text-gray-400 hover:text-red-500 transition-colors duration-150" onclick="logout()" title="خروج">
                                 <i class="fas fa-sign-out-alt"></i>
                             </button>
                         </div>
@@ -198,7 +237,7 @@
                 
                 <!-- Mobile Toggle -->
                 <div class="md:hidden">
-                    <button onclick="toggleMobileMenu()" class="text-emerald-950 p-2">
+                    <button class="text-text p-2" onclick="toggleMobileMenu()">
                         <i class="fas fa-bars text-2xl"></i>
                     </button>
                 </div>
@@ -206,41 +245,41 @@
         </div>
         
         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden glass-card border-t border-emerald-950/5">
+        <div class="hidden md:hidden glass-card border-t border-gray-200" id="mobile-menu">
             <div class="px-4 py-4 space-y-3">
-                <a href="index.html#jobs" class="block py-2 text-emerald-950 font-bold hover:text-gold-500">الوظائف</a>
-                <a href="index.html#cv-analyzer" class="block py-2 text-emerald-950 font-bold hover:text-gold-500">تحليل السيرة الذاتية</a>
-                <a href="#employers" class="block py-2 text-emerald-950 font-bold hover:text-gold-500">لأصحاب العمل</a>
-                <a href="#about" class="block py-2 text-emerald-950 font-bold hover:text-gold-500">عن المنصة</a>
-                <button onclick="showLoginModal()" id="mobile-auth-btn" class="w-full bg-emerald-950 text-white py-3 rounded-xl font-bold">دخول</button>
+                <a class="block py-2 text-text font-bold hover:text-primary transition-colors duration-150" href="index.html#jobs">الوظائف</a>
+                <a class="block py-2 text-text font-bold hover:text-primary transition-colors duration-150" href="index.html#cv-analyzer">تحليل السيرة الذاتية</a>
+                <a class="block py-2 text-text font-bold hover:text-primary transition-colors duration-150" href="#employers">لأصحاب العمل</a>
+                <a class="block py-2 text-text font-bold hover:text-primary transition-colors duration-150" href="#about">عن المنصة</a>
+                <button class="w-full btn-primary py-3 rounded-xl font-bold" id="mobile-auth-btn" onclick="showLoginModal()">دخول</button>
             </div>
         </div>
     </nav>
 
     <main class="pt-20">
         <!-- Hero Section -->
-        <section class="relative min-h-[90vh] flex items-center py-20 px-4 overflow-hidden" id="hero">
-            <div class="absolute top-0 left-0 w-1/2 h-full bg-emerald-950/5 skew-x-12 transform -translate-x-20 z-0"></div>
+        <section class="relative min-h-[90vh] flex items-center py-20 px-4 overflow-hidden bg-bg" id="hero">
+            <div class="absolute top-0 left-0 w-1/2 h-full bg-primary/5 skew-x-12 transform -translate-x-20 z-0"></div>
             <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center relative z-10">
                 <!-- Hero Text -->
                 <div class="reveal active">
-                    <span class="inline-block py-1.5 px-4 rounded-full bg-gold-500/10 text-gold-500 font-bold text-xs mb-6 border border-gold-500/20 uppercase tracking-widest">
+                    <span class="inline-block py-1.5 px-4 rounded-full bg-cta/10 text-cta font-bold text-xs mb-6 border border-cta/20 uppercase tracking-widest">
                         <i class="fas fa-wand-magic-sparkles ml-1"></i> مدعوم بالذكاء الاصطناعي الوطني
                     </span>
-                    <h1 class="text-5xl lg:text-7xl font-extrabold text-emerald-950 leading-tight mb-6">
+                    <h1 class="text-5xl lg:text-7xl font-extrabold text-text leading-tight mb-6">
                         وظائف حكومية <br/>
                         <span class="gradient-text">وشبه حكومية</span> <br/>
                         في مكان واحد
                     </h1>
-                    <p class="text-lg text-gray-600 mb-10 max-w-lg leading-relaxed">
+                    <p class="text-lg text-text-muted mb-10 max-w-lg leading-relaxed">
                         نربط الكفاءات الوطنية بأهم المشاريع الكبرى في المملكة عبر تقنيات المطابقة الذكية لتحقيق مستهدفات رؤية 2030.
                     </p>
                     <div class="flex flex-col sm:flex-row gap-4">
-                        <a href="#jobs" class="bg-emerald-950 text-white px-10 py-4 rounded-xl font-bold flex items-center justify-center group hover:pl-10 transition-all duration-300">
+                        <a href="#jobs" class="btn-primary px-10 py-4 rounded-xl font-bold flex items-center justify-center group transition-all duration-150">
                             استكشف الوظائف
                             <i class="fas fa-chevron-left mr-2 group-hover:mr-4 transition-all"></i>
                         </a>
-                        <a href="#cv-analyzer" class="border-2 border-gold-500 text-gold-500 px-10 py-4 rounded-xl font-bold hover:bg-gold-500 hover:text-white transition-all text-center">
+                        <a href="#cv-analyzer" class="border-2 border-cta text-cta px-10 py-4 rounded-xl font-bold hover:bg-cta hover:text-white transition-all duration-150 text-center">
                             حلل سيرتك الذاتية
                         </a>
                     </div>
@@ -249,74 +288,74 @@
                 <!-- AI Illustration -->
                 <div class="relative reveal active" style="transition-delay: 200ms;">
                     <div class="relative w-full aspect-square max-w-lg mx-auto">
-                        <div class="absolute inset-0 bg-gold-500/10 rounded-full blur-3xl animate-pulse"></div>
+                        <!-- Flat Design - No glow -->
                         
                         <!-- Floating Cards -->
-                        <div class="absolute top-10 right-0 w-64 glass-card p-4 rounded-2xl animate-float z-20 shadow-lg" style="animation-delay: 1s;">
+                        <div class="absolute top-10 right-0 w-64 glass-card p-4 rounded-2xl z-20" style="border: 1px solid #E2E8F0;">
                             <div class="flex items-center space-x-3 space-x-reverse mb-3">
-                                <div class="w-8 h-8 rounded-full bg-emerald-950 flex items-center justify-center text-gold-500">
+                                <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white">
                                     <i class="fas fa-check-circle text-xs"></i>
                                 </div>
                                 <div class="h-2 w-24 bg-gray-200 rounded"></div>
                             </div>
                             <div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
-                                <div class="bg-gold-500 h-full w-[94%] animate-[width_2s_ease-out]"></div>
+                                <div class="bg-cta h-full w-[94%] transition-all duration-1000"></div>
                             </div>
-                            <p class="text-[10px] mt-2 font-bold text-emerald-950 uppercase tracking-tighter">مطابقة الذكاء الاصطناعي: 94%</p>
+                            <p class="text-[10px] mt-2 font-bold text-text uppercase tracking-tighter">مطابقة الذكاء الاصطناعي: 94%</p>
                         </div>
                         
-                        <div class="absolute bottom-20 left-0 w-56 glass-card p-4 rounded-2xl animate-float z-20 shadow-lg">
+                        <div class="absolute bottom-20 left-0 w-56 glass-card p-4 rounded-2xl z-20" style="border: 1px solid #E2E8F0;">
                             <div class="flex justify-between items-center mb-4">
-                                <span class="text-xs font-bold text-emerald-950">نمو المسار المهني</span>
-                                <i class="fas fa-chart-line text-emerald-950"></i>
+                                <span class="text-xs font-bold text-text">نمو المسار المهني</span>
+                                <i class="fas fa-chart-line text-primary"></i>
                             </div>
                             <div class="flex items-end space-x-1 space-x-reverse h-12">
-                                <div class="w-2 bg-emerald-950/20 h-[40%] rounded-t"></div>
-                                <div class="w-2 bg-emerald-950/40 h-[60%] rounded-t"></div>
-                                <div class="w-2 bg-emerald-950/60 h-[85%] rounded-t"></div>
-                                <div class="w-2 bg-gold-500 h-[100%] rounded-t"></div>
+                                <div class="w-2 bg-primary/20 h-[40%] rounded-t"></div>
+                                <div class="w-2 bg-primary/40 h-[60%] rounded-t"></div>
+                                <div class="w-2 bg-primary/60 h-[85%] rounded-t"></div>
+                                <div class="w-2 bg-cta h-[100%] rounded-t"></div>
                             </div>
                         </div>
                         
                         <!-- Central Hub -->
                         <div class="absolute inset-0 flex items-center justify-center">
-                            <div class="w-48 h-48 rounded-full border-2 border-dashed border-gold-500/50 flex items-center justify-center animate-[spin_20s_linear_infinite]">
-                                <div class="w-32 h-32 bg-emerald-950 rounded-full flex items-center justify-center glow-node relative">
+                            <div class="w-48 h-48 rounded-full border-2 border-dashed border-primary/30 flex items-center justify-center">
+                                <div class="w-32 h-32 bg-primary rounded-full flex items-center justify-center relative">
                                     <div class="text-center">
-                                        <div class="text-2xl font-black text-gold-500 tracking-tighter mb-1">2030</div>
-                                        <div class="text-[6px] text-white font-bold uppercase tracking-widest">Vision Engine</div>
+                                        <div class="text-2xl font-black text-white tracking-tighter mb-1">2030</div>
+                                        <div class="text-[6px] text-white/80 font-bold uppercase tracking-widest">Vision Engine</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         
-                        <!-- Connecting Dots -->
-                        <div class="absolute top-1/4 left-1/4 w-3 h-3 bg-gold-500 rounded-full glow-node"></div>
-                        <div class="absolute bottom-1/3 right-1/4 w-4 h-4 bg-emerald-950 rounded-full glow-node"></div>
+                        <!-- Connecting Dots - Flat Design -->
+                        <div class="absolute top-1/4 left-1/4 w-3 h-3 bg-cta rounded-full"></div>
+                        <div class="absolute bottom-1/3 right-1/4 w-4 h-4 bg-primary rounded-full"></div>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- Stats Section -->
-        <section class="py-16 bg-white border-y border-emerald-950/5 reveal">
+        <section class="py-16 bg-white border-y border-gray-200 reveal">
             <div class="max-w-7xl mx-auto px-6">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
                     <div class="flex flex-col items-center text-center">
-                        <div class="text-4xl font-black text-emerald-950 mb-1" data-count="200">+0</div>
-                        <div class="text-sm text-gold-500 font-bold">وظيفة نشطة</div>
+                        <div class="text-4xl font-black text-text mb-1" data-count="200">+0</div>
+                        <div class="text-sm text-primary font-bold">وظيفة نشطة</div>
                     </div>
                     <div class="flex flex-col items-center text-center">
-                        <div class="text-4xl font-black text-emerald-950 mb-1" data-count="15">+0</div>
-                        <div class="text-sm text-gold-500 font-bold">جهة حكومية</div>
+                        <div class="text-4xl font-black text-text mb-1" data-count="15">+0</div>
+                        <div class="text-sm text-primary font-bold">جهة حكومية</div>
                     </div>
                     <div class="flex flex-col items-center text-center">
-                        <div class="text-4xl font-black text-emerald-950 mb-1" data-count="70" data-suffix="%">0%</div>
-                        <div class="text-sm text-gold-500 font-bold">دقة المطابقة</div>
+                        <div class="text-4xl font-black text-text mb-1" data-count="70" data-suffix="%">0%</div>
+                        <div class="text-sm text-primary font-bold">دقة المطابقة</div>
                     </div>
                     <div class="flex flex-col items-center text-center">
-                        <div class="text-4xl font-black text-emerald-950 mb-1" data-count="1000">+0</div>
-                        <div class="text-sm text-gold-500 font-bold">مستفيد مسجل</div>
+                        <div class="text-4xl font-black text-text mb-1" data-count="1000">+0</div>
+                        <div class="text-sm text-primary font-bold">مستفيد مسجل</div>
                     </div>
                 </div>
             </div>
