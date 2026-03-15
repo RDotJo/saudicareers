@@ -428,6 +428,8 @@
                 <span class="opacity-30">|</span>
                 <a href="terms.html" class="hover:text-emerald-500 transition-colors">شروط الاستخدام</a>
                 <span class="opacity-30">|</span>
+                <a href="profile.html" class="hover:text-emerald-500 transition-colors">حسابي</a>
+                <span class="opacity-30">|</span>
                 <a href="admin.html" class="hover:text-emerald-500 transition-colors">لوحة التحكم</a>
             </div>
             
@@ -1055,13 +1057,15 @@
             if (!currentUser) {
                 openLoginSheet();
             } else {
-                showNotification(currentLanguage === 'ar' ? 'قريباً: الملف الشخصي' : 'Coming soon: Profile');
+                window.location.href = 'profile.html';
             }
         }
         
-        function showNotification(message) {
-            // Simple alert for now - could be replaced with toast
-            alert(message);
+        // ═══════════════════════════════════════════════════════════════════════════════
+        // SERVICE WORKER - PWA Support
+        // ═══════════════════════════════════════════════════════════════════════════════
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(console.error);
         }
     </script>
 </body>
