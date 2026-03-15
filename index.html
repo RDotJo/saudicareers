@@ -336,7 +336,7 @@
                 
                 <!-- Auth Button -->
                 <button id="nav-auth-btn" onclick="openLoginSheet()" class="btn-primary text-sm py-2 px-4 mr-2">
-                    دخول
+                    اشترك الآن
                 </button>
                 
                 <button id="nav-user-btn" onclick="toggleUserMenu()" class="hidden w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center text-sm font-bold mr-2">
@@ -793,7 +793,7 @@
             ar: {
                 title: 'SaudiCareers - وظائف حكومية وشبه حكومية',
                 subtitle: 'وظائف حكومية وشبه حكومية',
-                welcomeTitle: 'اكتشف 200+ وظيفة حكومية وشبه حكومية',
+                welcomeTitle: 'اكتشف 700+ وظيفة حكومية وشبه حكومية',
                 welcomeSubtitle: 'مرحباً بك في SaudiCareers 🇸🇦',
                 searchPlaceholder: 'ابحث عن وظيفة، شركة، أو مدينة...',
                 allTypes: 'كل الأنواع',
@@ -803,7 +803,7 @@
                 jobsAvailable: 'الوظائف المتاحة',
                 loadMore: 'تحميل المزيد',
                 login: 'دخول',
-                register: 'سجل الآن',
+                register: 'اشترك الآن',
                 loginTitle: 'تسجيل الدخول',
                 loginSubtitle: 'أهلاً بعودتك! سجل دخولك للمتابعة',
                 registerTitle: 'إنشاء حساب',
@@ -820,7 +820,7 @@
             en: {
                 title: 'SaudiCareers - Government & Semi-Government Jobs',
                 subtitle: 'Government & Semi-Government Jobs',
-                welcomeTitle: 'Discover 200+ Government & Semi-Government Jobs',
+                welcomeTitle: 'Discover 700+ Government & Semi-Government Jobs',
                 welcomeSubtitle: 'Welcome to SaudiCareers 🇸🇦',
                 searchPlaceholder: 'Search jobs, companies, or cities...',
                 allTypes: 'All Types',
@@ -1081,7 +1081,11 @@
             document.getElementById('search-input').placeholder = t.searchPlaceholder;
             document.getElementById('results-title').textContent = t.jobsAvailable;
             document.getElementById('load-more-btn').textContent = t.loadMore;
-            document.getElementById('nav-auth-btn').textContent = t.login;
+            
+            // Check if returning visitor
+            const hasVisited = localStorage.getItem('saudicareers_visited');
+            document.getElementById('nav-auth-btn').textContent = hasVisited ? t.login : t.register;
+            
             document.getElementById('login-title').textContent = t.loginTitle;
             document.getElementById('login-subtitle').textContent = t.loginSubtitle;
             document.getElementById('login-btn').textContent = t.login;
@@ -1210,6 +1214,12 @@
         // SHEET FUNCTIONS
         // ═══════════════════════════════════════════════════════════════════════════════
         function openLoginSheet() {
+            // Mark as returning visitor
+            localStorage.setItem('saudicareers_visited', 'true');
+            // Update button to "دخول" for returning visitors
+            const t = translations[currentLanguage];
+            document.getElementById('nav-auth-btn').textContent = t.login;
+            
             document.getElementById('login-sheet-overlay').classList.add('active');
             document.getElementById('login-sheet').classList.add('active');
         }
