@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-// SaudiCareers - Job Database (200 Refined Jobs)
+// SaudiCareers - Job Database (700 Jobs)
 // ═══════════════════════════════════════════════════════════════════════════════
 
 const JOBS_DATABASE = [
@@ -713,8 +713,8 @@ const jobTitles = [
 const locations = ["الرياض", "جدة", "الدمام", "مكة المكرمة", "المدينة المنورة", "الطائف", "تبوك", "أبها", "الخبر", "حائل"];
 const categories = ["إدارة", "مالية", "تقنية", "هندسة", "تسويق", "موارد بشرية", "صحية", "ضيافة", "تصميم", "فنية", "علوم", "قانونية"];
 
-// Generate jobs 40-200
-for (let i = 40; i <= 200; i++) {
+// Generate jobs 40-700
+for (let i = 40; i <= 700; i++) {
     const company = companies[Math.floor(Math.random() * companies.length)];
     const title = jobTitles[Math.floor(Math.random() * jobTitles.length)];
     const location = locations[Math.floor(Math.random() * locations.length)];
