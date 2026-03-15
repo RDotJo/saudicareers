@@ -424,6 +424,8 @@
              ═══════════════════════════════════════════════════════════════════════════════ -->
         <footer class="ios-card p-6 mt-8 text-center">
             <div class="flex flex-wrap items-center justify-center gap-4 text-sm opacity-60">
+                <a href="jobs.html" class="hover:text-emerald-500 transition-colors">الوظائف</a>
+                <span class="opacity-30">|</span>
                 <a href="privacy.html" class="hover:text-emerald-500 transition-colors">سياسة الخصوصية</a>
                 <span class="opacity-30">|</span>
                 <a href="terms.html" class="hover:text-emerald-500 transition-colors">شروط الاستخدام</a>
@@ -449,11 +451,11 @@
                 <span class="text-[10px]">الرئيسية</span>
             </button>
             
-            <button class="tab-item" onclick="focusSearch()">
+            <button class="tab-item" onclick="goToJobs()">
                 <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                    <path d="M20 6H16V4C16 2.89 15.11 2 14 2H10C8.89 2 8 2.89 8 4V6H4C2.89 6 2.01 6.89 2.01 8L2 19C2 20.11 2.89 21 4 21H20C21.11 21 22 20.11 22 19V8C22 6.89 21.11 6 20 6ZM14 6H10V4H14V6Z"/>
                 </svg>
-                <span class="text-[10px]">بحث</span>
+                <span class="text-[10px]">الوظائف</span>
             </button>
             
             <button class="tab-item" onclick="openSavedJobs()">
@@ -1051,6 +1053,10 @@
             } else {
                 showNotification(currentLanguage === 'ar' ? 'قريباً: الوظائف المحفوظة' : 'Coming soon: Saved jobs');
             }
+        }
+        
+        function goToJobs() {
+            window.location.href = 'jobs.html';
         }
         
         function openProfile() {
