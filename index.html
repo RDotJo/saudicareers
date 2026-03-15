@@ -27,6 +27,9 @@
     <!-- CV Analyzer -->
     <script src="cv-analyzer.js"></script>
     
+    <!-- Category Icons -->
+    <script src="category-icons.js"></script>
+    
     <script>
     tailwind.config = {
         darkMode: 'class',
@@ -1107,7 +1110,7 @@
                      onclick="showJobDetail(${job.id})">
                     <div class="flex items-center gap-3">
                         <div class="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
-                            <span class="text-emerald-500 font-bold">${job.company.charAt(0)}</span>
+                            ${getCategoryIcon(job.category)}
                         </div>
                         
                         <div class="flex-1 min-w-0">
@@ -1146,7 +1149,7 @@
             currentJob = JOBS_DATABASE.find(j => j.id === jobId);
             if (!currentJob) return;
             
-            document.getElementById('job-logo').textContent = currentJob.company.charAt(0);
+            document.getElementById('job-logo').innerHTML = getCategoryIcon(currentJob.category);
             document.getElementById('job-title').textContent = currentJob.title;
             document.getElementById('job-company').textContent = currentJob.company;
             document.getElementById('job-location').textContent = currentJob.location;

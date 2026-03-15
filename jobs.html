@@ -25,6 +25,9 @@
     <!-- Job Database -->
     <script src="jobs-data.js"></script>
     
+    <!-- Category Icons -->
+    <script src="category-icons.js"></script>
+    
     <script>
     tailwind.config = {
         darkMode: 'class',
@@ -459,14 +462,13 @@
                         job.type === 'semi' ? 'شبه حكومي' : 
                         job.type === 'vision2030' ? 'رؤية 2030' : 'خاص';
         
-        const logoLetter = job.company.charAt(0);
         const staggerClass = index < 3 ? `stagger-${(index % 3) + 1}` : '';
         
         return `
             <div class="job-card animate-fade-in ${staggerClass}" onclick="openJobSheet(${job.id})" style="opacity:0">
                 <div class="flex items-start gap-3 mb-3">
                     <div class="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
-                        <span class="text-lg font-bold text-emerald-500">${logoLetter}</span>
+                        ${getCategoryIcon(job.category)}
                     </div>
                     <div class="flex-1 min-w-0">
                         <h3 class="font-bold text-base mb-1 truncate">${job.title}</h3>
@@ -561,7 +563,7 @@
         
         document.getElementById('job-title').textContent = job.title;
         document.getElementById('job-company').textContent = job.company;
-        document.getElementById('job-logo').textContent = job.company.charAt(0);
+        document.getElementById('job-logo').innerHTML = getCategoryIcon(job.category);
         document.getElementById('job-salary').textContent = job.salary;
         document.getElementById('job-location').textContent = job.location;
         document.getElementById('job-description').textContent = job.description;
