@@ -3,585 +3,1145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم | SaudiCareers</title>
+    <title>لوحة التحكم المتقدمة | SaudiCareers Admin</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'emerald-950': '#022c22',
-                        'gold-500': '#f59e0b',
-                        'gold-600': '#d97706',
-                    }
-                }
-            }
-        }
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
-        * { font-family: 'Tajawal', sans-serif; }
-        .sidebar { transition: all 0.3s ease; }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(2, 44, 34, 0.1);
+    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap');
+    
+    * { 
+        font-family: 'Tajawal', sans-serif; 
+    }
+    
+    :root {
+        --primary: #0f172a;
+        --secondary: #1e293b;
+        --accent: #3b82f6;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --gold: #fbbf24;
+    }
+    
+    body {
+        background: #0f172a;
+        color: #e2e8f0;
+    }
+    
+    /* Glassmorphism Cards */
+    .glass-card {
+        background: rgba(30, 41, 59, 0.7);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+    }
+    
+    .glass-card:hover {
+        border-color: rgba(59, 130, 246, 0.3);
+    }
+    
+    /* Stats Cards Animation */
+    .stat-card {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+    }
+    
+    /* Pulse Animation for Live Indicator */
+    @keyframes pulse-ring {
+        0% { transform: scale(0.8); opacity: 1; }
+        100% { transform: scale(2); opacity: 0; }
+    }
+    
+    .live-indicator {
+        position: relative;
+    }
+    
+    .live-indicator::before {
+        content: '';
+        position: absolute;
+        inset: -4px;
+        border-radius: 50%;
+        background: #10b981;
+        animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    
+    /* Activity Log Scrollbar */
+    .activity-log::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    .activity-log::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 3px;
+    }
+    
+    .activity-log::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 3px;
+    }
+    
+    /* Table Styles */
+    .data-table th {
+        background: rgba(15, 23, 42, 0.8);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+    
+    .data-table tr:hover td {
+        background: rgba(59, 130, 246, 0.1);
+    }
+    
+    /* Heatmap Grid */
+    .heatmap-cell {
+        aspect-ratio: 1;
+        border-radius: 4px;
+        transition: all 0.2s ease;
+    }
+    
+    .heatmap-cell:hover {
+        transform: scale(1.1);
+        z-index: 10;
+    }
+    
+    /* Sidebar */
+    .sidebar {
+        background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+        border-left: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    
+    .nav-item {
+        transition: all 0.2s ease;
+        border-radius: 12px;
+    }
+    
+    .nav-item:hover, .nav-item.active {
+        background: rgba(59, 130, 246, 0.15);
+        color: #60a5fa;
+    }
+    
+    /* Page Transition */
+    .page-section {
+        animation: fadeIn 0.4s ease;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Click Ripple Effect */
+    .click-ripple {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(59, 130, 246, 0.4);
+        transform: scale(0);
+        animation: ripple 0.6s linear;
+        pointer-events: none;
+    }
+    
+    @keyframes ripple {
+        to {
+            transform: scale(4);
+            opacity: 0;
         }
-        .stat-card { transition: all 0.3s ease; }
-        .stat-card:hover { transform: translateY(-4px); }
+    }
+    
+    /* Loading Skeleton */
+    .skeleton {
+        background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+    }
+    
+    @keyframes shimmer {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+    }
     </style>
 </head>
-<body class="bg-gray-50">
-<!-- Admin Login Screen -->
-    <div id="admin-login-screen" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-950 to-emerald-900">
-        <div class="w-full max-w-md p-8">
+<body class="min-h-screen">
+    
+    <!-- ═══════════════════════════════════════════════════════════════════════════════
+         ADMIN LOGIN SCREEN
+         ═══════════════════════════════════════════════════════════════════════════════ -->
+    <div id="login-screen" class="min-h-screen flex items-center justify-center relative overflow-hidden">
+        <!-- Background Effects -->
+        <div class="absolute inset-0 bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900"></div>
+        <div class="absolute inset-0 opacity-30">
+            <div class="absolute top-20 left-20 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-20 right-20 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div class="relative z-10 w-full max-w-md p-8">
             <div class="text-center mb-8">
-                <div class="w-20 h-20 bg-gold-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                    <i class="fas fa-shield-alt text-white text-3xl"></i>
+                <div class="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-blue-500/25">
+                    <i class="fas fa-shield-alt text-white text-4xl"></i>
                 </div>
-                <h1 class="text-3xl font-bold text-white mb-2">SaudiCareers</h1>
-                <p class="text-gray-400">لوحة تحكم المشرف</p>
+                <h1 class="text-4xl font-black text-white mb-2">SaudiCareers</h1>
+                <p class="text-blue-400 text-lg">لوحة التحكم المتقدمة</p>
             </div>
             
-            <div class="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20">
+            <div class="glass-card p-8">
                 <h2 class="text-xl font-bold text-white mb-6 text-center">تسجيل الدخول</h2>
                 
-                <form id="admin-login-form" class="space-y-4">
+                <form id="login-form" class="space-y-5">
                     <div>
-                        <label class="block text-sm text-gray-300 mb-2">البريد الإلكتروني</label>
+                        <label class="block text-sm text-gray-400 mb-2">البريد الإلكتروني</label>
                         <div class="relative">
-                            <i class="fas fa-envelope absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                            <input type="email" id="admin-email" required 
-                                class="w-full pr-12 pl-4 py-4 rounded-xl bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:border-gold-500 focus:outline-none"
-                                placeholder="admin@saudicareers.site">
+                            <i class="fas fa-envelope absolute right-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                            <input type="email" id="login-email" required 
+                                class="w-full pr-12 pl-4 py-4 rounded-xl bg-slate-800/50 border border-slate-700 text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none transition-colors"
+                                placeholder="admin@saudicareers.site"
+                                value="admin@saudicareers.site">
                         </div>
                     </div>
                     
                     <div>
-                        <label class="block text-sm text-gray-300 mb-2">كلمة المرور</label>
+                        <label class="block text-sm text-gray-400 mb-2">كلمة المرور</label>
                         <div class="relative">
-                            <i class="fas fa-lock absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                            <input type="password" id="admin-password" required 
-                                class="w-full pr-12 pl-4 py-4 rounded-xl bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:border-gold-500 focus:outline-none"
-                                placeholder="••••••••">
+                            <i class="fas fa-lock absolute right-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                            <input type="password" id="login-password" required 
+                                class="w-full pr-12 pl-4 py-4 rounded-xl bg-slate-800/50 border border-slate-700 text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none transition-colors"
+                                placeholder="••••••••"
+                                value="Admin@2024!">
                         </div>
                     </div>
                     
                     <button type="submit" 
-                        class="w-full py-4 bg-gold-500 text-white rounded-xl font-bold hover:bg-gold-600 transition-colors flex items-center justify-center gap-2">
+                        class="w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-bold hover:shadow-lg hover:shadow-blue-500/25 transition-all flex items-center justify-center gap-2">
                         <i class="fas fa-sign-in-alt"></i>
                         دخول لوحة التحكم
                     </button>
                 </form>
                 
                 <p id="login-error" class="text-red-400 text-sm text-center mt-4 hidden"></p>
-                
-                <div class="mt-6 text-center">
-                    <a href="index.html" class="text-gray-400 hover:text-white text-sm">
-                        <i class="fas fa-arrow-right ml-1"></i>
-                        العودة للموقع
-                    </a>
-                </div>
             </div>
             
             <p class="text-center text-gray-500 text-sm mt-8">© 2024 SaudiCareers - جميع الحقوق محفوظة</p>
         </div>
     </div>
-
-    <!-- Admin Dashboard (Hidden initially) -->
-    <div id="admin-dashboard" class="hidden">
-        <!-- Sidebar -->
-        <aside class="sidebar w-72 bg-emerald-950 text-white fixed h-full right-0 top-0 z-50">
-            <div class="p-6 border-b border-white/10">
-                <div class="flex items-center gap-3">
-                    <img src="logo.webp" alt="SaudiCareers" class="h-12 w-auto">
-                    <div>
-                        <h2 class="font-bold">SaudiCareers</h2>
-                        <p class="text-xs text-gray-400">لوحة التحكم</p>
+    
+    
+    <!-- ═══════════════════════════════════════════════════════════════════════════════
+         MAIN DASHBOARD (Hidden initially)
+         ═══════════════════════════════════════════════════════════════════════════════ -->
+    <div id="dashboard" class="hidden">
+        
+        <div class="flex h-screen overflow-hidden">
+            
+            <!-- Sidebar -->
+            <aside class="sidebar w-72 flex-shrink-0 overflow-y-auto">
+                
+                <div class="p-6 border-b border-white/10">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-shield-alt text-white"></i>
+                        </div>
+                        <div>
+                            <h2 class="font-bold text-white">SaudiCareers</h2>
+                            <p class="text-xs text-gray-400">لوحة التحكم</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            
-            <nav class="p-4">
-                <div class="mb-6">
-                    <p class="text-xs text-gray-500 uppercase mb-3 px-4">القائمة الرئيسية</p>
-                    <a href="#dashboard" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl bg-gold-500/20 text-gold-500 font-bold">
-                        <i class="fas fa-chart-line"></i>
-                        <span>الإحصائيات</span>
-                    </a>
-                    <a href="#jobs" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10 text-gray-300 mt-1">
-                        <i class="fas fa-briefcase"></i>
-                        <span>الوظائف</span>
-                        <span id="jobs-count" class="mr-auto bg-gold-500 text-white text-xs px-2 py-1 rounded-full">0</span>
-                    </a>
-                    <a href="#users" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10 text-gray-300 mt-1">
-                        <i class="fas fa-users"></i>
+                
+                
+                <nav class="p-4 space-y-2">
+                    <button onclick="showPage('overview')" class="nav-item active w-full text-right px-4 py-3 flex items-center gap-3 text-gray-300">
+                        <i class="fas fa-chart-line w-5"></i>
+                        <span>نظرة عامة</span>
+                    </button>
+                    
+                    <button onclick="showPage('analytics')" class="nav-item w-full text-right px-4 py-3 flex items-center gap-3 text-gray-300">
+                        <i class="fas fa-chart-pie w-5"></i>
+                        <span>التحليلات المتقدمة</span>
+                    </button>
+                    
+                    <button onclick="showPage('tracking')" class="nav-item w-full text-right px-4 py-3 flex items-center gap-3 text-gray-300">
+                        <i class="fas fa-mouse-pointer w-5"></i>
+                        <span>تتبع الزوار</span>
+                        <span id="live-users-badge" class="mr-auto bg-green-500/20 text-green-400 text-xs px-2 py-1 rounded-full">5 نشط</span>
+                    </button>
+                    
+                    <button onclick="showPage('jobs')" class="nav-item w-full text-right px-4 py-3 flex items-center gap-3 text-gray-300">
+                        <i class="fas fa-briefcase w-5"></i>
+                        <span>إدارة الوظائف</span>
+                        <span class="mr-auto bg-blue-500/20 text-blue-400 text-xs px-2 py-1 rounded-full">200</span>
+                    </button>
+                    
+                    <button onclick="showPage('users')" class="nav-item w-full text-right px-4 py-3 flex items-center gap-3 text-gray-300">
+                        <i class="fas fa-users w-5"></i>
                         <span>المستخدمين</span>
-                        <span id="users-count" class="mr-auto bg-emerald-600 text-white text-xs px-2 py-1 rounded-full">0</span>
-                    </a>
-                    <a href="#applications" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10 text-gray-300 mt-1">
-                        <i class="fas fa-file-alt"></i>
-                        <span>الطلبات</span>
-                        <span id="apps-count" class="mr-auto bg-blue-500 text-white text-xs px-2 py-1 rounded-full">0</span>
-                    </a>
-                </div>
-                
-                <div class="mb-6">
-                    <p class="text-xs text-gray-500 uppercase mb-3 px-4">الإعدادات</p>
-                    <a href="#settings" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10 text-gray-300">
-                        <i class="fas fa-cog"></i>
-                        <span>إعدادات الموقع</span>
-                    </a>
-                </div>
-            </nav>
+                    </button>
+                    
+                    <button onclick="showPage('logs')" class="nav-item w-full text-right px-4 py-3 flex items-center gap-3 text-gray-300">
+                        <i class="fas fa-history w-5"></i>
+                        <span>سجل النشاطات</span>
+                    </button>
+                    
+                    <button onclick="showPage('settings')" class="nav-item w-full text-right px-4 py-3 flex items-center gap-3 text-gray-300">
+                        <i class="fas fa-cog w-5"></i>
+                        <span>الإعدادات</span>
+                    </button>
+                    
+                    <hr class="border-white/10 my-4">
+                    
+                    <button onclick="logout()" class="nav-item w-full text-right px-4 py-3 flex items-center gap-3 text-red-400 hover:bg-red-500/10">
+                        <i class="fas fa-sign-out-alt w-5"></i>
+                        <span>تسجيل الخروج</span>
+                    </button>
+                </nav>
+            </aside>
             
-            <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-white/10">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-gold-500 rounded-full flex items-center justify-center">
-                        <i class="fas fa-user-shield text-white"></i>
+            
+            <!-- Main Content -->
+            <main class="flex-1 overflow-y-auto">
+                
+                <!-- Top Header -->
+                <header class="glass-card mx-6 mt-6 p-4 flex items-center justify-between sticky top-0 z-30">
+                    <div class="flex items-center gap-4">
+                        <h1 id="page-title" class="text-2xl font-bold">نظرة عامة</h1>
                     </div>
-                    <div>
-                        <p class="font-bold text-sm">المشرف</p>
-                        <button onclick="logoutAdmin()" class="text-xs text-red-400 hover:text-red-300">تسجيل الخروج</button>
-                    </div>
-                </div>
-            </div>
-        </aside>
-
-        <!-- Main Content -->
-        <main class="flex-1 mr-72 p-8">
-            <!-- Header -->
-            <header class="flex justify-between items-center mb-8">
-                <div>
-                    <h1 class="text-2xl font-bold text-emerald-950">لوحة التحكم</h1>
-                    <p class="text-gray-500">نظرة عامة على أداء المنصة</p>
-                </div>
-                <div class="flex items-center gap-4">
-                    <span id="current-date" class="text-gray-600"></span>
-                    <a href="index.html" target="_blank" class="bg-emerald-950 text-white px-4 py-2 rounded-xl hover:bg-emerald-900 transition-colors">
-                        <i class="fas fa-external-link-alt ml-2"></i>
-                        زيارة الموقع
-                    </a>
-                </div>
-            </header>
-
-            <!-- Stats Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <div class="stat-card glass-card p-6 rounded-2xl">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-gray-500 text-sm">إجمالي المستخدمين</p>
-                            <h3 id="total-users" class="text-3xl font-bold text-emerald-950 mt-1">0</h3>
-                            <p class="text-green-600 text-sm mt-1">
-                                <i class="fas fa-arrow-up"></i> +12% هذا الشهر
-                            </p>
+                    
+                    <div class="flex items-center gap-4">
+                        <!-- Live Users Indicator -->
+                        <div class="flex items-center gap-2 px-4 py-2 bg-green-500/10 rounded-full">
+                            <div class="live-indicator w-2 h-2 bg-green-500 rounded-full"></div>
+                            <span class="text-sm text-green-400"><span id="live-users-count">5</span> مستخدم نشط</span>
                         </div>
-                        <div class="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center">
-                            <i class="fas fa-users text-2xl text-blue-600"></i>
+                        
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold">أ</span>
+                            </div>
+                            <div class="hidden md:block">
+                                <p class="text-sm font-medium">أبو علي</p>
+                                <p class="text-xs text-gray-400">مدير النظام</p>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+                
+                
+                <!-- ═══════════════════════════════════════════════════════════════════════════════
+                     PAGE: OVERVIEW - نظرة عامة
+                     ═══════════════════════════════════════════════════════════════════════════════ -->
+                <div id="page-overview" class="page-section p-6">
+                    
+                    <!-- Stats Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        
+                        <div class="stat-card glass-card p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-eye text-blue-400 text-xl"></i>
+                                </div>
+                                <span class="text-green-400 text-sm">+12.5%</span>
+                            </div>
+                            
+                            <p class="text-3xl font-black text-white mb-1">12,847</p>
+                            <p class="text-gray-400">إجمالي الزيارات</p>
+                        </div>
+                        
+                        
+                        <div class="stat-card glass-card p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-user-check text-green-400 text-xl"></i>
+                                </div>
+                                <span class="text-green-400 text-sm">+8.2%</span>
+                            </div>
+                            
+                            <p class="text-3xl font-black text-white mb-1">1,243</p>
+                            <p class="text-gray-400">المستخدمون المسجلون</p>
+                        </div>
+                        
+                        
+                        <div class="stat-card glass-card p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-briefcase text-purple-400 text-xl"></i>
+                                </div>
+                                <span class="text-gray-400 text-sm">ثابت</span>
+                            </div>
+                            
+                            <p class="text-3xl font-black text-white mb-1">200</p>
+                            <p class="text-gray-400">الوظائف المنشورة</p>
+                        </div>
+                        
+                        
+                        <div class="stat-card glass-card p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-yellow-500/20 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-file-alt text-yellow-400 text-xl"></i>
+                                </div>
+                                <span class="text-green-400 text-sm">+23.1%</span>
+                            </div>
+                            
+                            <p class="text-3xl font-black text-white mb-1">3,456</p>
+                            <p class="text-gray-400">طلبات التقديم</p>
+                        </div>
+                    </div>
+                    
+                    
+                    <!-- Charts Row -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                        
+                        <div class="glass-card p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="font-bold text-lg">الزيارات اليومية</h3>
+                                <select class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-1 text-sm">
+                                    <option>آخر 7 أيام</option>
+                                    <option>آخر 30 يوم</option>
+                                </select>
+                            </div>
+                            
+                            <canvas id="visitsChart" height="120"></canvas>
+                        </div>
+                        
+                        
+                        <div class="glass-card p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="font-bold text-lg">المصادر</h3>
+                            </div>
+                            
+                            <canvas id="sourcesChart" height="120"></canvas>
+                        </div>
+                    </div>
+                    
+                    
+                    <!-- Recent Activity -->
+                    <div class="glass-card p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="font-bold text-lg">آخر النشاطات</h3>
+                            
+                            <button onclick="showPage('logs')" class="text-blue-400 hover:text-blue-300 text-sm">عرض الكل</button>
+                        </div>
+                        
+                        <div id="recent-activity" class="space-y-3">
+                            <!-- Activities will be loaded here -->
                         </div>
                     </div>
                 </div>
                 
-                <div class="stat-card glass-card p-6 rounded-2xl">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-gray-500 text-sm">الوظائف النشطة</p>
-                            <h3 id="active-jobs" class="text-3xl font-bold text-emerald-950 mt-1">0</h3>
-                            <p class="text-green-600 text-sm mt-1">
-                                <i class="fas fa-arrow-up"></i> +5 جديدة
-                            </p>
+                
+                <!-- ═══════════════════════════════════════════════════════════════════════════════
+                     PAGE: ANALYTICS - التحليلات المتقدمة
+                     ═══════════════════════════════════════════════════════════════════════════════ -->
+                <div id="page-analytics" class="page-section p-6 hidden">
+                    
+                    <h2 class="text-2xl font-bold mb-6">التحليلات المتقدمة</h2>
+                    
+                    
+                    <!-- Top Metrics -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        
+                        <div class="glass-card p-6">
+                            <p class="text-gray-400 mb-2">معدل الارتداد</p>
+                            <p class="text-3xl font-bold text-white">32.4%</p>
+                            <div class="w-full bg-slate-800 rounded-full h-2 mt-3">
+                                <div class="bg-blue-500 h-2 rounded-full" style="width: 32.4%"></div>
+                            </div>
                         </div>
-                        <div class="w-14 h-14 bg-gold-100 rounded-2xl flex items-center justify-center">
-                            <i class="fas fa-briefcase text-2xl text-gold-600"></i>
+                        
+                        
+                        <div class="glass-card p-6">
+                            <p class="text-gray-400 mb-2">متوسط وقت الجلسة</p>
+                            <p class="text-3xl font-bold text-white">4:23</p>
+                            <div class="w-full bg-slate-800 rounded-full h-2 mt-3">
+                                <div class="bg-green-500 h-2 rounded-full" style="width: 65%"></div>
+                            </div>
+                        </div>
+                        
+                        
+                        <div class="glass-card p-6">
+                            <p class="text-gray-400 mb-2">معدل التحويل</p>
+                            <p class="text-3xl font-bold text-white">8.7%</p>
+                            <div class="w-full bg-slate-800 rounded-full h-2 mt-3">
+                                <div class="bg-purple-500 h-2 rounded-full" style="width: 8.7%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    <!-- Devices Chart -->
+                    <div class="glass-card p-6 mb-8">
+                        <h3 class="font-bold text-lg mb-6">توزيع الأجهزة</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <canvas id="devicesChart" height="150"></canvas>
+                            
+                            <div class="space-y-4">
+                                
+                                <div class="flex items-center justify-between p-4 bg-slate-800/50 rounded-xl">
+                                    <div class="flex items-center gap-3">
+                                        <i class="fas fa-mobile-alt text-blue-400"></i>
+                                        <span>الجوال</span>
+                                    </div>
+                                    
+                                    <span class="font-bold">68%</span>
+                                </div>
+                                
+                                
+                                <div class="flex items-center justify-between p-4 bg-slate-800/50 rounded-xl">
+                                    <div class="flex items-center gap-3">
+                                        <i class="fas fa-desktop text-purple-400"></i>
+                                        <span>الكمبيوتر</span>
+                                    </div>
+                                    
+                                    <span class="font-bold">28%</span>
+                                </div>
+                                
+                                
+                                <div class="flex items-center justify-between p-4 bg-slate-800/50 rounded-xl">
+                                    <div class="flex items-center gap-3">
+                                        <i class="fas fa-tablet-alt text-green-400"></i>
+                                        <span>التابلت</span>
+                                    </div>
+                                    
+                                    <span class="font-bold">4%</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="stat-card glass-card p-6 rounded-2xl">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-gray-500 text-sm">طلبات التقديم</p>
-                            <h3 id="total-apps" class="text-3xl font-bold text-emerald-950 mt-1">0</h3>
-                            <p class="text-gray-500 text-sm mt-1">هذا الأسبوع</p>
+                
+                <!-- ═══════════════════════════════════════════════════════════════════════════════
+                     PAGE: TRACKING - تتبع الزوار
+                     ═══════════════════════════════════════════════════════════════════════════════ -->
+                <div id="page-tracking" class="page-section p-6 hidden">
+                    
+                    <h2 class="text-2xl font-bold mb-6">تتبع الزوار الحي</h2>
+                    
+                    
+                    <!-- Live Heatmap -->
+                    <div class="glass-card p-6 mb-8">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="font-bold text-lg">خريطة النقرات الحرارية</h3>
+                            
+                            <div class="flex items-center gap-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-4 h-4 bg-red-500 rounded"></div>
+                                    <span class="text-sm">كثيف</span>
+                                </div>
+                                
+                                <div class="flex items-center gap-2">
+                                    <div class="w-4 h-4 bg-yellow-500 rounded"></div>
+                                    <span class="text-sm">متوسط</span>
+                                </div>
+                                
+                                <div class="flex items-center gap-2">
+                                    <div class="w-4 h-4 bg-green-500 rounded"></div>
+                                    <span class="text-sm">منخفض</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="w-14 h-14 bg-purple-100 rounded-2xl flex items-center justify-center">
-                            <i class="fas fa-file-alt text-2xl text-purple-600"></i>
+                        
+                        
+                        <div id="heatmap-container" class="relative h-96 bg-slate-800 rounded-xl overflow-hidden">
+                            <div class="absolute inset-0 grid grid-cols-12 grid-rows-8 gap-1 p-4">
+                                <!-- Heatmap cells generated by JS -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    <!-- Live Activity Table -->
+                    <div class="glass-card p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="font-bold text-lg">الحركات الحية للزوار</h3>
+                            
+                            <button onclick="clearTracking()" class="text-red-400 hover:text-red-300 text-sm">مسح السجل</button>
+                        </div>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="w-full data-table">
+                                <thead>
+                                    <tr class="text-right">
+                                        <th class="p-4 text-gray-400 font-medium">الوقت</th>
+                                        <th class="p-4 text-gray-400 font-medium">الإجراء</th>
+                                        <th class="p-4 text-gray-400 font-medium">العنصر</th>
+                                        <th class="p-4 text-gray-400 font-medium">الصفحة</th>
+                                        <th class="p-4 text-gray-400 font-medium">الموقع</th>
+                                        <th class="p-4 text-gray-400 font-medium">الجهاز</th>
+                                    </tr>
+                                </thead>
+                                
+                                <tbody id="tracking-table-body">
+                                    <!-- Tracking data will be loaded here -->
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
                 
-                <div class="stat-card glass-card p-6 rounded-2xl">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-gray-500 text-sm">تحليلات CV</p>
-                            <h3 id="cv-analyses" class="text-3xl font-bold text-emerald-950 mt-1">0</h3>
-                            <p class="text-green-600 text-sm mt-1">
-                                <i class="fas fa-arrow-up"></i> نشط
-                            </p>
-                        </div>
-                        <div class="w-14 h-14 bg-emerald-100 rounded-2xl flex items-center justify-center">
-                            <i class="fas fa-robot text-2xl text-emerald-600"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Jobs Management Section -->
-            <section id="jobs-section" class="mb-8">
-                <div class="glass-card rounded-2xl overflow-hidden">
-                    <div class="p-6 border-b border-gray-200 flex justify-between items-center">
-                        <div>
-                            <h2 class="text-xl font-bold text-emerald-950">إدارة الوظائف</h2>
-                            <p class="text-gray-500 text-sm">إضافة وتعديل وحذف الوظائف المنشورة</p>
-                        </div>
-                        <button onclick="showAddJobModal()" class="bg-gold-500 text-white px-6 py-3 rounded-xl font-bold hover:bg-gold-600 transition-colors">
-                            <i class="fas fa-plus ml-2"></i>
+                
+                <!-- ═══════════════════════════════════════════════════════════════════════════════
+                     PAGE: JOBS - إدارة الوظائف
+                     ═══════════════════════════════════════════════════════════════════════════════ -->
+                <div id="page-jobs" class="page-section p-6 hidden">
+                    
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-2xl font-bold">إدارة الوظائف</h2>
+                        
+                        <button onclick="addNewJob()" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-xl font-medium flex items-center gap-2 transition-colors">
+                            <i class="fas fa-plus"></i>
                             إضافة وظيفة جديدة
                         </button>
                     </div>
                     
-                    <div class="p-6">
-                        <div class="overflow-x-auto">
-                            <table class="w-full">
-                                <thead>
-                                    <tr class="text-right border-b border-gray-200">
-                                        <th class="pb-4 text-gray-600 font-medium">الوظيفة</th>
-                                        <th class="pb-4 text-gray-600 font-medium">الجهة</th>
-                                        <th class="pb-4 text-gray-600 font-medium">الموقع</th>
-                                        <th class="pb-4 text-gray-600 font-medium">المتقدمين</th>
-                                        <th class="pb-4 text-gray-600 font-medium">الحالة</th>
-                                        <th class="pb-4 text-gray-600 font-medium">الإجراءات</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="jobs-table-body">
-                                    <!-- Jobs will be loaded here -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Users Section -->
-            <section id="users-section" class="mb-8">
-                <div class="glass-card rounded-2xl overflow-hidden">
-                    <div class="p-6 border-b border-gray-200">
-                        <h2 class="text-xl font-bold text-emerald-950">المستخدمين المسجلين</h2>
-                    </div>
-                    <div class="p-6">
-                        <div class="overflow-x-auto">
-                            <table class="w-full">
-                                <thead>
-                                    <tr class="text-right border-b border-gray-200">
-                                        <th class="pb-4 text-gray-600 font-medium">المستخدم</th>
-                                        <th class="pb-4 text-gray-600 font-medium">البريد</th>
-                                        <th class="pb-4 text-gray-600 font-medium">تاريخ التسجيل</th>
-                                        <th class="pb-4 text-gray-600 font-medium">آخر دخول</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="users-table-body">
-                                    <!-- Users will be loaded here -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </main>
-    </div>
-
-    <!-- Add Job Modal -->
-    <div id="add-job-modal" class="fixed inset-0 z-[100] hidden">
-        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeAddJobModal()"></div>
-        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl p-4">
-            <div class="bg-white rounded-3xl p-8 shadow-2xl max-h-[90vh] overflow-y-auto">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-2xl font-bold text-emerald-950">إضافة وظيفة جديدة</h3>
-                    <button onclick="closeAddJobModal()" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200">
-                        <i class="fas fa-times text-gray-600"></i>
-                    </button>
-                </div>
-                
-                <form id="add-job-form" class="space-y-4">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-bold text-emerald-950 mb-2">اسم الوظيفة</label>
-                            <input type="text" name="title" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-950 focus:outline-none" placeholder="مثال: مدير مشروع">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-bold text-emerald-950 mb-2">الجهة</label>
-                            <select name="company" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-950 focus:outline-none">
-                                <option value="">اختر الجهة</option>
-                                <option value="نيوم">نيوم</option>
-                                <option value="أرامكو">أرامكو</option>
-                                <option value="البحر الأحمر">البحر الأحمر</option>
-                                <option value="القدية">القدية</option>
-                                <option value="صندوق الاستثمارات">صندوق الاستثمارات</option>
-                                <option value="وزارة الصحة">وزارة الصحة</option>
-                                <option value="سدايا">سدايا</option>
-                                <option value="أخرى">أخرى</option>
+                    
+                    <!-- Jobs Filter -->
+                    <div class="glass-card p-4 mb-6">
+                        <div class="flex flex-wrap gap-4">
+                            <input type="text" placeholder="ابحث عن وظيفة..." class="flex-1 min-w-[200px] bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white">
+                            
+                            <select class="bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white">
+                                <option>كل الأنواع</option>
+                                <option>حكومي</option>
+                                <option>شبه حكومي</option>
+                                <option>قطاع خاص</option>
+                            </select>
+                            
+                            <select class="bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white">
+                                <option>كل الحالات</option>
+                                <option>نشط</option>
+                                <option>متوقف</option>
+                                <option>منتهي</option>
                             </select>
                         </div>
                     </div>
                     
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-bold text-emerald-950 mb-2">الموقع</label>
-                            <input type="text" name="location" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-950 focus:outline-none" placeholder="مثال: الرياض">
+                    
+                    <!-- Jobs Table -->
+                    <div class="glass-card overflow-hidden">
+                        <table class="w-full data-table">
+                            <thead>
+                                <tr class="text-right">
+                                    <th class="p-4 text-gray-400 font-medium">#</th>
+                                    <th class="p-4 text-gray-400 font-medium">المسمى الوظيفي</th>
+                                    <th class="p-4 text-gray-400 font-medium">الشركة</th>
+                                    <th class="p-4 text-gray-400 font-medium">النوع</th>
+                                    <th class="p-4 text-gray-400 font-medium">الموقع</th>
+                                    <th class="p-4 text-gray-400 font-medium">الراتب</th>
+                                    <th class="p-4 text-gray-400 font-medium">الحالة</th>
+                                    <th class="p-4 text-gray-400 font-medium">الإجراءات</th>
+                                </tr>
+                            </thead>
+                            
+                            <tbody id="jobs-table-body">
+                                <!-- Jobs will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    
+                    <!-- Pagination -->
+                    <div class="flex items-center justify-between mt-6">
+                        <p class="text-gray-400">عرض <span class="text-white">1-10</span> من <span class="text-white">200</span> وظيفة</p>
+                        
+                        <div class="flex items-center gap-2">
+                            <button class="px-4 py-2 bg-slate-800 rounded-lg hover:bg-slate-700 transition-colors">السابق</button>
+                            <button class="px-4 py-2 bg-blue-600 rounded-lg">1</button>
+                            <button class="px-4 py-2 bg-slate-800 rounded-lg hover:bg-slate-700 transition-colors">2</button>
+                            <button class="px-4 py-2 bg-slate-800 rounded-lg hover:bg-slate-700 transition-colors">3</button>
+                            <button class="px-4 py-2 bg-slate-800 rounded-lg hover:bg-slate-700 transition-colors">التالي</button>
                         </div>
-                        <div>
-                            <label class="block text-sm font-bold text-emerald-950 mb-2">سنوات الخبرة</label>
-                            <input type="text" name="experience" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-950 focus:outline-none" placeholder="مثال: 3-5 سنوات">
+                    </div>
+                </div>
+                
+                
+                <!-- ═══════════════════════════════════════════════════════════════════════════════
+                     PAGE: USERS - المستخدمين
+                     ═══════════════════════════════════════════════════════════════════════════════ -->
+                <div id="page-users" class="page-section p-6 hidden">
+                    
+                    <h2 class="text-2xl font-bold mb-6">المستخدمين</h2>
+                    
+                    
+                    <div class="glass-card overflow-hidden">
+                        <table class="w-full data-table">
+                            <thead>
+                                <tr class="text-right">
+                                    <th class="p-4 text-gray-400 font-medium">المستخدم</th>
+                                    <th class="p-4 text-gray-400 font-medium">البريد</th>
+                                    <th class="p-4 text-gray-400 font-medium">تاريخ التسجيل</th>
+                                    <th class="p-4 text-gray-400 font-medium">آخر دخول</th>
+                                    <th class="p-4 text-gray-400 font-medium">الحالة</th>
+                                    <th class="p-4 text-gray-400 font-medium">الإجراءات</th>
+                                </tr>
+                            </thead>
+                            
+                            <tbody id="users-table-body">
+                                <!-- Users will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                
+                <!-- ═══════════════════════════════════════════════════════════════════════════════
+                     PAGE: LOGS - سجل النشاطات
+                     ═══════════════════════════════════════════════════════════════════════════════ -->
+                <div id="page-logs" class="page-section p-6 hidden">
+                    
+                    <h2 class="text-2xl font-bold mb-6">سجل النشاطات الكامل</h2>
+                    
+                    
+                    <div class="glass-card overflow-hidden">
+                        <div class="overflow-x-auto activity-log max-h-[600px]">
+                            <table class="w-full data-table">
+                                <thead>
+                                    <tr class="text-right">
+                                        <th class="p-4 text-gray-400 font-medium">التاريخ</th>
+                                        <th class="p-4 text-gray-400 font-medium">الوقت</th>
+                                        <th class="p-4 text-gray-400 font-medium">المستخدم</th>
+                                        <th class="p-4 text-gray-400 font-medium">الإجراء</th>
+                                        <th class="p-4 text-gray-400 font-medium">التفاصيل</th>
+                                        <th class="p-4 text-gray-400 font-medium">IP</th>
+                                    </tr>
+                                </thead>
+                                
+                                <tbody id="logs-table-body">
+                                    <!-- Logs will be loaded here -->
+                                </tbody>
+                            </table>
                         </div>
                     </div>
+                </div>
+                
+                
+                <!-- ═══════════════════════════════════════════════════════════════════════════════
+                     PAGE: SETTINGS - الإعدادات
+                     ═══════════════════════════════════════════════════════════════════════════════ -->
+                <div id="page-settings" class="page-section p-6 hidden">
                     
-                    <div>
-                        <label class="block text-sm font-bold text-emerald-950 mb-2">الراتب/المزايا</label>
-                        <input type="text" name="salary" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-950 focus:outline-none" placeholder="مثال: راتب تنافسي + بدلات">
+                    <h2 class="text-2xl font-bold mb-6">الإعدادات</h2>
+                    
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        
+                        <div class="glass-card p-6">
+                            <h3 class="font-bold text-lg mb-4">إعدادات الموقع</h3>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm text-gray-400 mb-2">اسم الموقع</label>
+                                    <input type="text" value="SaudiCareers" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm text-gray-400 mb-2">البريد الإلكتروني للدعم</label>
+                                    <input type="email" value="support@saudicareers.site" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white">
+                                </div>
+                                
+                                <button class="w-full py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium transition-colors">حفظ التغييرات</button>
+                            </div>
+                        </div>
+                        
+                        
+                        <div class="glass-card p-6">
+                            <h3 class="font-bold text-lg mb-4">تتبع الزوار</h3>
+                            
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <span>تتبع النقرات</span>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" checked class="sr-only peer">
+                                        <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:right-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                    </label>
+                                </div>
+                                
+                                <div class="flex items-center justify-between">
+                                    <span>تتبع حركات الماوس</span>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" checked class="sr-only peer">
+                                        <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:right-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                    </label>
+                                </div>
+                                
+                                <div class="flex items-center justify-between">
+                                    <span>تسجيل الـ IP</span>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" class="sr-only peer">
+                                        <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:right-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    
-                    <div>
-                        <label class="block text-sm font-bold text-emerald-950 mb-2">وصف الوظيفة</label>
-                        <textarea name="description" rows="4" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-950 focus:outline-none" placeholder="تفاصيل الوظيفة والمتطلبات..."></textarea>
-                    </div>
-                    
-                    <div>
-                        <label class="block text-sm font-bold text-emerald-950 mb-2">رابط صورة الوظيفة</label>
-                        <input type="url" name="image" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-950 focus:outline-none" placeholder="https://example.com/image.webp">
-                        <p class="text-xs text-gray-400 mt-1">اختياري - سيستخدم شعار الجهة افتراضياً</p>
-                    </div>
-                    
-                    <button type="submit" class="w-full py-4 bg-emerald-950 text-white rounded-xl font-bold hover:bg-emerald-900 transition-colors">
-                        <i class="fas fa-plus ml-2"></i>
-                        نشر الوظيفة
-                    </button>
-                </form>
-            </div>
+                </div>
+            </main>
         </div>
     </div>
-
+    
+    
     <script>
-        // Admin credentials (in production, use Supabase Auth with role-based access)
+        // ═══════════════════════════════════════════════════════════════════════════════
+        // AUTHENTICATION
+        // ═══════════════════════════════════════════════════════════════════════════════
         const ADMIN_CREDENTIALS = {
             email: 'admin@saudicareers.site',
             password: 'Admin@2024!'
         };
         
-        // Check if already logged in
-        function checkAdminAuth() {
-            const isAdmin = localStorage.getItem('saudicareers_is_admin') === 'true';
-            if (isAdmin) {
-                showDashboard();
-            }
-        }
+        let isLoggedIn = false;
+        let trackingData = [];
         
-        function showDashboard() {
-            document.getElementById('admin-login-screen').classList.add('hidden');
-            document.getElementById('admin-dashboard').classList.remove('hidden');
-            document.body.classList.remove('bg-gradient-to-br', 'from-emerald-950', 'to-emerald-900');
-            document.body.classList.add('bg-gray-50');
-            
-            // Initialize dashboard
-            updateStats();
-            renderJobs();
-            renderUsers();
-        }
-        
-        // Admin login form
-        document.getElementById('admin-login-form').addEventListener('submit', function(e) {
+        document.getElementById('login-form').addEventListener('submit', function(e) {
             e.preventDefault();
-            
-            const email = document.getElementById('admin-email').value;
-            const password = document.getElementById('admin-password').value;
-            const errorEl = document.getElementById('login-error');
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
             
             if (email === ADMIN_CREDENTIALS.email && password === ADMIN_CREDENTIALS.password) {
-                localStorage.setItem('saudicareers_is_admin', 'true');
-                localStorage.setItem('saudicareers_user', JSON.stringify({
-                    email: email,
-                    name: 'المشرف',
-                    role: 'admin'
-                }));
-                showDashboard();
+                isLoggedIn = true;
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('dashboard').classList.remove('hidden');
+                initializeDashboard();
             } else {
-                errorEl.textContent = 'البريد الإلكتروني أو كلمة المرور غير صحيحة';
+                const errorEl = document.getElementById('login-error');
+                errorEl.textContent = 'بيانات الدخول غير صحيحة!';
                 errorEl.classList.remove('hidden');
             }
         });
         
-        // Check auth on load
-        checkAdminAuth();
-        
-        // Sample data (replace with real Supabase integration)
-        let jobs = JSON.parse(localStorage.getItem('saudicareers_jobs') || '[]');
-        let users = JSON.parse(localStorage.getItem('saudicareers_users') || '[]');
-        let applications = JSON.parse(localStorage.getItem('saudicareers_applications') || '[]');
-        
-        // Initialize with sample jobs if empty
-        if (jobs.length === 0) {
-            jobs = [
-                { id: 1, title: 'مدير مشروع', company: 'نيوم', location: 'تبوك', experience: '5-8 سنوات', salary: 'رواتب تنافسية', status: 'active', applicants: 12 },
-                { id: 2, title: 'مهندس أول', company: 'أرامكو', location: 'الظهران', experience: '+10 سنوات', salary: 'حوافز استثنائية', status: 'active', applicants: 8 },
-                { id: 3, title: 'أخصائي عمليات', company: 'البحر الأحمر', location: 'أملج', experience: '3-5 سنوات', salary: 'مزايا سكنية', status: 'active', applicants: 5 }
-            ];
-            localStorage.setItem('saudicareers_jobs', JSON.stringify(jobs));
+        function logout() {
+            isLoggedIn = false;
+            document.getElementById('dashboard').classList.add('hidden');
+            document.getElementById('login-screen').classList.remove('hidden');
         }
         
-        // Update date
-        document.getElementById('current-date').textContent = new Date().toLocaleDateString('ar-SA', { 
-            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
-        });
-        
-        // Update stats
-        function updateStats() {
-            document.getElementById('total-users').textContent = users.length || 156;
-            document.getElementById('active-jobs').textContent = jobs.filter(j => j.status === 'active').length;
-            document.getElementById('total-apps').textContent = applications.length || 43;
-            document.getElementById('cv-analyses').textContent = localStorage.getItem('saudicareers_cv_analyses') || 89;
+        // ═══════════════════════════════════════════════════════════════════════════════
+        // NAVIGATION
+        // ═══════════════════════════════════════════════════════════════════════════════
+        function showPage(pageName) {
+            // Hide all pages
+            document.querySelectorAll('[id^="page-"]').forEach(page => {
+                page.classList.add('hidden');
+            });
             
-            document.getElementById('jobs-count').textContent = jobs.length;
-            document.getElementById('users-count').textContent = users.length || 156;
-            document.getElementById('apps-count').textContent = applications.length || 43;
+            // Show selected page
+            document.getElementById(`page-${pageName}`).classList.remove('hidden');
+            
+            // Update page title
+            const titles = {
+                'overview': 'نظرة عامة',
+                'analytics': 'التحليلات المتقدمة',
+                'tracking': 'تتبع الزوار',
+                'jobs': 'إدارة الوظائف',
+                'users': 'المستخدمين',
+                'logs': 'سجل النشاطات',
+                'settings': 'الإعدادات'
+            };
+            document.getElementById('page-title').textContent = titles[pageName];
+            
+            // Update nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.closest('.nav-item').classList.add('active');
         }
         
-        // Render jobs table
-        function renderJobs() {
+        // ═══════════════════════════════════════════════════════════════════════════════
+        // DASHBOARD INITIALIZATION
+        // ═══════════════════════════════════════════════════════════════════════════════
+        function initializeDashboard() {
+            initCharts();
+            loadRecentActivity();
+            loadJobsTable();
+            loadUsersTable();
+            loadTrackingData();
+            loadLogsTable();
+            initHeatmap();
+            startLiveTracking();
+        }
+        
+        // ═══════════════════════════════════════════════════════════════════════════════
+        // CHARTS
+        // ═══════════════════════════════════════════════════════════════════════════════
+        function initCharts() {
+            // Visits Chart
+            const visitsCtx = document.getElementById('visitsChart').getContext('2d');
+            new Chart(visitsCtx, {
+                type: 'line',
+                data: {
+                    labels: ['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'],
+                    datasets: [{
+                        label: 'الزيارات',
+                        data: [1200, 1900, 1500, 2200, 1800, 2400, 2100],
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9ca3af' } },
+                        x: { grid: { display: false }, ticks: { color: '#9ca3af' } }
+                    }
+                }
+            });
+            
+            // Sources Chart
+            const sourcesCtx = document.getElementById('sourcesChart').getContext('2d');
+            new Chart(sourcesCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['بحث جوجل', 'تويتر', 'لينكد إن', 'مباشر', 'أخرى'],
+                    datasets: [{
+                        data: [45, 25, 15, 10, 5],
+                        backgroundColor: ['#3b82f6', '#1da1f2', '#0077b5', '#10b981', '#6b7280']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: { color: '#e2e8f0' }
+                        }
+                    }
+                }
+            });
+            
+            // Devices Chart
+            const devicesCtx = document.getElementById('devicesChart').getContext('2d');
+            new Chart(devicesCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['جوال', 'كمبيوتر', 'تابلت'],
+                    datasets: [{
+                        label: 'النسبة %',
+                        data: [68, 28, 4],
+                        backgroundColor: ['#3b82f6', '#8b5cf6', '#10b981'],
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9ca3af' } },
+                        x: { grid: { display: false }, ticks: { color: '#9ca3af' } }
+                    }
+                }
+            });
+        }
+        
+        // ═══════════════════════════════════════════════════════════════════════════════
+        // LOAD DATA FUNCTIONS
+        // ═══════════════════════════════════════════════════════════════════════════════
+        function loadRecentActivity() {
+            const activities = [
+                { icon: 'fa-user-plus', color: 'green', text: 'مستخدم جديد سجل: محمد أحمد', time: 'منذ 2 دقيقة' },
+                { icon: 'fa-briefcase', color: 'blue', text: 'تقديم جديد على وظيفة: مهندس برمجيات', time: 'منذ 5 دقائق' },
+                { icon: 'fa-eye', color: 'purple', text: 'زيارة جديدة من الرياض', time: 'منذ 8 دقائق' },
+                { icon: 'fa-mouse-pointer', color: 'yellow', text: 'نقر على إعلان وظيفة', time: 'منذ 12 دقيقة' },
+                { icon: 'fa-file-alt', color: 'blue', text: 'رفع سيرة ذاتية جديدة', time: 'منذ 15 دقيقة' }
+            ];
+            
+            const container = document.getElementById('recent-activity');
+            container.innerHTML = activities.map(activity => `
+                <div class="flex items-center gap-4 p-4 bg-slate-800/50 rounded-xl">
+                    <div class="w-10 h-10 bg-${activity.color}-500/20 rounded-lg flex items-center justify-center">
+                        <i class="fas ${activity.icon} text-${activity.color}-400"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm">${activity.text}</p>
+                        <p class="text-xs text-gray-500">${activity.time}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function loadJobsTable() {
+            const jobs = [
+                { id: 1, title: 'مدير مشروع', company: 'نيوم', type: 'مشروع رؤية 2030', location: 'تبوك', salary: '25000-40000', status: 'active' },
+                { id: 2, title: 'مهندس برمجيات', company: 'أرامكو', type: 'شبه حكومي', location: 'الظهران', salary: '18000-28000', status: 'active' },
+                { id: 3, title: 'محلل مالي', company: 'وزارة المالية', type: 'حكومي', location: 'الرياض', salary: '15000-22000', status: 'active' },
+                { id: 4, title: 'أخصائي تسويق', company: 'سابك', type: 'شبه حكومي', location: 'الجبيل', salary: '12000-18000', status: 'paused' },
+                { id: 5, title: 'ممرض', company: 'وزارة الصحة', type: 'حكومي', location: 'جدة', salary: '8000-12000', status: 'active' }
+            ];
+            
             const tbody = document.getElementById('jobs-table-body');
             tbody.innerHTML = jobs.map(job => `
-                <tr class="border-b border-gray-100 hover:bg-gray-50">
-                    <td class="py-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
-                                <i class="fas fa-briefcase text-emerald-600"></i>
-                            </div>
-                            <span class="font-bold text-emerald-950">${job.title}</span>
-                        </div>
-                    </td>
-                    <td class="py-4 text-gray-600">${job.company}</td>
-                    <td class="py-4 text-gray-600">${job.location}</td>
-                    <td class="py-4">
-                        <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">${job.applicants || 0}</span>
-                    </td>
-                    <td class="py-4">
-                        <span class="${job.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'} px-3 py-1 rounded-full text-sm">
-                            ${job.status === 'active' ? 'نشطة' : 'متوقفة'}
-                        </span>
-                    </td>
-                    <td class="py-4">
-                        <button onclick="editJob(${job.id})" class="text-blue-600 hover:text-blue-800 ml-3">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button onclick="deleteJob(${job.id})" class="text-red-600 hover:text-red-800">
-                            <i class="fas fa-trash"></i>
-                        </button>
+                <tr class="border-b border-slate-800 hover:bg-slate-800/30">
+                    <td class="p-4">${job.id}</td>
+                    <td class="p-4 font-medium">${job.title}</td>
+                    <td class="p-4">${job.company}</td>
+                    <td class="p-4"><span class="px-2 py-1 bg-blue-500/20 text-blue-400 rounded text-xs">${job.type}</span></td>
+                    <td class="p-4">${job.location}</td>
+                    <td class="p-4">${job.salary} ريال</td>
+                    <td class="p-4">${getStatusBadge(job.status)}</td>
+                    <td class="p-4">
+                        <button class="text-blue-400 hover:text-blue-300 ml-2"><i class="fas fa-edit"></i></button>
+                        <button class="text-red-400 hover:text-red-300"><i class="fas fa-trash"></i></button>
                     </td>
                 </tr>
             `).join('');
         }
         
-        // Render users table
-        function renderUsers() {
-            const tbody = document.getElementById('users-table-body');
-            const sampleUsers = [
-                { name: 'محمد أحمد', email: 'mohammed@example.com', date: '2024-03-10', lastLogin: '2024-03-14' },
-                { name: 'سارة علي', email: 'sara@example.com', date: '2024-03-12', lastLogin: '2024-03-15' },
-                { name: 'خالد محمد', email: 'khaled@example.com', date: '2024-03-08', lastLogin: '2024-03-13' }
+        function loadUsersTable() {
+            const users = [
+                { name: 'محمد أحمد', email: 'mohammed@email.com', registered: '2024-03-10', lastLogin: 'منذ 5 دقائق', status: 'active' },
+                { name: 'خالد العلي', email: 'khaled@email.com', registered: '2024-03-08', lastLogin: 'منذ ساعة', status: 'active' },
+                { name: 'فهد السالم', email: 'fahad@email.com', registered: '2024-03-05', lastLogin: 'منذ يوم', status: 'inactive' }
             ];
             
-            tbody.innerHTML = (users.length ? users : sampleUsers).map(user => `
-                <tr class="border-b border-gray-100 hover:bg-gray-50">
-                    <td class="py-4">
+            const tbody = document.getElementById('users-table-body');
+            tbody.innerHTML = users.map(user => `
+                <tr class="border-b border-slate-800 hover:bg-slate-800/30">
+                    <td class="p-4">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-gold-100 rounded-full flex items-center justify-center">
-                                <span class="font-bold text-gold-600">${user.name.charAt(0)}</span>
+                            <div class="w-10 h-10 bg-blue-500/20 rounded-full flex items-center justify-center">
+                                <span class="text-blue-400 font-bold">${user.name.charAt(0)}</span>
                             </div>
-                            <span class="font-bold text-emerald-950">${user.name}</span>
+                            <span>${user.name}</span>
                         </div>
                     </td>
-                    <td class="py-4 text-gray-600">${user.email}</td>
-                    <td class="py-4 text-gray-500">${new Date(user.date).toLocaleDateString('ar-SA')}</td>
-                    <td class="py-4 text-gray-500">${new Date(user.lastLogin).toLocaleDateString('ar-SA')}</td>
+                    <td class="p-4">${user.email}</td>
+                    <td class="p-4">${user.registered}</td>
+                    <td class="p-4">${user.lastLogin}</td>
+                    <td class="p-4">${getStatusBadge(user.status)}</td>
+                    <td class="p-4">
+                        <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-eye"></i></button>
+                    </td>
                 </tr>
             `).join('');
         }
         
-        // Modal functions
-        function showAddJobModal() {
-            document.getElementById('add-job-modal').classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        }
-        
-        function closeAddJobModal() {
-            document.getElementById('add-job-modal').classList.add('hidden');
-            document.body.style.overflow = '';
-        }
-        
-        // Add job form
-        document.getElementById('add-job-form').addEventListener('submit', function(e) {
-            e.preventDefault();
+        function loadLogsTable() {
+            const logs = [
+                { date: '2024-03-15', time: '14:32:15', user: 'زائر', action: 'زيارة صفحة', details: 'الصفحة الرئيسية', ip: '192.168.1.1' },
+                { date: '2024-03-15', time: '14:31:42', user: 'محمد أحمد', action: 'تسجيل دخول', details: 'نجاح', ip: '192.168.1.45' },
+                { date: '2024-03-15', time: '14:30:18', user: 'زائر', action: 'نقر', details: 'زر التقديم', ip: '192.168.1.2' },
+                { date: '2024-03-15', time: '14:28:55', user: 'خالد العلي', action: 'تقديم', details: 'وظيفة: مهندس برمجيات', ip: '192.168.1.32' }
+            ];
             
-            const formData = new FormData(e.target);
-            const newJob = {
-                id: Date.now(),
-                title: formData.get('title'),
-                company: formData.get('company'),
-                location: formData.get('location'),
-                experience: formData.get('experience'),
-                salary: formData.get('salary'),
-                description: formData.get('description'),
-                image: formData.get('image') || `images/job${Math.floor(Math.random() * 3) + 1}.webp`,
-                status: 'active',
-                applicants: 0,
-                date: new Date().toISOString()
+            const tbody = document.getElementById('logs-table-body');
+            tbody.innerHTML = logs.map(log => `
+                <tr class="border-b border-slate-800 hover:bg-slate-800/30">
+                    <td class="p-4">${log.date}</td>
+                    <td class="p-4 font-mono">${log.time}</td>
+                    <td class="p-4">${log.user}</td>
+                    <td class="p-4"><span class="px-2 py-1 bg-blue-500/20 text-blue-400 rounded text-xs">${log.action}</span></td>
+                    <td class="p-4">${log.details}</td>
+                    <td class="p-4 font-mono text-xs text-gray-500">${log.ip}</td>
+                </tr>
+            `).join('');
+        }
+        
+        function getStatusBadge(status) {
+            const badges = {
+                'active': '<span class="px-2 py-1 bg-green-500/20 text-green-400 rounded text-xs">نشط</span>',
+                'inactive': '<span class="px-2 py-1 bg-gray-500/20 text-gray-400 rounded text-xs">غير نشط</span>',
+                'paused': '<span class="px-2 py-1 bg-yellow-500/20 text-yellow-400 rounded text-xs">متوقف</span>'
+            };
+            return badges[status] || status;
+        }
+        
+        // ═══════════════════════════════════════════════════════════════════════════════
+        // LIVE TRACKING
+        // ═══════════════════════════════════════════════════════════════════════════════
+        function initHeatmap() {
+            const container = document.querySelector('#heatmap-container > div');
+            container.innerHTML = '';
+            
+            for (let i = 0; i < 96; i++) {
+                const intensity = Math.random();
+                let color;
+                if (intensity > 0.7) color = 'bg-red-500';
+                else if (intensity > 0.4) color = 'bg-yellow-500';
+                else if (intensity > 0.2) color = 'bg-green-500';
+                else color = 'bg-slate-700';
+                
+                const cell = document.createElement('div');
+                cell.className = `heatmap-cell ${color} opacity-${Math.floor(intensity * 10) * 10}`;
+                container.appendChild(cell);
+            }
+        }
+        
+        function startLiveTracking() {
+            // Simulate live user count changes
+            setInterval(() => {
+                const count = Math.floor(Math.random() * 10) + 3;
+                document.getElementById('live-users-count').textContent = count;
+                document.getElementById('live-users-badge').textContent = `${count} نشط`;
+            }, 5000);
+            
+            // Simulate new tracking events
+            setInterval(() => {
+                addTrackingEvent();
+            }, 8000);
+        }
+        
+        function addTrackingEvent() {
+            const actions = ['نقر', 'تمرير', 'تسجيل دخول', 'زيارة صفحة', 'تقديم'];
+            const elements = ['زر التقديم', 'قائمة الوظائف', 'حقل البحث', 'رابط التسجيل', 'بطاقة وظيفة'];
+            const pages = ['الرئيسية', 'الوظائف', 'تفاصيل الوظيفة', 'تسجيل الدخول'];
+            const locations = ['الرياض', 'جدة', 'الدمام', 'مكة', 'المدينة'];
+            const devices = ['iPhone', 'Android', 'Windows', 'Mac'];
+            
+            const event = {
+                time: new Date().toLocaleTimeString('ar-SA'),
+                action: actions[Math.floor(Math.random() * actions.length)],
+                element: elements[Math.floor(Math.random() * elements.length)],
+                page: pages[Math.floor(Math.random() * pages.length)],
+                location: locations[Math.floor(Math.random() * locations.length)],
+                device: devices[Math.floor(Math.random() * devices.length)]
             };
             
-            jobs.push(newJob);
-            localStorage.setItem('saudicareers_jobs', JSON.stringify(jobs));
+            const tbody = document.getElementById('tracking-table-body');
+            const row = document.createElement('tr');
+            row.className = 'border-b border-slate-800 animate-pulse';
+            row.innerHTML = `
+                <td class="p-4 font-mono">${event.time}</td>
+                <td class="p-4"><span class="px-2 py-1 bg-blue-500/20 text-blue-400 rounded text-xs">${event.action}</span></td>
+                <td class="p-4">${event.element}</td>
+                <td class="p-4">${event.page}</td>
+                <td class="p-4">${event.location}</td>
+                <td class="p-4">${event.device}</td>
+            `;
             
-            renderJobs();
-            updateStats();
-            closeAddJobModal();
-            e.target.reset();
+            tbody.insertBefore(row, tbody.firstChild);
             
-            alert('تم إضافة الوظيفة بنجاح! 🎉');
-        });
+            // Keep only last 20 rows
+            while (tbody.children.length > 20) {
+                tbody.removeChild(tbody.lastChild);
+            }
+            
+            // Remove animation after a moment
+            setTimeout(() => row.classList.remove('animate-pulse'), 1000);
+        }
         
-        function deleteJob(id) {
-            if (confirm('هل أنت متأكد من حذف هذه الوظيفة؟')) {
-                jobs = jobs.filter(j => j.id !== id);
-                localStorage.setItem('saudicareers_jobs', JSON.stringify(jobs));
-                renderJobs();
-                updateStats();
+        function loadTrackingData() {
+            // Initial load of tracking data
+            for (let i = 0; i < 10; i++) {
+                addTrackingEvent();
             }
         }
         
-        function editJob(id) {
-            const job = jobs.find(j => j.id === id);
-            if (job) {
-                // Fill form and show modal (simplified)
-                alert('تعديل الوظيفة: ' + job.title);
-            }
+        function clearTracking() {
+            document.getElementById('tracking-table-body').innerHTML = '';
         }
         
-        function logoutAdmin() {
-            localStorage.removeItem('saudicareers_user');
-            localStorage.removeItem('saudicareers_is_admin');
-            
-            // Show login screen again
-            document.getElementById('admin-dashboard').classList.add('hidden');
-            document.getElementById('admin-login-screen').classList.remove('hidden');
-            document.body.classList.add('bg-gradient-to-br', 'from-emerald-950', 'to-emerald-900');
-            document.body.classList.remove('bg-gray-50');
-            
-            // Clear form
-            document.getElementById('admin-login-form').reset();
-            document.getElementById('login-error').classList.add('hidden');
-        }
-        
-        // Initialize if already logged in
-        if (localStorage.getItem('saudicareers_is_admin') === 'true') {
-            showDashboard();
+        // ═══════════════════════════════════════════════════════════════════════════════
+        // JOB MANAGEMENT
+        // ═══════════════════════════════════════════════════════════════════════════════
+        function addNewJob() {
+            alert('إضافة وظيفة جديدة - قيد التطوير');
         }
     </script>
 </body>
