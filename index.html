@@ -675,26 +675,6 @@
                 <div class="flex-1 h-px bg-slate-700"></div>
             </div>
             
-            <!-- Social Login Buttons -->
-            <div class="space-y-3 mb-4">
-                <button onclick="handleGoogleLogin()" class="w-full py-3 bg-white text-gray-900 rounded-xl font-medium flex items-center justify-center gap-3 hover:bg-gray-100 transition-colors">
-                    <svg class="w-5 h-5" viewBox="0 0 24 24">
-                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                    </svg>
-                    التسجيل باستخدام Google
-                </button>
-                
-                <button onclick="handleAppleLogin()" class="w-full py-3 bg-white text-black rounded-xl font-medium flex items-center justify-center gap-3 hover:bg-gray-100 transition-colors">
-                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.11 1.87-2.54 5.98.22 7.13-.57 1.5-1.31 2.99-2.27 4.08zm-5.85-15.1c.07-2.04 1.76-3.79 3.75-3.94.29 2.32-1.93 4.48-3.75 3.94z"/>
-                    </svg>
-                    التسجيل باستخدام Apple
-                </button>
-            </div>
-            
             <p class="text-center text-sm opacity-60">
                 <span id="no-account-text">ليس لديك حساب؟</span> 
                 <button onclick="closeLoginSheet(); openRegisterSheet();" class="text-emerald-500">سجل الآن</button>
@@ -731,34 +711,7 @@
                 </button>
             </form>
             
-            <!-- Divider -->
-            <div class="flex items-center gap-3 my-4">
-                <div class="flex-1 h-px bg-slate-700"></div>
-                <span class="text-xs opacity-50">أو</span>
-                <div class="flex-1 h-px bg-slate-700"></div>
-            </div>
-            
-            <!-- Social Register Buttons -->
-            <div class="space-y-3 mb-4">
-                <button onclick="handleGoogleLogin()" class="w-full py-3 bg-white text-gray-900 rounded-xl font-medium flex items-center justify-center gap-3 hover:bg-gray-100 transition-colors">
-                    <svg class="w-5 h-5" viewBox="0 0 24 24">
-                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                    </svg>
-                    التسجيل باستخدام Google
-                </button>
-                
-                <button onclick="handleAppleLogin()" class="w-full py-3 bg-white text-black rounded-xl font-medium flex items-center justify-center gap-3 hover:bg-gray-100 transition-colors">
-                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.11 1.87-2.54 5.98.22 7.13-.57 1.5-1.31 2.99-2.27 4.08zm-5.85-15.1c.07-2.04 1.76-3.79 3.75-3.94.29 2.32-1.93 4.48-3.75 3.94z"/>
-                    </svg>
-                    التسجيل باستخدام Apple
-                </button>
-            </div>
-            
-            <p class="text-center text-sm opacity-60">
+            <p class="text-center text-sm opacity-60 mt-4">
                 <span id="have-account-text">لديك حساب بالفعل؟</span> 
                 <button onclick="closeRegisterSheet(); openLoginSheet();" class="text-emerald-500">تسجيل الدخول</button>
             </p>
@@ -907,7 +860,7 @@
         // AUTH FUNCTIONS
         // ═══════════════════════════════════════════════════════════════════════════════
         function checkAuth() {
-            const userData = localStorage.getItem('saudicareers_user');
+            const userData = localStorage.getItem(SESSION_KEY);
             if (userData) {
                 currentUser = JSON.parse(userData);
                 updateAuthUI();
@@ -928,80 +881,157 @@
             }
         }
         
+        // ═══════════════════════════════════════════════════════════════════════════════
+        // AUTHENTICATION - Real Email/Password with Validation
+        // ═══════════════════════════════════════════════════════════════════════════════
+        
+        // User database stored in localStorage
+        const USERS_KEY = 'saudicareers_users';
+        const SESSION_KEY = 'saudicareers_user';
+        
+        // Initialize users database
+        function getUsers() {
+            const users = localStorage.getItem(USERS_KEY);
+            return users ? JSON.parse(users) : [];
+        }
+        
+        function saveUser(user) {
+            const users = getUsers();
+            users.push(user);
+            localStorage.setItem(USERS_KEY, JSON.stringify(users));
+        }
+        
+        function findUser(email) {
+            return getUsers().find(u => u.email === email);
+        }
+        
+        // Email validation
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+        
+        // Password validation (min 8 chars, at least 1 letter and 1 number)
+        function isValidPassword(password) {
+            return password.length >= 8 && /[a-zA-Z]/.test(password) && /\d/.test(password);
+        }
+        
         function handleLoginSubmit() {
-            const email = document.getElementById('login-email').value;
+            const email = document.getElementById('login-email').value.trim();
             const password = document.getElementById('login-password').value;
             
-            // أي إيميل وأي باسورد يتم قبولهما!
-            currentUser = { 
-                name: email.split('@')[0] || 'مستخدم', 
-                email: email 
-            };
-            localStorage.setItem('saudicareers_user', JSON.stringify(currentUser));
+            // Validation
+            if (!email) {
+                alert('❌ يرجى إدخال البريد الإلكتروني');
+                return;
+            }
+            
+            if (!isValidEmail(email)) {
+                alert('❌ البريد الإلكتروني غير صالح');
+                return;
+            }
+            
+            if (!password) {
+                alert('❌ يرجى إدخال كلمة المرور');
+                return;
+            }
+            
+            // Check if user exists
+            const user = findUser(email);
+            if (!user) {
+                alert('❌ الحساب غير موجود. يرجى التسجيل أولاً');
+                return;
+            }
+            
+            // Verify password
+            if (user.password !== password) {
+                alert('❌ كلمة المرور غير صحيحة');
+                return;
+            }
+            
+            // Login successful
+            currentUser = { name: user.name, email: user.email };
+            localStorage.setItem(SESSION_KEY, JSON.stringify(currentUser));
             updateAuthUI();
             closeLoginSheet();
-            showNotification(currentLanguage === 'ar' ? 'لقد تم تسجيل دخولك يا للروعة! 🎉' : 'Welcome back! Amazing! 🎉');
+            showNotification('✅ مرحباً ' + user.name + '! تم تسجيل دخولك بنجاح');
         }
         
         function handleRegisterSubmit() {
-            const name = document.getElementById('register-name').value;
-            const email = document.getElementById('register-email').value;
+            const name = document.getElementById('register-name').value.trim();
+            const email = document.getElementById('register-email').value.trim();
             const password = document.getElementById('register-password').value;
             
-            // أي بيانات يتم قبولها!
-            currentUser = { name: name || 'مستخدم جديد', email: email };
-            localStorage.setItem('saudicareers_user', JSON.stringify(currentUser));
+            // Validation
+            if (!name) {
+                alert('❌ يرجى إدخال الاسم الكامل');
+                return;
+            }
+            
+            if (name.length < 3) {
+                alert('❌ الاسم يجب أن يكون 3 أحرف على الأقل');
+                return;
+            }
+            
+            if (!email) {
+                alert('❌ يرجى إدخال البريد الإلكتروني');
+                return;
+            }
+            
+            if (!isValidEmail(email)) {
+                alert('❌ البريد الإلكتروني غير صالح (مثال: user@email.com)');
+                return;
+            }
+            
+            // Check if email already exists
+            if (findUser(email)) {
+                alert('❌ هذا البريد الإلكتروني مسجل بالفعل. يرجى تسجيل الدخول');
+                return;
+            }
+            
+            if (!password) {
+                alert('❌ يرجى إدخال كلمة المرور');
+                return;
+            }
+            
+            if (!isValidPassword(password)) {
+                alert('❌ كلمة المرور يجب أن تكون 8 أحرف على الأقل وتحتوي على حرف ورقم');
+                return;
+            }
+            
+            // Create new user
+            const newUser = {
+                name: name,
+                email: email,
+                password: password,
+                createdAt: new Date().toISOString()
+            };
+            
+            saveUser(newUser);
+            
+            // Auto login
+            currentUser = { name: name, email: email };
+            localStorage.setItem(SESSION_KEY, JSON.stringify(currentUser));
             updateAuthUI();
             closeRegisterSheet();
-            showNotification(currentLanguage === 'ar' ? 'لقد تم تسجيل دخولك يا للروعة! 🎉' : 'Welcome! Amazing! 🎉');
+            
+            // Clear form
+            document.getElementById('register-name').value = '';
+            document.getElementById('register-email').value = '';
+            document.getElementById('register-password').value = '';
+            
+            showNotification('✅ تم إنشاء حسابك بنجاح! مرحباً ' + name);
         }
         
         function logout() {
             currentUser = null;
-            localStorage.removeItem('saudicareers_user');
+            localStorage.removeItem(SESSION_KEY);
             updateAuthUI();
-            showNotification(currentLanguage === 'ar' ? 'تم تسجيل الخروج' : 'Logged out');
-        }
-        
-        // ═══════════════════════════════════════════════════════════════════════════════
-        // SOCIAL LOGIN (Google & Apple)
-        // ═══════════════════════════════════════════════════════════════════════════════
-        function handleGoogleLogin() {
-            // Generate random Google-like name
-            const names = ['Ahmed', 'Mohammed', 'Sara', 'Fatima', 'Khalid', 'Nora', 'Fahad', 'Lama'];
-            const randomName = names[Math.floor(Math.random() * names.length)];
-            const randomNum = Math.floor(Math.random() * 1000);
-            const email = `${randomName.toLowerCase()}${randomNum}@gmail.com`;
+            showNotification('✅ تم تسجيل الخروج');
             
-            currentUser = { 
-                name: randomName, 
-                email: email,
-                provider: 'google'
-            };
-            localStorage.setItem('saudicareers_user', JSON.stringify(currentUser));
-            updateAuthUI();
-            closeLoginSheet();
-            closeRegisterSheet();
-            showNotification(currentLanguage === 'ar' ? 'لقد تم تسجيل دخولك عبر Google يا للروعة! 🎉' : 'Welcome via Google! Amazing! 🎉');
-        }
-        
-        function handleAppleLogin() {
-            // Generate random Apple-like private email
-            const names = ['User', 'Guest', 'Member', 'Client'];
-            const randomName = names[Math.floor(Math.random() * names.length)];
-            const randomId = Math.random().toString(36).substring(2, 10);
-            const email = `${randomId}@privaterelay.appleid.com`;
-            
-            currentUser = { 
-                name: randomName, 
-                email: email,
-                provider: 'apple'
-            };
-            localStorage.setItem('saudicareers_user', JSON.stringify(currentUser));
-            updateAuthUI();
-            closeLoginSheet();
-            closeRegisterSheet();
-            showNotification(currentLanguage === 'ar' ? 'لقد تم تسجيل دخولك عبر Apple يا للروعة! 🎉' : 'Welcome via Apple! Amazing! 🎉');
+            // Clear login form
+            document.getElementById('login-email').value = '';
+            document.getElementById('login-password').value = '';
         }
         
         // ═══════════════════════════════════════════════════════════════════════════════
