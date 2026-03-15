@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#1C1C1E">
-    <title>SaudiCareers - وظائف حكومية وشبه حكومية</title>
+    <meta name="theme-color" content="#000000">
+    <title id="page-title">SaudiCareers - وظائف حكومية وشبه حكومية</title>
     
     <!-- PWA -->
     <link rel="manifest" href="manifest.json">
@@ -20,179 +20,165 @@
     <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
     
+    <!-- Job Database -->
+    <script src="jobs-data.js"></script>
+    
     <script>
     tailwind.config = {
+        darkMode: 'class',
         theme: {
             extend: {
                 colors: {
-                    'ios-bg': '#000000',
-                    'ios-card': '#1C1C1E',
-                    'ios-card-secondary': '#2C2C2E',
-                    'ios-border': '#38383A',
-                    'ios-label': '#FFFFFF',
-                    'ios-label-secondary': '#EBEBF599',
-                    'ios-label-tertiary': '#EBEBF54D',
-                    'ios-blue': '#0A84FF',
-                    'ios-green': '#30D158',
-                    'ios-orange': '#FF9F0A',
-                    'saudi-midnight': '#1C3A2F',
-                    'saudi-gold': '#D4AF37',
+                    primary: '#0A84FF',
+                    success: '#30D158',
+                    warning: '#FF9F0A',
+                    danger: '#FF453A',
+                    gold: '#D4AF37',
                 }
             }
         }
     }
-    
-    // ═══════════════════════════════════════════════════════════════
-    // AUTH & USER STATE
-    // ═══════════════════════════════════════════════════════════════
-    let currentUser = null;
-    
-    // Check auth from localStorage (simple auth for demo)
-    function checkAuth() {
-        const userData = localStorage.getItem('saudicareers_user');
-        if (userData) {
-            currentUser = JSON.parse(userData);
-        }
-        updateUI();
-    }
-    
-    function updateUI() {
-        const guestView = document.getElementById('guest-view');
-        const userView = document.getElementById('user-view');
-        const userNameEl = document.getElementById('user-name');
-        const greetingEl = document.getElementById('greeting-text');
-        
-        if (currentUser) {
-            // Logged in view
-            if (guestView) guestView.classList.add('hidden');
-            if (userView) userView.classList.remove('hidden');
-            if (userNameEl) userNameEl.textContent = currentUser.name || 'مستخدم';
-            if (greetingEl) greetingEl.textContent = getGreeting(currentUser.name);
-        } else {
-            // Guest view
-            if (guestView) guestView.classList.remove('hidden');
-            if (userView) userView.classList.add('hidden');
-            if (greetingEl) greetingEl.textContent = 'اكتشف فرصك في رؤية 2030';
-        }
-    }
-    
-    function getGreeting(name) {
-        const hour = new Date().getHours();
-        let greeting = 'صباح الخير';
-        if (hour >= 12 && hour < 17) greeting = 'مساء الخير';
-        else if (hour >= 17) greeting = 'مساء الخير';
-        return `${greeting}، ${name || 'مستخدم'} 🇸🇦`;
-    }
-    
-    function login(email, password) {
-        // Demo login - in production this would call Supabase
-        if (email && password) {
-            currentUser = { name: email.split('@')[0], email: email };
-            localStorage.setItem('saudicareers_user', JSON.stringify(currentUser));
-            updateUI();
-            closeLoginSheet();
-        }
-    }
-    
-    function register(name, email, password) {
-        if (name && email && password) {
-            currentUser = { name: name, email: email };
-            localStorage.setItem('saudicareers_user', JSON.stringify(currentUser));
-            updateUI();
-            closeRegisterSheet();
-        }
-    }
-    
-    function logout() {
-        currentUser = null;
-        localStorage.removeItem('saudicareers_user');
-        updateUI();
-    }
-    
-    // Initialize on load
-    document.addEventListener('DOMContentLoaded', checkAuth);
     </script>
     
     <style>
+    :root {
+        --bg-primary: #000000;
+        --bg-secondary: #1C1C1E;
+        --bg-tertiary: #2C2C2E;
+        --text-primary: #FFFFFF;
+        --text-secondary: rgba(255,255,255,0.6);
+        --text-tertiary: rgba(255,255,255,0.3);
+        --border-color: rgba(255,255,255,0.1);
+    }
+    
+    [data-theme="light"] {
+        --bg-primary: #F2F2F7;
+        --bg-secondary: #FFFFFF;
+        --bg-tertiary: #E5E5EA;
+        --text-primary: #000000;
+        --text-secondary: rgba(0,0,0,0.6);
+        --text-tertiary: rgba(0,0,0,0.3);
+        --border-color: rgba(0,0,0,0.1);
+    }
+    
     * {
         font-family: 'SF Pro Display', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         -webkit-tap-highlight-color: transparent;
     }
     
     body {
-        background: #000000;
-        color: #FFFFFF;
+        background: var(--bg-primary);
+        color: var(--text-primary);
         overflow-x: hidden;
-        padding-bottom: 100px;
+        padding-bottom: 20px;
+        transition: background 0.3s ease, color 0.3s ease;
     }
     
-    /* Navigation */
+    /* Mobile-only tab bar */
+    .tab-bar {
+        display: none;
+    }
+    
+    @media (max-width: 768px) {
+        .tab-bar {
+            display: block;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-secondary);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border-color);
+            z-index: 1000;
+        }
+        body {
+            padding-bottom: 80px;
+        }
+    }
+    
+    /* Desktop Navigation */
+    .desktop-nav {
+        display: none;
+    }
+    
+    @media (min-width: 769px) {
+        .desktop-nav {
+            display: flex;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .desktop-nav {
+            display: none;
+        }
+    }
+    
     .nav-container {
         position: fixed;
         top: 0;
         left: 0;
         right: 0;
         z-index: 100;
-        background: rgba(0, 0, 0, 0.8);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
+        background: var(--bg-primary);
+        border-bottom: 1px solid var(--border-color);
     }
     
-    .nav-title {
-        font-size: 20px;
-        font-weight: 600;
-    }
-    
-    /* Cards */
     .ios-card {
-        background: #1C1C1E;
+        background: var(--bg-secondary);
         border-radius: 16px;
-        overflow: hidden;
+        border: 1px solid var(--border-color);
+        transition: background 0.3s ease;
     }
     
-    /* Buttons */
     .btn-primary {
         background: #0A84FF;
         color: white;
-        padding: 14px 24px;
-        border-radius: 12px;
+        padding: 12px 20px;
+        border-radius: 10px;
         font-weight: 600;
         transition: all 0.2s ease;
         cursor: pointer;
         border: none;
     }
     
-    .btn-primary:active {
-        transform: scale(0.97);
-        opacity: 0.9;
-    }
+    .btn-primary:hover { transform: translateY(-2px); opacity: 0.9; }
+    .btn-primary:active { transform: scale(0.97); }
     
     .btn-secondary {
-        background: #2C2C2E;
-        color: white;
-        padding: 14px 24px;
-        border-radius: 12px;
+        background: var(--bg-tertiary);
+        color: var(--text-primary);
+        padding: 12px 20px;
+        border-radius: 10px;
         font-weight: 600;
         transition: all 0.2s ease;
         cursor: pointer;
         border: none;
     }
     
-    .btn-secondary:active {
-        transform: scale(0.97);
+    .ios-input {
+        width: 100%;
+        padding: 12px 16px;
+        background: var(--bg-tertiary);
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        color: var(--text-primary);
+        font-size: 16px;
+        transition: all 0.2s ease;
     }
     
-    /* Tab Bar */
-    .tab-bar {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: rgba(0, 0, 0, 0.95);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border-top: 0.5px solid rgba(255, 255, 255, 0.1);
-        z-index: 1000;
+    .ios-input:focus {
+        outline: none;
+        border-color: #0A84FF;
+    }
+    
+    .ios-select {
+        padding: 10px 14px;
+        background: var(--bg-tertiary);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        color: var(--text-primary);
+        font-size: 14px;
+        cursor: pointer;
     }
     
     .tab-item {
@@ -201,43 +187,34 @@
         align-items: center;
         gap: 4px;
         padding: 8px 16px;
-        color: #EBEBF599;
+        color: var(--text-secondary);
         transition: color 0.2s ease;
         cursor: pointer;
         border: none;
         background: transparent;
     }
     
-    .tab-item.active {
-        color: #0A84FF;
-    }
+    .tab-item.active { color: #0A84FF; }
+    .tab-item:active { transform: scale(0.95); }
     
-    .tab-item:active {
-        transform: scale(0.95);
-    }
-    
-    /* Sheet Modal */
     .sheet-overlay {
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.6);
+        background: rgba(0,0,0,0.6);
         z-index: 2000;
         opacity: 0;
         visibility: hidden;
         transition: all 0.3s ease;
     }
     
-    .sheet-overlay.active {
-        opacity: 1;
-        visibility: visible;
-    }
+    .sheet-overlay.active { opacity: 1; visibility: visible; }
     
     .sheet {
         position: fixed;
         bottom: 0;
         left: 0;
         right: 0;
-        background: #1C1C1E;
+        background: var(--bg-secondary);
         border-radius: 24px 24px 0 0;
         z-index: 2001;
         transform: translateY(100%);
@@ -246,333 +223,228 @@
         overflow-y: auto;
     }
     
-    .sheet.active {
-        transform: translateY(0);
-    }
+    .sheet.active { transform: translateY(0); }
     
     .sheet-handle {
         width: 36px;
         height: 5px;
-        background: #38383A;
+        background: var(--text-tertiary);
         border-radius: 3px;
         margin: 12px auto;
     }
     
-    /* Form Inputs */
-    .ios-input {
-        width: 100%;
-        padding: 14px 16px;
-        background: #2C2C2E;
-        border: 1px solid #38383A;
+    .hidden { display: none !important; }
+    
+    .job-card {
+        opacity: 0;
+        animation: fadeIn 0.4s ease forwards;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Toggle buttons */
+    .toggle-btn {
+        width: 40px;
+        height: 40px;
         border-radius: 10px;
-        color: white;
-        font-size: 16px;
-        transition: border-color 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--bg-tertiary);
+        border: 1px solid var(--border-color);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        color: var(--text-primary);
     }
     
-    .ios-input:focus {
-        outline: none;
-        border-color: #0A84FF;
+    .toggle-btn:hover { background: var(--bg-secondary); }
+    
+    .job-list-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 16px;
     }
     
-    .ios-input::placeholder {
-        color: #EBEBF599;
-    }
-    
-    /* Hidden utility */
-    .hidden {
-        display: none !important;
-    }
-    
-    /* Scrollbar hide */
-    .hide-scrollbar::-webkit-scrollbar {
-        display: none;
-    }
-    
-    /* Job card animation */
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
+    @media (max-width: 768px) {
+        .job-list-container {
+            grid-template-columns: 1fr;
         }
     }
     
-    .animate-in {
-        animation: fadeInUp 0.4s ease forwards;
+    /* Search and filters */
+    .search-bar {
+        position: sticky;
+        top: 70px;
+        z-index: 50;
+        background: var(--bg-primary);
+        padding: 10px 0;
     }
     
-    .delay-1 { animation-delay: 0.1s; }
-    .delay-2 { animation-delay: 0.2s; }
-    .delay-3 { animation-delay: 0.3s; }
+    [data-theme="light"] .gold-text { color: #B8860B; }
+    [data-theme="dark"] .gold-text { color: #D4AF37; }
     </style>
 </head>
-<body class="hide-scrollbar">
+<body>
     
-    <!-- ═══════════════════════════════════════════════════════════════
-         NAVIGATION - Fixed with proper logo size
-         ═══════════════════════════════════════════════════════════════ -->
+    <!-- ═══════════════════════════════════════════════════════════════════════════════
+         NAVIGATION - Desktop & Mobile with Language & Theme Toggles
+         ═══════════════════════════════════════════════════════════════════════════════ -->
     <nav class="nav-container">
-        <div class="px-4 py-3 flex items-center justify-between">
+        <div class="px-4 py-3 flex items-center justify-between max-w-7xl mx-auto">
             <div class="flex items-center gap-3">
-                <!-- Logo: increased by 25% (from 40px to 50px) -->
-                <img src="logo.webp" alt="SaudiCareers" class="w-[50px] h-[50px] rounded-xl">
+                <img src="logo.webp" alt="SaudiCareers" class="w-12 h-12 rounded-xl">
                 <div>
-                    <!-- Title: reduced to half size (from 34px to 20px) -->
-                    <h1 class="nav-title">SaudiCareers</h1>
+                    <h1 class="text-lg font-bold">SaudiCareers</h1>
+                    <p id="nav-subtitle" class="text-xs opacity-60">وظائف حكومية وشبه حكومية</p>
                 </div>
             </div>
             
-            <!-- User Menu or Login Button -->
-            <div id="nav-user-section">
-                <!-- Guest: Show login button -->
-                <button id="nav-login-btn" onclick="openLoginSheet()" class="btn-primary text-sm py-2 px-4">
+            <!-- Desktop Navigation -->
+            <div class="desktop-nav items-center gap-6">
+                <a href="#" class="text-sm font-medium opacity-80 hover:opacity-100">الرئيسية</a>
+                <a href="#" class="text-sm font-medium opacity-80 hover:opacity-100">الوظائف</a>
+                <a href="#" class="text-sm font-medium opacity-80 hover:opacity-100">المقالات</a>
+                <a href="#" class="text-sm font-medium opacity-80 hover:opacity-100">عن الموقع</a>
+            </div>
+            
+            <!-- Right Side: Toggles + Auth -->
+            <div class="flex items-center gap-2">
+                <!-- Language Toggle -->
+                <button onclick="toggleLanguage()" class="toggle-btn" title="تغيير اللغة">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path>
+                    </svg>
+                </button>
+                
+                <!-- Theme Toggle -->
+                <button onclick="toggleTheme()" class="toggle-btn" title="تغيير المظهر">
+                    <svg id="theme-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </button>
+                
+                <!-- Auth Button -->
+                <button id="nav-auth-btn" onclick="openLoginSheet()" class="btn-primary text-sm py-2 px-4 mr-2">
                     دخول
                 </button>
                 
-                <!-- Logged in: Show user avatar -->
-                <button id="nav-user-btn" onclick="toggleUserMenu()" class="hidden w-10 h-10 rounded-full bg-ios-blue flex items-center justify-center text-sm font-bold">
+                <button id="nav-user-btn" onclick="toggleUserMenu()" class="hidden w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-sm font-bold mr-2">
                     👤
                 </button>
             </div>
         </div>
     </nav>
     
-    <!-- ═══════════════════════════════════════════════════════════════
+    <!-- ═══════════════════════════════════════════════════════════════════════════════
          MAIN CONTENT
-         ═══════════════════════════════════════════════════════════════ -->
-    <main class="pt-20 px-4">
+         ═══════════════════════════════════════════════════════════════════════════════ -->
+    <main class="pt-20 px-4 max-w-7xl mx-auto">
         
-        <!-- Greeting Widget (Dynamic based on auth) -->
+        <!-- Welcome Section -->
         <section class="ios-card p-5 mb-5">
-            <p class="text-saudi-gold text-sm font-medium mb-1">مرحباً بك في SaudiCareers 🇸🇦</p>
-            <h2 id="greeting-text" class="text-lg font-bold">اكتشف فرصك في رؤية 2030</h2>
+            <p id="welcome-subtitle" class="gold-text text-sm font-medium mb-1">مرحباً بك في SaudiCareers 🇸🇦</p>
+            <h2 id="welcome-title" class="text-xl font-bold">اكتشف 200+ وظيفة حكومية وشبه حكومية</h2>
         </section>
         
-        <!-- ═══════════════════════════════════════════════════════════════
-             GUEST VIEW - Shows signup prompt
-             ═══════════════════════════════════════════════════════════════ -->
-        <div id="guest-view">
-            
-            <!-- Locked CV Section Preview -->
-            <section class="ios-card p-5 mb-5">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="w-12 h-12 rounded-xl bg-saudi-midnight flex items-center justify-center">
-                        <svg class="w-6 h-6 text-saudi-gold" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="font-semibold">تحليل السيرة الذاتية</h3>
-                        <p class="text-ios-label-secondary text-sm">🔒 للأعضاء فقط</p>
-                    </div>
+        <!-- Search & Filters Bar -->
+        <div class="search-bar mb-5">
+            <div class="ios-card p-4">
+                <!-- Search Input -->
+                <div class="relative mb-4">
+                    <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    <input type="text" id="search-input" class="ios-input pl-12" placeholder="ابحث عن وظيفة، شركة، أو مدينة..." onkeyup="filterJobs()">
                 </div>
                 
-                <p class="text-ios-label-secondary text-sm mb-4">
-                    سجل الآن واحصل على تحليل ذكي لسيرتك الذاتية ومطابقتها مع معايير ATS
-                </p>
-                
-                <button onclick="openRegisterSheet()" class="btn-primary w-full">
-                    🚀 سجل مجاناً للوصول
-                </button>
-            </section>
-            
-            <!-- Guest CTA Banner -->
-            <section class="ios-card p-5 mb-5 bg-gradient-to-r from-saudi-midnight to-saudi-green">
-                <h3 class="font-bold text-lg mb-2">انضم لأكثر من 1,000 باحث عن عمل</h3>
-                <p class="text-sm opacity-90 mb-4">وظائف حكومية وشبه حكومية محدثة يومياً</p>
-                
-                <div class="flex gap-3">
-                    <button onclick="openRegisterSheet()" class="btn-primary flex-1">
-                        اشترك الآن
-                    </button>
-                    <button onclick="openLoginSheet()" class="btn-secondary flex-1">
-                        تسجيل الدخول
-                    </button>
-                </div>
-            </section>
-        </div>
-        
-        <!-- ═══════════════════════════════════════════════════════════════
-             USER VIEW - Shows full features for logged in users
-             ═══════════════════════════════════════════════════════════════ -->
-        <div id="user-view" class="hidden">
-            
-            <!-- Personalized Welcome -->
-            <section class="ios-card p-5 mb-5 bg-gradient-to-r from-saudi-midnight to-saudi-green">
-                <p id="user-greeting" class="text-saudi-gold text-sm font-medium mb-1">صباح الخير</p>
-                <h3 id="user-name" class="text-xl font-bold">مستخدم</h3>
-                <p class="text-sm opacity-90 mt-2">📋 3 وظائف جديدة تتوافق مع سيرتك الذاتية</p>
-            </section>
-            
-            <!-- CV Analyzer (Available for logged in users) -->
-            <section class="ios-card p-5 mb-5">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="font-semibold">تحليل السيرة الذاتية</h3>
-                    <span class="text-ios-blue text-xs">الذكاء الاصطناعي</span>
-                </div>
-                
-                <div class="flex items-center gap-4">
-                    <!-- Health Ring -->
-                    <div class="relative w-20 h-20">
-                        <svg class="w-full h-full -rotate-90" viewBox="0 0 100 100">
-                            <circle cx="50" cy="50" r="40" fill="none" stroke="#2C2C2E" stroke-width="8"/>
-                            <circle cx="50" cy="50" r="40" fill="none" stroke="#D4AF37" stroke-width="8" 
-                                stroke-linecap="round" 
-                                stroke-dasharray="251"
-                                stroke-dashoffset="15"
-                                id="cv-ring"/>
-                        </svg>
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <span class="text-xl font-bold">94</span>
-                        </div>
-                    </div>
+                <!-- Filters -->
+                <div class="flex flex-wrap gap-2">
+                    <select id="filter-type" class="ios-select" onchange="filterJobs()">
+                        <option value="">كل الأنواع</option>
+                        <option value="حكومي">حكومي</option>
+                        <option value="شبه حكومي">شبه حكومي</option>
+                        <option value="مشروع رؤية 2030">مشروع رؤية 2030</option>
+                        <option value="قطاع خاص">قطاع خاص</option>
+                    </select>
                     
-                    <div class="flex-1">
-                        <p class="text-ios-label-secondary text-sm mb-3">سيرتك الذاتية ممتازة! 🎉</p>
-                        
-                        <button onclick="openCVUpload()" class="btn-primary w-full text-sm">
-                            تحديث السيرة الذاتية
-                        </button>
-                    </div>
+                    <select id="filter-category" class="ios-select" onchange="filterJobs()">
+                        <option value="">كل التخصصات</option>
+                        <option value="إدارة">إدارة</option>
+                        <option value="هندسة">هندسة</option>
+                        <option value="تقنية">تقنية</option>
+                        <option value="مالية">مالية</option>
+                        <option value="موارد بشرية">موارد بشرية</option>
+                        <option value="صحية">صحية</option>
+                        <option value="تسويق">تسويق</option>
+                    </select>
+                    
+                    <select id="filter-location" class="ios-select" onchange="filterJobs()">
+                        <option value="">كل المدن</option>
+                        <option value="الرياض">الرياض</option>
+                        <option value="جدة">جدة</option>
+                        <option value="الدمام">الدمام</option>
+                        <option value="مكة المكرمة">مكة المكرمة</option>
+                        <option value="المدينة المنورة">المدينة المنورة</option>
+                        <option value="تبوك">تبوك</option>
+                        <option value="أملج">أملج</option>
+                    </select>
+                    
+                    <button onclick="resetFilters()" class="ios-select text-blue-500">
+                        إعادة تعيين
+                    </button>
                 </div>
-            </section>
-            
-            <!-- Vision 2030 Roadmap -->
-            <section class="ios-card p-5 mb-5">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="font-semibold">خارطة طريق رؤية 2030</h3>
-                    <span class="text-saudi-gold text-xs">65% متقدم</span>
-                </div>
-                
-                <div class="h-2 bg-ios-card-secondary rounded-full overflow-hidden mb-3">
-                    <div class="h-full bg-gradient-to-l from-saudi-gold to-ios-green rounded-full" style="width: 65%"></div>
-                </div>
-                
-                <p class="text-ios-label-secondary text-sm">أنت على المسار الصحيح للوصول لمنصب قيادي 🎯</p>
-            </section>
+            </div>
         </div>
         
-        <!-- Job Listings (Available for all) -->
-        <section class="mb-5">
-            <div class="flex items-center justify-between px-1 mb-3">
-                <h3 class="text-lg font-bold">الوظائف المتاحة</h3>
-                <button class="text-ios-blue text-sm">عرض الكل</button>
-            </div>
-            
-            <div class="space-y-3">
-                <!-- Job 1 -->
-                <div class="ios-card p-4 animate-in delay-1" onclick="showJobDetail('نيوم', 'مدير مشروع', 'تبوك', '15000-25000 ريال')">
-                    <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 rounded-xl bg-saudi-midnight flex items-center justify-center">
-                            <span class="text-saudi-gold font-bold">ن</span>
-                        </div>
-                        
-                        <div class="flex-1">
-                            <p class="text-ios-label-secondary text-xs">نيوم</p>
-                            <p class="font-semibold">مدير مشروع</p>
-                            <p class="text-ios-label-secondary text-xs">تبوك • 5-8 سنوات</p>
-                        </div>
-                        
-                        <svg class="w-5 h-5 text-ios-label-tertiary" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M8.59 16.59L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.59Z"/>
-                        </svg>
-                    </div>
-                </div>
-                
-                <!-- Job 2 -->
-                <div class="ios-card p-4 animate-in delay-2" onclick="showJobDetail('أرامكو', 'مهندس أول', 'الظهران', '20000-35000 ريال')">
-                    <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 rounded-xl bg-ios-orange/20 flex items-center justify-center">
-                            <span class="text-ios-orange font-bold">أ</span>
-                        </div>
-                        
-                        <div class="flex-1">
-                            <p class="text-ios-label-secondary text-xs">أرامكو</p>
-                            <p class="font-semibold">مهندس أول</p>
-                            <p class="text-ios-label-secondary text-xs">الظهران • +10 سنوات</p>
-                        </div>
-                        
-                        <svg class="w-5 h-5 text-ios-label-tertiary" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M8.59 16.59L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.59Z"/>
-                        </svg>
-                    </div>
-                </div>
-                
-                <!-- Job 3 -->
-                <div class="ios-card p-4 animate-in delay-3" onclick="showJobDetail('البحر الأحمر', 'أخصائي عمليات', 'أملج', '12000-18000 ريال')">
-                    <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 rounded-xl bg-ios-blue/20 flex items-center justify-center">
-                            <span class="text-ios-blue font-bold">ب</span>
-                        </div>
-                        
-                        <div class="flex-1">
-                            <p class="text-ios-label-secondary text-xs">البحر الأحمر</p>
-                            <p class="font-semibold">أخصائي عمليات</p>
-                            <p class="text-ios-label-secondary text-xs">أملج • 3-5 سنوات</p>
-                        </div>
-                        
-                        <svg class="w-5 h-5 text-ios-label-tertiary" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M8.59 16.59L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.59Z"/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        </section>
+        <!-- Results Count -->
+        <div class="flex items-center justify-between mb-4">
+            <h3 id="results-title" class="text-lg font-bold">الوظائف المتاحة</h3>
+            <span id="results-count" class="text-sm opacity-60">200 وظيفة</span>
+        </div>
         
-        <!-- Quick Stats -->
-        <section class="ios-card p-5 mb-5">
-            <h3 class="font-semibold mb-4">إحصائيات سريعة</h3>
-            
-            <div class="grid grid-cols-3 gap-4 text-center">
-                <div>
-                    <p class="text-2xl font-bold text-ios-blue">+500</p>
-                    <p class="text-ios-label-secondary text-xs">وظيفة</p>
-                </div>
-                
-                <div>
-                    <p class="text-2xl font-bold text-ios-green">+50</p>
-                    <p class="text-ios-label-secondary text-xs">جهة</p>
-                </div>
-                
-                <div>
-                    <p class="text-2xl font-bold text-saudi-gold">+1K</p>
-                    <p class="text-ios-label-secondary text-xs">مستخدم</p>
-                </div>
-            </div>
-        </section>
+        <!-- Job Listings Grid -->
+        <div id="jobs-container" class="job-list-container">
+            <!-- Jobs will be loaded here via JavaScript -->
+        </div>
+        
+        <!-- Load More Button -->
+        <div class="text-center mt-6 mb-8">
+            <button onclick="loadMoreJobs()" id="load-more-btn" class="btn-secondary">
+                تحميل المزيد
+            </button>
+        </div>
     </main>
     
-    <!-- ═══════════════════════════════════════════════════════════════
-         TAB BAR - Working navigation
-         ═══════════════════════════════════════════════════════════════ -->
+    <!-- ═══════════════════════════════════════════════════════════════════════════════
+         MOBILE TAB BAR - Only shows on mobile
+         ═══════════════════════════════════════════════════════════════════════════════ -->
     <nav class="tab-bar">
-        <div class="flex justify-around items-center h-16">
-            <button class="tab-item active" onclick="navigateTo('home')">
+        <div class="flex justify-around items-center h-16 max-w-md mx-auto">
+            <button class="tab-item active" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
                 <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M10 20V14H14V20H19V12H22L12 3L2 12H5V20H10Z"/>
                 </svg>
                 <span class="text-[10px]">الرئيسية</span>
             </button>
             
-            <button class="tab-item" onclick="navigateTo('jobs')">
+            <button class="tab-item" onclick="focusSearch()">
                 <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M20 6H16V4C16 2.89 15.11 2 14 2H10C8.89 2 8 2.89 8 4V6H4C2.89 6 2 6.89 2 8V19C2 20.11 2.89 21 4 21H20C21.11 21 22 20.11 22 19V8C22 6.89 21.11 6 20 6ZM10 4H14V6H10V4Z"/>
+                    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
                 </svg>
-                <span class="text-[10px]">الوظائف</span>
+                <span class="text-[10px]">بحث</span>
             </button>
             
-            <button class="tab-item" onclick="navigateTo('cv')">
+            <button class="tab-item" onclick="openSavedJobs()">
                 <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2ZM16 18H8V16H16V18ZM16 14H8V12H16V14ZM13 9V3.5L18.5 9H13Z"/>
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                 </svg>
-                <span class="text-[10px]">السيرة</span>
+                <span class="text-[10px]">المحفوظة</span>
             </button>
             
-            <button class="tab-item" onclick="navigateTo('profile')">
+            <button class="tab-item" onclick="openProfile()">
                 <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"/>
                 </svg>
@@ -581,18 +453,17 @@
         </div>
     </nav>
     
-    <!-- ═══════════════════════════════════════════════════════════════
+    <!-- ═══════════════════════════════════════════════════════════════════════════════
          SHEETS / MODALS
-         ═══════════════════════════════════════════════════════════════ -->
+         ═══════════════════════════════════════════════════════════════════════════════ -->
     
     <!-- Login Sheet -->
     <div class="sheet-overlay" id="login-sheet-overlay" onclick="closeLoginSheet()"></div>
     <div class="sheet" id="login-sheet">
         <div class="sheet-handle"></div>
-        
         <div class="p-6">
-            <h2 class="text-2xl font-bold mb-2">تسجيل الدخول</h2>
-            <p class="text-ios-label-secondary mb-6">أهلاً بعودتك! سجل دخولك للمتابعة</p>
+            <h2 id="login-title" class="text-2xl font-bold mb-2">تسجيل الدخول</h2>
+            <p id="login-subtitle" class="opacity-60 mb-6">أهلاً بعودتك! سجل دخولك للمتابعة</p>
             
             <form onsubmit="event.preventDefault(); handleLoginSubmit();">
                 <div class="mb-4">
@@ -605,14 +476,14 @@
                     <input type="password" id="login-password" class="ios-input" placeholder="••••••••" required>
                 </div>
                 
-                <button type="submit" class="btn-primary w-full mb-4">
+                <button type="submit" id="login-btn" class="btn-primary w-full mb-4">
                     دخول
                 </button>
             </form>
             
-            <p class="text-center text-sm text-ios-label-secondary">
-                ليس لديك حساب؟ 
-                <button onclick="closeLoginSheet(); openRegisterSheet();" class="text-ios-blue">سجل الآن</button>
+            <p class="text-center text-sm opacity-60">
+                <span id="no-account-text">ليس لديك حساب؟</span> 
+                <button onclick="closeLoginSheet(); openRegisterSheet();" class="text-blue-500">سجل الآن</button>
             </p>
         </div>
     </div>
@@ -621,35 +492,34 @@
     <div class="sheet-overlay" id="register-sheet-overlay" onclick="closeRegisterSheet()"></div>
     <div class="sheet" id="register-sheet">
         <div class="sheet-handle"></div>
-        
         <div class="p-6">
-            <h2 class="text-2xl font-bold mb-2">إنشاء حساب</h2>
-            <p class="text-ios-label-secondary mb-6">انضم لنا واكتشف فرصك في رؤية 2030</p>
+            <h2 id="register-title" class="text-2xl font-bold mb-2">إنشاء حساب</h2>
+            <p id="register-subtitle" class="opacity-60 mb-6">انضم لنا واكتشف فرصك في رؤية 2030</p>
             
             <form onsubmit="event.preventDefault(); handleRegisterSubmit();">
                 <div class="mb-4">
-                    <label class="block text-sm mb-2">الاسم الكامل</label>
+                    <label id="name-label" class="block text-sm mb-2">الاسم الكامل</label>
                     <input type="text" id="register-name" class="ios-input" placeholder="محمد أحمد" required>
                 </div>
                 
                 <div class="mb-4">
-                    <label class="block text-sm mb-2">البريد الإلكتروني</label>
+                    <label id="email-label" class="block text-sm mb-2">البريد الإلكتروني</label>
                     <input type="email" id="register-email" class="ios-input" placeholder="your@email.com" required>
                 </div>
                 
                 <div class="mb-6">
-                    <label class="block text-sm mb-2">كلمة المرور</label>
+                    <label id="password-label" class="block text-sm mb-2">كلمة المرور</label>
                     <input type="password" id="register-password" class="ios-input" placeholder="••••••••" required minlength="6">
                 </div>
                 
-                <button type="submit" class="btn-primary w-full mb-4">
+                <button type="submit" id="register-btn" class="btn-primary w-full mb-4">
                     🚀 إنشاء حساب
                 </button>
             </form>
             
-            <p class="text-center text-sm text-ios-label-secondary">
-                لديك حساب بالفعل؟ 
-                <button onclick="closeRegisterSheet(); openLoginSheet();" class="text-ios-blue">تسجيل الدخول</button>
+            <p class="text-center text-sm opacity-60">
+                <span id="have-account-text">لديك حساب بالفعل؟</span> 
+                <button onclick="closeRegisterSheet(); openLoginSheet();" class="text-blue-500">تسجيل الدخول</button>
             </p>
         </div>
     </div>
@@ -658,113 +528,377 @@
     <div class="sheet-overlay" id="job-sheet-overlay" onclick="closeJobSheet()"></div>
     <div class="sheet" id="job-sheet">
         <div class="sheet-handle"></div>
-        
         <div class="p-6">
             <div class="flex items-center gap-4 mb-6">
-                <div class="w-16 h-16 rounded-2xl bg-saudi-midnight flex items-center justify-center">
-                    <span id="job-logo" class="text-saudi-gold text-2xl font-bold">ن</span>
+                <div class="w-16 h-16 rounded-2xl bg-blue-500/20 flex items-center justify-center">
+                    <span id="job-logo" class="text-2xl font-bold text-blue-500">و</span>
                 </div>
                 
                 <div>
-                    <h2 id="job-title" class="text-xl font-bold">مدير مشروع</h2>
-                    <p id="job-company" class="text-ios-label-secondary">نيوم</p>
+                    <h2 id="job-title" class="text-xl font-bold"></h2>
+                    <p id="job-company" class="opacity-60"></p>
                 </div>
             </div>
             
-            <div class="space-y-4 mb-6">
+            <div class="space-y-3 mb-6">
                 <div class="flex items-center gap-3">
-                    <svg class="w-5 h-5 text-ios-label-secondary" fill="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-5 h-5 opacity-60" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2ZM12 11.5C10.62 11.5 9.5 10.38 9.5 9C9.5 7.62 10.62 6.5 12 6.5C13.38 6.5 14.5 7.62 14.5 9C14.5 10.38 13.38 11.5 12 11.5Z"/>
                     </svg>
-                    <span id="job-location">تبوك</span>
+                    <span id="job-location"></span>
                 </div>
                 
                 <div class="flex items-center gap-3">
-                    <svg class="w-5 h-5 text-ios-label-secondary" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.58 20 4 16.42 4 12C4 7.58 7.58 4 12 4C16.42 4 20 7.58 20 12C20 16.42 16.41 20 12 20ZM12 6C9.79 6 8 7.79 8 10H10C10 8.9 10.9 8 12 8C13.1 8 14 8.9 14 10C14 11.5 12 12 12 14H14C14 12.5 16 12 16 10C16 7.79 14.21 6 12 6ZM11 16V18H13V16H11Z"/>
+                    <svg class="w-5 h-5 opacity-60" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M20 6H16V4C16 2.89 15.11 2 14 2H10C8.89 2 8 2.89 8 4V6H4C2.89 6 2 6.89 2 8V19C2 20.11 2.89 21 4 21H20C21.11 21 22 20.11 22 19V8C22 6.89 21.11 6 20 6ZM10 4H14V6H10V4Z"/>
                     </svg>
-                    <span id="job-salary">15000-25000 ريال</span>
+                    <span id="job-type"></span>
+                </div>
+                
+                <div class="flex items-center gap-3">
+                    <svg class="w-5 h-5 opacity-60" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20ZM12 6C9.79 6 8 7.79 8 10H10C10 8.9 10.9 8 12 8C13.1 8 14 8.9 14 10C14 11.5 12 12 12 14H14C14 12.5 16 12 16 10C16 7.79 14.21 6 12 6ZM11 16V18H13V16H11Z"/>
+                    </svg>
+                    <span id="job-salary"></span>
+                </div>
+                
+                <div class="flex items-center gap-3">
+                    <svg class="w-5 h-5 opacity-60" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M11.99 2C6.47 2 2 6.48 2 12C2 17.52 6.47 22 11.99 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 11.99 2ZM12 20C7.58 20 4 16.42 4 12C4 7.58 7.58 4 12 4C16.42 4 20 7.58 20 12C20 16.42 16.42 20 12 20ZM12.5 7H11V13L16.25 16.15L17 14.92L12.5 12.25V7Z"/>
+                    </svg>
+                    <span id="job-experience"></span>
                 </div>
             </div>
             
-            <button onclick="applyForJob()" class="btn-primary w-full">
+            <div class="ios-card p-4 mb-6">
+                <h4 id="desc-label" class="font-semibold mb-2">الوصف الوظيفي</h4>
+                <p id="job-description" class="text-sm opacity-80"></p>
+            </div>
+            
+            <button onclick="applyForJob()" id="apply-btn" class="btn-primary w-full">
                 التقديم على الوظيفة
             </button>
         </div>
     </div>
     
-    <!-- User Menu Sheet -->
-    <div class="sheet-overlay" id="user-menu-overlay" onclick="closeUserMenu()"></div>
-    <div class="sheet" id="user-menu">
-        <div class="sheet-handle"></div>
-        
-        <div class="p-6">
-            <h3 class="text-xl font-bold mb-4">القائمة</h3>
-            
-            <div class="space-y-3">
-                <button onclick="navigateTo('profile'); closeUserMenu();" class="w-full text-right p-4 ios-card flex items-center justify-between">
-                    <span>الملف الشخصي</span>
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M8.59 16.59L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.59Z"/>
-                    </svg>
-                </button>
-                
-                <button onclick="navigateTo('settings'); closeUserMenu();" class="w-full text-right p-4 ios-card flex items-center justify-between">
-                    <span>الإعدادات</span>
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M19.14 12.94C19.18 12.64 19.2 12.33 19.2 12C19.2 11.68 19.18 11.36 19.14 11.06L21.54 9.15C21.76 8.98 21.82 8.67 21.67 8.43L19.4 4.93C19.26 4.68 18.95 4.59 18.69 4.7L15.86 5.82C15.37 5.47 14.85 5.18 14.29 4.96L13.87 1.98C13.82 1.72 13.59 1.5 13.32 1.5H9.68C9.41 1.5 9.18 1.72 9.13 1.98L8.71 4.96C8.15 5.18 7.63 5.47 7.14 5.82L4.31 4.7C4.05 4.59 3.74 4.68 3.6 4.93L1.33 8.43C1.18 8.67 1.24 8.98 1.46 9.15L3.86 11.06C3.82 11.36 3.8 11.68 3.8 12C3.8 12.33 3.82 12.64 3.86 12.94L1.46 14.85C1.24 15.02 1.18 15.33 1.33 15.57L3.6 19.07C3.74 19.32 4.05 19.41 4.31 19.3L7.14 18.18C7.63 18.53 8.15 18.82 8.71 19.04L9.13 22.02C9.18 22.28 9.41 22.5 9.68 22.5H13.32C13.59 22.5 13.82 22.28 13.87 22.02L14.29 19.04C14.85 18.82 15.37 18.53 15.86 18.18L18.69 19.3C18.95 19.41 19.26 19.32 19.4 19.07L21.67 15.57C21.82 15.33 21.76 15.02 21.54 14.85L19.14 12.94ZM12 15.5C10.07 15.5 8.5 13.93 8.5 12C8.5 10.07 10.07 8.5 12 8.5C13.93 8.5 15.5 10.07 15.5 12C15.5 13.93 13.93 15.5 12 15.5Z"/>
-                    </svg>
-                </button>
-                
-                <button onclick="logout(); closeUserMenu();" class="w-full text-right p-4 ios-card flex items-center justify-between text-ios-red">
-                    <span>تسجيل الخروج</span>
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M17 7L15.59 8.41L18.17 11H8V13H18.17L15.59 15.59L17 17L22 12L17 7ZM4 5H12V3H4C2.9 3 2 3.9 2 5V19C2 20.1 2.9 21 4 21H12V19H4V5Z"/>
-                    </svg>
-                </button>
-            </div>
-        </div>
-    </div>
-    
     <script>
-        // ═══════════════════════════════════════════════════════════════
-        // NAVIGATION FUNCTIONS
-        // ═══════════════════════════════════════════════════════════════
-        function navigateTo(page) {
-            // Update active tab
-            document.querySelectorAll('.tab-item').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            event.currentTarget.classList.add('active');
-            
-            // Handle navigation
-            switch(page) {
-                case 'home':
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                    break;
-                case 'jobs':
-                    alert('صفحة الوظائف - قيد التطوير');
-                    break;
-                case 'cv':
-                    if (!currentUser) {
-                        openLoginSheet();
-                    } else {
-                        openCVUpload();
-                    }
-                    break;
-                case 'profile':
-                    if (!currentUser) {
-                        openLoginSheet();
-                    } else {
-                        alert('الملف الشخصي - قيد التطوير');
-                    }
-                    break;
+        // ═══════════════════════════════════════════════════════════════════════════════
+        // STATE MANAGEMENT
+        // ═══════════════════════════════════════════════════════════════════════════════
+        let currentUser = null;
+        let currentLanguage = localStorage.getItem('lang') || 'ar';
+        let currentTheme = localStorage.getItem('theme') || 'dark';
+        let displayedJobs = 12;
+        let filteredJobs = [];
+        let currentJob = null;
+        
+        // ═══════════════════════════════════════════════════════════════════════════════
+        // TRANSLATIONS
+        // ═══════════════════════════════════════════════════════════════════════════════
+        const translations = {
+            ar: {
+                title: 'SaudiCareers - وظائف حكومية وشبه حكومية',
+                subtitle: 'وظائف حكومية وشبه حكومية',
+                welcomeTitle: 'اكتشف 200+ وظيفة حكومية وشبه حكومية',
+                welcomeSubtitle: 'مرحباً بك في SaudiCareers 🇸🇦',
+                searchPlaceholder: 'ابحث عن وظيفة، شركة، أو مدينة...',
+                allTypes: 'كل الأنواع',
+                allCategories: 'كل التخصصات',
+                allLocations: 'كل المدن',
+                reset: 'إعادة تعيين',
+                jobsAvailable: 'الوظائف المتاحة',
+                loadMore: 'تحميل المزيد',
+                login: 'دخول',
+                register: 'سجل الآن',
+                loginTitle: 'تسجيل الدخول',
+                loginSubtitle: 'أهلاً بعودتك! سجل دخولك للمتابعة',
+                registerTitle: 'إنشاء حساب',
+                registerSubtitle: 'انضم لنا واكتشف فرصك في رؤية 2030',
+                name: 'الاسم الكامل',
+                email: 'البريد الإلكتروني',
+                password: 'كلمة المرور',
+                noAccount: 'ليس لديك حساب؟',
+                haveAccount: 'لديك حساب بالفعل؟',
+                apply: 'التقديم على الوظيفة',
+                description: 'الوصف الوظيفي',
+                jobs: 'وظيفة'
+            },
+            en: {
+                title: 'SaudiCareers - Government & Semi-Government Jobs',
+                subtitle: 'Government & Semi-Government Jobs',
+                welcomeTitle: 'Discover 200+ Government & Semi-Government Jobs',
+                welcomeSubtitle: 'Welcome to SaudiCareers 🇸🇦',
+                searchPlaceholder: 'Search jobs, companies, or cities...',
+                allTypes: 'All Types',
+                allCategories: 'All Categories',
+                allLocations: 'All Cities',
+                reset: 'Reset',
+                jobsAvailable: 'Available Jobs',
+                loadMore: 'Load More',
+                login: 'Login',
+                register: 'Register',
+                loginTitle: 'Login',
+                loginSubtitle: 'Welcome back! Login to continue',
+                registerTitle: 'Create Account',
+                registerSubtitle: 'Join us and discover Vision 2030 opportunities',
+                name: 'Full Name',
+                email: 'Email',
+                password: 'Password',
+                noAccount: "Don't have an account?",
+                haveAccount: 'Already have an account?',
+                apply: 'Apply for Job',
+                description: 'Job Description',
+                jobs: 'jobs'
+            }
+        };
+        
+        // ═══════════════════════════════════════════════════════════════════════════════
+        // INITIALIZATION
+        // ═══════════════════════════════════════════════════════════════════════════════
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+            applyTheme();
+            applyLanguage();
+            filterJobs();
+        });
+        
+        // ═══════════════════════════════════════════════════════════════════════════════
+        // AUTH FUNCTIONS
+        // ═══════════════════════════════════════════════════════════════════════════════
+        function checkAuth() {
+            const userData = localStorage.getItem('saudicareers_user');
+            if (userData) {
+                currentUser = JSON.parse(userData);
+                updateAuthUI();
             }
         }
         
-        // ═══════════════════════════════════════════════════════════════
+        function updateAuthUI() {
+            const authBtn = document.getElementById('nav-auth-btn');
+            const userBtn = document.getElementById('nav-user-btn');
+            
+            if (currentUser) {
+                authBtn.classList.add('hidden');
+                userBtn.classList.remove('hidden');
+                userBtn.textContent = currentUser.name.charAt(0).toUpperCase();
+            } else {
+                authBtn.classList.remove('hidden');
+                userBtn.classList.add('hidden');
+            }
+        }
+        
+        function handleLoginSubmit() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            if (email && password) {
+                currentUser = { 
+                    name: email.split('@')[0], 
+                    email: email 
+                };
+                localStorage.setItem('saudicareers_user', JSON.stringify(currentUser));
+                updateAuthUI();
+                closeLoginSheet();
+                showNotification(currentLanguage === 'ar' ? 'تم تسجيل الدخول بنجاح!' : 'Login successful!');
+            }
+        }
+        
+        function handleRegisterSubmit() {
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            
+            if (name && email && password) {
+                currentUser = { name: name, email: email };
+                localStorage.setItem('saudicareers_user', JSON.stringify(currentUser));
+                updateAuthUI();
+                closeRegisterSheet();
+                showNotification(currentLanguage === 'ar' ? 'تم إنشاء الحساب بنجاح!' : 'Account created successfully!');
+            }
+        }
+        
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('saudicareers_user');
+            updateAuthUI();
+            showNotification(currentLanguage === 'ar' ? 'تم تسجيل الخروج' : 'Logged out');
+        }
+        
+        // ═══════════════════════════════════════════════════════════════════════════════
+        // THEME & LANGUAGE
+        // ═══════════════════════════════════════════════════════════════════════════════
+        function toggleTheme() {
+            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            localStorage.setItem('theme', currentTheme);
+            applyTheme();
+        }
+        
+        function applyTheme() {
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            
+            // Update theme icon
+            const themeIcon = document.getElementById('theme-icon');
+            if (currentTheme === 'light') {
+                themeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>';
+            } else {
+                themeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>';
+            }
+            
+            // Update meta theme-color
+            document.querySelector('meta[name="theme-color"]').setAttribute('content', 
+                currentTheme === 'dark' ? '#000000' : '#F2F2F7');
+        }
+        
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'ar' ? 'en' : 'ar';
+            localStorage.setItem('lang', currentLanguage);
+            
+            // Update HTML dir
+            document.documentElement.dir = currentLanguage === 'ar' ? 'rtl' : 'ltr';
+            document.documentElement.lang = currentLanguage;
+            
+            applyLanguage();
+            filterJobs(); // Re-render jobs
+        }
+        
+        function applyLanguage() {
+            const t = translations[currentLanguage];
+            
+            document.getElementById('page-title').textContent = t.title;
+            document.getElementById('nav-subtitle').textContent = t.subtitle;
+            document.getElementById('welcome-title').textContent = t.welcomeTitle;
+            document.getElementById('welcome-subtitle').textContent = t.welcomeSubtitle;
+            document.getElementById('search-input').placeholder = t.searchPlaceholder;
+            document.getElementById('results-title').textContent = t.jobsAvailable;
+            document.getElementById('load-more-btn').textContent = t.loadMore;
+            document.getElementById('nav-auth-btn').textContent = t.login;
+            document.getElementById('login-title').textContent = t.loginTitle;
+            document.getElementById('login-subtitle').textContent = t.loginSubtitle;
+            document.getElementById('login-btn').textContent = t.login;
+            document.getElementById('register-title').textContent = t.registerTitle;
+            document.getElementById('register-subtitle').textContent = t.registerSubtitle;
+            document.getElementById('name-label').textContent = t.name;
+            document.getElementById('email-label').textContent = t.email;
+            document.getElementById('password-label').textContent = t.password;
+            document.getElementById('no-account-text').textContent = t.noAccount;
+            document.getElementById('have-account-text').textContent = t.haveAccount;
+            document.getElementById('apply-btn').textContent = t.apply;
+            document.getElementById('desc-label').textContent = t.description;
+        }
+        
+        // ═══════════════════════════════════════════════════════════════════════════════
+        // JOB FILTERING & DISPLAY
+        // ═══════════════════════════════════════════════════════════════════════════════
+        function filterJobs() {
+            const search = document.getElementById('search-input').value.toLowerCase();
+            const type = document.getElementById('filter-type').value;
+            const category = document.getElementById('filter-category').value;
+            const location = document.getElementById('filter-location').value;
+            
+            filteredJobs = JOBS_DATABASE.filter(job => {
+                const matchesSearch = !search || 
+                    job.title.toLowerCase().includes(search) ||
+                    job.company.toLowerCase().includes(search) ||
+                    job.location.toLowerCase().includes(search);
+                
+                const matchesType = !type || job.type === type;
+                const matchesCategory = !category || job.category === category;
+                const matchesLocation = !location || job.location === location;
+                
+                return matchesSearch && matchesType && matchesCategory && matchesLocation;
+            });
+            
+            displayedJobs = 12;
+            renderJobs();
+        }
+        
+        function resetFilters() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('filter-type').value = '';
+            document.getElementById('filter-category').value = '';
+            document.getElementById('filter-location').value = '';
+            filterJobs();
+        }
+        
+        function renderJobs() {
+            const container = document.getElementById('jobs-container');
+            const jobsToShow = filteredJobs.slice(0, displayedJobs);
+            
+            container.innerHTML = jobsToShow.map((job, index) => `
+                <div class="ios-card p-4 job-card cursor-pointer hover:opacity-80 transition-opacity" 
+                     style="animation-delay: ${index * 0.05}s"
+                     onclick="showJobDetail(${job.id})">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center flex-shrink-0">
+                            <span class="text-blue-500 font-bold">${job.company.charAt(0)}</span>
+                        </div>
+                        
+                        <div class="flex-1 min-w-0">
+                            <p class="opacity-60 text-xs truncate">${job.company}</p>
+                            <p class="font-semibold truncate">${job.title}</p>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="text-xs opacity-60">${job.location}</span>
+                                <span class="text-xs opacity-40">•</span>
+                                <span class="text-xs opacity-60">${job.experience}</span>
+                            </div>
+                        </div>
+                        
+                        <svg class="w-5 h-5 opacity-40 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8.59 16.59L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.59Z"/>
+                        </svg>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Update count
+            const t = translations[currentLanguage];
+            document.getElementById('results-count').textContent = 
+                `${filteredJobs.length} ${t.jobs}`;
+            
+            // Show/hide load more button
+            document.getElementById('load-more-btn').style.display = 
+                displayedJobs >= filteredJobs.length ? 'none' : 'inline-block';
+        }
+        
+        function loadMoreJobs() {
+            displayedJobs += 12;
+            renderJobs();
+        }
+        
+        function showJobDetail(jobId) {
+            currentJob = JOBS_DATABASE.find(j => j.id === jobId);
+            if (!currentJob) return;
+            
+            document.getElementById('job-logo').textContent = currentJob.company.charAt(0);
+            document.getElementById('job-title').textContent = currentJob.title;
+            document.getElementById('job-company').textContent = currentJob.company;
+            document.getElementById('job-location').textContent = currentJob.location;
+            document.getElementById('job-type').textContent = currentJob.type;
+            document.getElementById('job-salary').textContent = currentJob.salary;
+            document.getElementById('job-experience').textContent = currentJob.experience;
+            document.getElementById('job-description').textContent = currentJob.description;
+            
+            document.getElementById('job-sheet-overlay').classList.add('active');
+            document.getElementById('job-sheet').classList.add('active');
+        }
+        
+        function closeJobSheet() {
+            document.getElementById('job-sheet-overlay').classList.remove('active');
+            document.getElementById('job-sheet').classList.remove('active');
+        }
+        
+        function applyForJob() {
+            if (!currentUser) {
+                closeJobSheet();
+                setTimeout(() => openLoginSheet(), 300);
+            } else {
+                window.open(currentJob?.applyLink || '#', '_blank');
+            }
+        }
+        
+        // ═══════════════════════════════════════════════════════════════════════════════
         // SHEET FUNCTIONS
-        // ═══════════════════════════════════════════════════════════════
+        // ═══════════════════════════════════════════════════════════════════════════════
         function openLoginSheet() {
             document.getElementById('login-sheet-overlay').classList.add('active');
             document.getElementById('login-sheet').classList.add('active');
@@ -785,105 +919,39 @@
             document.getElementById('register-sheet').classList.remove('active');
         }
         
-        function showJobDetail(company, title, location, salary) {
-            document.getElementById('job-company').textContent = company;
-            document.getElementById('job-title').textContent = title;
-            document.getElementById('job-location').textContent = location;
-            document.getElementById('job-salary').textContent = salary;
-            document.getElementById('job-logo').textContent = company.charAt(0);
-            
-            document.getElementById('job-sheet-overlay').classList.add('active');
-            document.getElementById('job-sheet').classList.add('active');
-        }
-        
-        function closeJobSheet() {
-            document.getElementById('job-sheet-overlay').classList.remove('active');
-            document.getElementById('job-sheet').classList.remove('active');
-        }
-        
         function toggleUserMenu() {
-            document.getElementById('user-menu-overlay').classList.add('active');
-            document.getElementById('user-menu').classList.add('active');
+            if (confirm(currentLanguage === 'ar' ? 'تسجيل الخروج؟' : 'Logout?')) {
+                logout();
+            }
         }
         
-        function closeUserMenu() {
-            document.getElementById('user-menu-overlay').classList.remove('active');
-            document.getElementById('user-menu').classList.remove('active');
+        // ═══════════════════════════════════════════════════════════════════════════════
+        // MOBILE FUNCTIONS
+        // ═══════════════════════════════════════════════════════════════════════════════
+        function focusSearch() {
+            document.getElementById('search-input').focus();
+            document.getElementById('search-input').scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
         
-        function openCVUpload() {
+        function openSavedJobs() {
             if (!currentUser) {
                 openLoginSheet();
-                return;
-            }
-            alert('رفع السيرة الذاتية - قيد التطوير');
-        }
-        
-        // ═══════════════════════════════════════════════════════════════
-        // FORM HANDLERS
-        // ═══════════════════════════════════════════════════════════════
-        function handleLoginSubmit() {
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            
-            if (email && password) {
-                login(email, password);
-                document.getElementById('login-email').value = '';
-                document.getElementById('login-password').value = '';
+            } else {
+                showNotification(currentLanguage === 'ar' ? 'قريباً: الوظائف المحفوظة' : 'Coming soon: Saved jobs');
             }
         }
         
-        function handleRegisterSubmit() {
-            const name = document.getElementById('register-name').value;
-            const email = document.getElementById('register-email').value;
-            const password = document.getElementById('register-password').value;
-            
-            if (name && email && password) {
-                register(name, email, password);
-                document.getElementById('register-name').value = '';
-                document.getElementById('register-email').value = '';
-                document.getElementById('register-password').value = '';
-            }
-        }
-        
-        function applyForJob() {
+        function openProfile() {
             if (!currentUser) {
-                closeJobSheet();
-                setTimeout(() => openLoginSheet(), 300);
+                openLoginSheet();
             } else {
-                alert('تم إرسال طلبك بنجاح! 🎉');
-                closeJobSheet();
+                showNotification(currentLanguage === 'ar' ? 'قريباً: الملف الشخصي' : 'Coming soon: Profile');
             }
         }
         
-        // Override updateUI to also update nav buttons
-        const originalUpdateUI = updateUI;
-        updateUI = function() {
-            originalUpdateUI();
-            
-            // Update nav buttons
-            const loginBtn = document.getElementById('nav-login-btn');
-            const userBtn = document.getElementById('nav-user-btn');
-            
-            if (currentUser) {
-                if (loginBtn) loginBtn.classList.add('hidden');
-                if (userBtn) {
-                    userBtn.classList.remove('hidden');
-                    userBtn.textContent = currentUser.name.charAt(0).toUpperCase();
-                }
-            } else {
-                if (loginBtn) loginBtn.classList.remove('hidden');
-                if (userBtn) userBtn.classList.add('hidden');
-            }
-            
-            // Update user greeting in user-view
-            const userGreeting = document.getElementById('user-greeting');
-            if (userGreeting && currentUser) {
-                const hour = new Date().getHours();
-                let greeting = 'صباح الخير';
-                if (hour >= 12) greeting = 'مساء الخير';
-                userGreeting.textContent = `${greeting} 🇸🇦`;
-            }
+        function showNotification(message) {
+            // Simple alert for now - could be replaced with toast
+            alert(message);
         }
     </script>
 </body>
