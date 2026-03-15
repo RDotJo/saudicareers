@@ -470,12 +470,12 @@
             <form onsubmit="event.preventDefault(); handleLoginSubmit();">
                 <div class="mb-4">
                     <label class="block text-sm mb-2">البريد الإلكتروني</label>
-                    <input type="email" id="login-email" class="ios-input" placeholder="your@email.com" required>
+                    <input type="email" id="login-email" class="ios-input" placeholder="your@email.com">
                 </div>
                 
                 <div class="mb-6">
                     <label class="block text-sm mb-2">كلمة المرور</label>
-                    <input type="password" id="login-password" class="ios-input" placeholder="••••••••" required>
+                    <input type="password" id="login-password" class="ios-input" placeholder="••••••••">
                 </div>
                 
                 <button type="submit" id="login-btn" class="btn-primary w-full mb-4">
@@ -501,17 +501,17 @@
             <form onsubmit="event.preventDefault(); handleRegisterSubmit();">
                 <div class="mb-4">
                     <label id="name-label" class="block text-sm mb-2">الاسم الكامل</label>
-                    <input type="text" id="register-name" class="ios-input" placeholder="محمد أحمد" required>
+                    <input type="text" id="register-name" class="ios-input" placeholder="محمد أحمد">
                 </div>
                 
                 <div class="mb-4">
                     <label id="email-label" class="block text-sm mb-2">البريد الإلكتروني</label>
-                    <input type="email" id="register-email" class="ios-input" placeholder="your@email.com" required>
+                    <input type="email" id="register-email" class="ios-input" placeholder="your@email.com">
                 </div>
                 
                 <div class="mb-6">
                     <label id="password-label" class="block text-sm mb-2">كلمة المرور</label>
-                    <input type="password" id="register-password" class="ios-input" placeholder="••••••••" required minlength="6">
+                    <input type="password" id="register-password" class="ios-input" placeholder="••••••••">
                 </div>
                 
                 <button type="submit" id="register-btn" class="btn-primary w-full mb-4">
@@ -693,16 +693,15 @@
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
             
-            if (email && password) {
-                currentUser = { 
-                    name: email.split('@')[0], 
-                    email: email 
-                };
-                localStorage.setItem('saudicareers_user', JSON.stringify(currentUser));
-                updateAuthUI();
-                closeLoginSheet();
-                showNotification(currentLanguage === 'ar' ? 'تم تسجيل الدخول بنجاح!' : 'Login successful!');
-            }
+            // أي إيميل وأي باسورد يتم قبولهما!
+            currentUser = { 
+                name: email.split('@')[0] || 'مستخدم', 
+                email: email 
+            };
+            localStorage.setItem('saudicareers_user', JSON.stringify(currentUser));
+            updateAuthUI();
+            closeLoginSheet();
+            showNotification(currentLanguage === 'ar' ? 'لقد تم تسجيل دخولك يا للروعة! 🎉' : 'Welcome back! Amazing! 🎉');
         }
         
         function handleRegisterSubmit() {
@@ -710,13 +709,12 @@
             const email = document.getElementById('register-email').value;
             const password = document.getElementById('register-password').value;
             
-            if (name && email && password) {
-                currentUser = { name: name, email: email };
-                localStorage.setItem('saudicareers_user', JSON.stringify(currentUser));
-                updateAuthUI();
-                closeRegisterSheet();
-                showNotification(currentLanguage === 'ar' ? 'تم إنشاء الحساب بنجاح!' : 'Account created successfully!');
-            }
+            // أي بيانات يتم قبولها!
+            currentUser = { name: name || 'مستخدم جديد', email: email };
+            localStorage.setItem('saudicareers_user', JSON.stringify(currentUser));
+            updateAuthUI();
+            closeRegisterSheet();
+            showNotification(currentLanguage === 'ar' ? 'لقد تم تسجيل دخولك يا للروعة! 🎉' : 'Welcome! Amazing! 🎉');
         }
         
         function logout() {
