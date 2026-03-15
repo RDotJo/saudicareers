@@ -33,7 +33,8 @@
                     success: '#30D158',
                     warning: '#FF9F0A',
                     danger: '#FF453A',
-                    gold: '#D4AF37',
+                    gold: '#2D5A3D',
+                    emerald: '#10B981',
                 }
             }
         }
@@ -131,7 +132,7 @@
     }
     
     .btn-primary {
-        background: #0A84FF;
+        background: #10B981;
         color: white;
         padding: 12px 20px;
         border-radius: 10px;
@@ -283,8 +284,8 @@
         padding: 10px 0;
     }
     
-    [data-theme="light"] .gold-text { color: #B8860B; }
-    [data-theme="dark"] .gold-text { color: #D4AF37; }
+    [data-theme="light"] .gold-text { color: #065F46; }
+    [data-theme="dark"] .gold-text { color: #10B981; }
     </style>
 </head>
 <body>
@@ -331,7 +332,7 @@
                     دخول
                 </button>
                 
-                <button id="nav-user-btn" onclick="toggleUserMenu()" class="hidden w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-sm font-bold mr-2">
+                <button id="nav-user-btn" onclick="toggleUserMenu()" class="hidden w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center text-sm font-bold mr-2">
                     👤
                 </button>
             </div>
@@ -392,7 +393,7 @@
                         <option value="أملج">أملج</option>
                     </select>
                     
-                    <button onclick="resetFilters()" class="ios-select text-blue-500">
+                    <button onclick="resetFilters()" class="ios-select text-emerald-500">
                         إعادة تعيين
                     </button>
                 </div>
@@ -483,7 +484,7 @@
             
             <p class="text-center text-sm opacity-60">
                 <span id="no-account-text">ليس لديك حساب؟</span> 
-                <button onclick="closeLoginSheet(); openRegisterSheet();" class="text-blue-500">سجل الآن</button>
+                <button onclick="closeLoginSheet(); openRegisterSheet();" class="text-emerald-500">سجل الآن</button>
             </p>
         </div>
     </div>
@@ -519,7 +520,7 @@
             
             <p class="text-center text-sm opacity-60">
                 <span id="have-account-text">لديك حساب بالفعل؟</span> 
-                <button onclick="closeRegisterSheet(); openLoginSheet();" class="text-blue-500">تسجيل الدخول</button>
+                <button onclick="closeRegisterSheet(); openLoginSheet();" class="text-emerald-500">تسجيل الدخول</button>
             </p>
         </div>
     </div>
@@ -530,8 +531,8 @@
         <div class="sheet-handle"></div>
         <div class="p-6">
             <div class="flex items-center gap-4 mb-6">
-                <div class="w-16 h-16 rounded-2xl bg-blue-500/20 flex items-center justify-center">
-                    <span id="job-logo" class="text-2xl font-bold text-blue-500">و</span>
+                <div class="w-16 h-16 rounded-2xl bg-emerald-500/20 flex items-center justify-center">
+                    <span id="job-logo" class="text-2xl font-bold text-emerald-500">و</span>
                 </div>
                 
                 <div>
@@ -829,8 +830,8 @@
                      style="animation-delay: ${index * 0.05}s"
                      onclick="showJobDetail(${job.id})">
                     <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center flex-shrink-0">
-                            <span class="text-blue-500 font-bold">${job.company.charAt(0)}</span>
+                        <div class="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
+                            <span class="text-emerald-500 font-bold">${job.company.charAt(0)}</span>
                         </div>
                         
                         <div class="flex-1 min-w-0">
