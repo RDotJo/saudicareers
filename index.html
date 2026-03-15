@@ -27,6 +27,9 @@
     <!-- CV Analyzer -->
     <script src="cv-analyzer.js"></script>
     
+    <!-- Email Verification -->
+    <script src="email-verification.js"></script>
+    
     <!-- Category Icons -->
     <script src="category-icons.js"></script>
     
@@ -791,6 +794,61 @@
         </div>
     </div>
     
+    <!-- ═══════════════════════════════════════════════════════════════════════════════
+         OTP VERIFICATION SHEET - Email Verification
+         ═══════════════════════════════════════════════════════════════════════════════ -->
+    <div class="sheet-overlay" id="verify-otp-overlay" onclick="closeVerifyOTPSheet()"></div>
+    <div class="sheet" id="verify-otp-sheet">
+        <div class="sheet-handle"></div>
+        <div class="p-6 text-center">
+            <!-- Icon -->
+            <div class="w-16 h-16 rounded-full bg-emerald-500/20 flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+            </div>
+            
+            <h2 class="text-2xl font-bold mb-2">🔐 توثيق البريد الإلكتروني</h2>
+            
+            <p class="opacity-60 mb-6">
+                تم إرسال رمز التوثيق إلى بريدك الإلكتروني
+                <br>
+                <span id="verify-email-display" class="text-emerald-500 font-medium"></span>
+            </p>
+            
+            <!-- OTP Input -->
+            <div class="mb-6">
+                <label class="block text-sm mb-3">أدخل الرمز المكون من 6 أرقام</label>
+                <div class="flex justify-center gap-2 mb-4">
+                    <input type="text" id="otp-1" maxlength="1" class="w-12 h-14 text-center text-xl font-bold bg-white/10 border border-white/20 rounded-xl focus:border-emerald-500 focus:outline-none" onkeyup="handleOTPInput(1, event)">
+                    <input type="text" id="otp-2" maxlength="1" class="w-12 h-14 text-center text-xl font-bold bg-white/10 border border-white/20 rounded-xl focus:border-emerald-500 focus:outline-none" onkeyup="handleOTPInput(2, event)">
+                    <input type="text" id="otp-3" maxlength="1" class="w-12 h-14 text-center text-xl font-bold bg-white/10 border border-white/20 rounded-xl focus:border-emerald-500 focus:outline-none" onkeyup="handleOTPInput(3, event)">
+                    <input type="text" id="otp-4" maxlength="1" class="w-12 h-14 text-center text-xl font-bold bg-white/10 border border-white/20 rounded-xl focus:border-emerald-500 focus:outline-none" onkeyup="handleOTPInput(4, event)">
+                    <input type="text" id="otp-5" maxlength="1" class="w-12 h-14 text-center text-xl font-bold bg-white/10 border border-white/20 rounded-xl focus:border-emerald-500 focus:outline-none" onkeyup="handleOTPInput(5, event)">
+                    <input type="text" id="otp-6" maxlength="1" class="w-12 h-14 text-center text-xl font-bold bg-white/10 border border-white/20 rounded-xl focus:border-emerald-500 focus:outline-none" onkeyup="handleOTPInput(6, event)">
+                </div>
+                
+                <input type="hidden" id="pending-email" value="">
+            </div>
+            
+            <!-- Verify Button -->
+            <button onclick="verifyOTP()" class="btn-primary w-full mb-4">
+                ✅ تأكيد التسجيل
+            </button>
+            
+            <!-- Resend -->
+            <p class="text-sm opacity-60">
+                لم تستلم الرمز؟ 
+                <button onclick="resendOTP()" class="text-emerald-500">إعادة الإرسال</button>
+            </p>
+            
+            <!-- Cancel -->
+            <button onclick="closeVerifyOTPSheet()" class="mt-4 text-sm opacity-50 hover:opacity-80">
+                إلغاء التسجيل
+            </button>
+        </div>
+    </div>
+    
     <!-- Job Detail Sheet -->
     <div class="sheet-overlay" id="job-sheet-overlay" onclick="closeJobSheet()"></div>
     <div class="sheet" id="job-sheet">
@@ -1042,7 +1100,7 @@
             showNotification('✅ مرحباً ' + user.name + '! تم تسجيل دخولك بنجاح');
         }
         
-        function handleRegisterSubmit() {
+        async function handleRegisterSubmit() {
             const name = document.getElementById('register-name').value.trim();
             const email = document.getElementById('register-email').value.trim();
             const password = document.getElementById('register-password').value;
@@ -1074,6 +1132,13 @@
                 return;
             }
             
+            // Check if there's a pending verification for this email
+            const pending = EmailVerification.getPendingVerifications();
+            if (pending[email]) {
+                alert('⚠️ هناك طلب توثيق نشط لهذا الإيميل. راجع بريدك أو انتظر 15 دقيقة');
+                return;
+            }
+            
             if (!password) {
                 alert('❌ يرجى إدخال كلمة المرور');
                 return;
@@ -1084,28 +1149,141 @@
                 return;
             }
             
-            // Create new user
-            const newUser = {
-                name: name,
-                email: email,
-                password: password,
-                createdAt: new Date().toISOString()
-            };
+            // Show loading
+            const btn = document.getElementById('register-btn');
+            const originalText = btn.textContent;
+            btn.textContent = '⏳ جاري الإرسال...';
+            btn.disabled = true;
             
-            saveUser(newUser);
+            try {
+                // Generate OTP
+                const otp = EmailVerification.generateOTP();
+                
+                // Store pending verification
+                const userData = {
+                    name: name,
+                    email: email,
+                    password: password,
+                    createdAt: new Date().toISOString()
+                };
+                EmailVerification.storePendingVerification(email, userData, otp);
+                
+                // Send verification email
+                await EmailVerification.sendVerificationEmail(email, otp, name);
+                
+                // Close register sheet and open OTP sheet
+                closeRegisterSheet();
+                openVerifyOTPSheet(email);
+                
+                alert('📧 تم إرسال رمز التوثيق إلى بريدك الإلكتروني!\n\nفي وضع التجربة، افتح Console (F12) لرؤية الرمز');
+                
+            } catch (error) {
+                console.error('Registration error:', error);
+                alert('❌ حدث خطأ أثناء إرسال الرمز. حاول مرة أخرى.');
+            } finally {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        }
+        
+        // OTP Verification Functions
+        function openVerifyOTPSheet(email) {
+            document.getElementById('pending-email').value = email;
+            document.getElementById('verify-email-display').textContent = email;
             
-            // Auto login
-            currentUser = { name: name, email: email };
-            localStorage.setItem(SESSION_KEY, JSON.stringify(currentUser));
-            updateAuthUI();
-            closeRegisterSheet();
+            // Clear OTP inputs
+            for (let i = 1; i <= 6; i++) {
+                document.getElementById(`otp-${i}`).value = '';
+            }
+            document.getElementById('otp-1').focus();
             
-            // Clear form
-            document.getElementById('register-name').value = '';
-            document.getElementById('register-email').value = '';
-            document.getElementById('register-password').value = '';
+            document.getElementById('verify-otp-overlay').classList.add('active');
+            document.getElementById('verify-otp-sheet').classList.add('active');
+        }
+        
+        function closeVerifyOTPSheet() {
+            document.getElementById('verify-otp-overlay').classList.remove('active');
+            document.getElementById('verify-otp-sheet').classList.remove('active');
+        }
+        
+        // Handle OTP input (auto-focus next field)
+        function handleOTPInput(index, event) {
+            const input = document.getElementById(`otp-${index}`);
+            const value = input.value;
             
-            showNotification('✅ تم إنشاء حسابك بنجاح! مرحباً ' + name);
+            // Only allow numbers
+            if (!/^\d*$/.test(value)) {
+                input.value = value.replace(/\D/g, '');
+                return;
+            }
+            
+            if (value && index < 6) {
+                document.getElementById(`otp-${index + 1}`).focus();
+            }
+            
+            // Handle backspace
+            if (event.key === 'Backspace' && !value && index > 1) {
+                document.getElementById(`otp-${index - 1}`).focus();
+            }
+        }
+        
+        // Verify OTP
+        function verifyOTP() {
+            const email = document.getElementById('pending-email').value;
+            let enteredOTP = '';
+            
+            for (let i = 1; i <= 6; i++) {
+                enteredOTP += document.getElementById(`otp-${i}`).value;
+            }
+            
+            if (enteredOTP.length !== 6) {
+                alert('❌ يرجى إدخال الرمز كاملاً (6 أرقام)');
+                return;
+            }
+            
+            const result = EmailVerification.verifyOTP(email, enteredOTP);
+            
+            if (result.success) {
+                // Save user to database
+                saveUser(result.userData);
+                
+                // Auto login
+                currentUser = { name: result.userData.name, email: result.userData.email };
+                localStorage.setItem(SESSION_KEY, JSON.stringify(currentUser));
+                updateAuthUI();
+                closeVerifyOTPSheet();
+                
+                // Clear register form
+                document.getElementById('register-name').value = '';
+                document.getElementById('register-email').value = '';
+                document.getElementById('register-password').value = '';
+                
+                showNotification('✅ تم توثيق حسابك بنجاح! مرحباً ' + result.userData.name);
+            } else {
+                alert('❌ ' + result.error);
+            }
+        }
+        
+        // Resend OTP
+        async function resendOTP() {
+            const email = document.getElementById('pending-email').value;
+            
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = '⏳...';
+            
+            const result = await EmailVerification.resendOTP(email);
+            
+            if (result.success) {
+                alert('📧 تم إرسال رمز جديد! افتح Console (F12) لرؤيته');
+            } else {
+                alert('❌ ' + result.error);
+            }
+            
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.textContent = 'إعادة الإرسال';
+            }, 30000); // 30 seconds cooldown
         }
         
         function logout() {
