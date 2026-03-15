@@ -358,9 +358,82 @@
         </section>
         
         <!-- ═══════════════════════════════════════════════════════════════════════════════
-             CV ANALYZER SECTION - ATS Compatible Resume Analysis
+             CV ANALYZER PREVIEW - For Guests (Locked)
              ═══════════════════════════════════════════════════════════════════════════════ -->
-        <section id="cv-analyzer-section" class="ios-card p-6 mb-6">
+        <section id="cv-preview-section" class="ios-card p-6 mb-6">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center">
+                    <svg class="w-6 h-6 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg">تحليل السيرة الذاتية</h3>
+                    <p class="text-sm opacity-60">احصل على تقرير احترافي لسيرتك الذاتية</p>
+                </div>
+            </div>
+            
+            <div class="border-2 border-dashed border-emerald-500/20 rounded-xl p-8 text-center relative overflow-hidden">
+                <!-- Lock Overlay -->
+                <div class="absolute inset-0 bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center z-10">
+                    <div class="w-16 h-16 rounded-full bg-emerald-500/20 flex items-center justify-center mb-3">
+                        <svg class="w-8 h-8 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                        </svg>
+                    </div>
+                    <p class="font-bold mb-2">ميزة حصرية للأعضاء</p>
+                    <p class="text-sm opacity-60 mb-4">سجل الآن وتحقق من توافق سيرتك مع ATS</p>
+                    <button onclick="openLoginSheet()" class="btn-primary text-sm">
+                        🔓 افتح الميزة - سجل الآن
+                    </button>
+                </div>
+                
+                <!-- Blurred Background Content -->
+                <div class="opacity-30 blur-sm">
+                    <div class="w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                        </svg>
+                    </div>
+                    <p class="font-medium mb-2">ارفع سيرتك الذاتية</p>
+                    <p class="text-sm opacity-50 mb-4">PDF, DOC, DOCX, أو TXT</p>
+                    <button class="btn-primary text-sm">اختيار الملف</button>
+                </div>
+            </div>
+            
+            <!-- Features List -->
+            <div class="mt-4 grid grid-cols-2 gap-3">
+                <div class="flex items-center gap-2 text-sm opacity-60">
+                    <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    تحليل ATS ذكي
+                </div>
+                <div class="flex items-center gap-2 text-sm opacity-60">
+                    <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    نصائح تحسين مخصصة
+                </div>
+                <div class="flex items-center gap-2 text-sm opacity-60">
+                    <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    مطابقة مع الوظائف
+                </div>
+                <div class="flex items-center gap-2 text-sm opacity-60">
+                    <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    تقرير PDF كامل
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════════════════════
+             CV ANALYZER SECTION - For Logged-in Users Only
+             ═══════════════════════════════════════════════════════════════════════════════ -->
+        <section id="cv-analyzer-section" class="ios-card p-6 mb-6 hidden">
             <div class="flex items-center gap-3 mb-4">
                 <div class="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center">
                     <svg class="w-6 h-6 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -870,14 +943,26 @@
         function updateAuthUI() {
             const authBtn = document.getElementById('nav-auth-btn');
             const userBtn = document.getElementById('nav-user-btn');
+            const cvAnalyzer = document.getElementById('cv-analyzer-section');
+            const cvPreview = document.getElementById('cv-preview-section');
             
             if (currentUser) {
+                // Logged in
                 authBtn.classList.add('hidden');
                 userBtn.classList.remove('hidden');
                 userBtn.textContent = currentUser.name.charAt(0).toUpperCase();
+                
+                // Show CV analyzer, hide preview
+                if (cvAnalyzer) cvAnalyzer.classList.remove('hidden');
+                if (cvPreview) cvPreview.classList.add('hidden');
             } else {
+                // Guest
                 authBtn.classList.remove('hidden');
                 userBtn.classList.add('hidden');
+                
+                // Hide CV analyzer, show preview
+                if (cvAnalyzer) cvAnalyzer.classList.add('hidden');
+                if (cvPreview) cvPreview.classList.remove('hidden');
             }
         }
         
