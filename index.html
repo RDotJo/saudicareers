@@ -24,6 +24,9 @@
     <!-- Job Database -->
     <script src="jobs-data.js"></script>
     
+    <!-- CV Analyzer -->
+    <script src="cv-analyzer.js"></script>
+    
     <script>
     tailwind.config = {
         darkMode: 'class',
@@ -349,6 +352,166 @@
         <section class="ios-card p-5 mb-5">
             <p id="welcome-subtitle" class="gold-text text-sm font-medium mb-1">مرحباً بك في SaudiCareers 🇸🇦</p>
             <h2 id="welcome-title" class="text-xl font-bold">اكتشف 200+ وظيفة حكومية وشبه حكومية</h2>
+        </section>
+        
+        <!-- ═══════════════════════════════════════════════════════════════════════════════
+             CV ANALYZER SECTION - ATS Compatible Resume Analysis
+             ═══════════════════════════════════════════════════════════════════════════════ -->
+        <section id="cv-analyzer-section" class="ios-card p-6 mb-6">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center">
+                    <svg class="w-6 h-6 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg">تحليل السيرة الذاتية</h3>
+                    <p class="text-sm opacity-60">تحقق من توافق سيرتك مع ATS واحصل على نصائح التحسين</p>
+                </div>
+            </div>
+            
+            <!-- Upload Area -->
+            <div id="cv-upload-area" class="border-2 border-dashed border-emerald-500/30 rounded-xl p-8 text-center cursor-pointer hover:border-emerald-500/60 transition-all">
+                <input type="file" id="cv-file-input" accept=".pdf,.doc,.docx,.txt" class="hidden" onchange="handleCVUpload(event)">
+                <div class="w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                    </svg>
+                </div>
+                <p class="font-medium mb-2">ارفع سيرتك الذاتية</p>
+                <p class="text-sm opacity-50 mb-4">PDF, DOC, DOCX, أو TXT (Max 5MB)</p>
+                <button onclick="document.getElementById('cv-file-input').click()" class="btn-primary text-sm">
+                    اختيار الملف
+                </button>
+            </div>
+            
+            <!-- API Key Input (for demo purposes) -->
+            <div id="api-key-section" class="mt-4 p-4 bg-white/5 rounded-xl">
+                <p class="text-sm opacity-60 mb-2">🔑 أدخل OpenAI API Key للتحليل المتقدم (اختياري):</p>
+                <div class="flex gap-2">
+                    <input type="password" id="openai-api-key" class="ios-input text-sm" placeholder="sk-...">
+                    <button onclick="saveAPIKey()" class="btn-secondary text-sm whitespace-nowrap">حفظ</button>
+                </div>
+                <p class="text-xs opacity-40 mt-2">يتم حفظ المفتاح محلياً في متصفحك فقط</p>
+            </div>
+            
+            <!-- Analysis Results -->
+            <div id="cv-analysis-results" class="hidden mt-6">
+                <!-- Overall Score -->
+                <div class="text-center mb-6">
+                    <div class="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 border-2 border-emerald-500/50 mb-3">
+                        <span id="ats-score" class="text-3xl font-bold text-emerald-500">0</span>
+                    </div>
+                    <p class="font-bold">نقاط ATS</p>
+                    <p id="score-message" class="text-sm opacity-60"></p>
+                </div>
+                
+                <!-- Score Breakdown -->
+                <div class="grid grid-cols-2 gap-3 mb-6">
+                    <div class="ios-card p-3 text-center">
+                        <p class="text-xs opacity-50 mb-1">توافق الكلمات</p>
+                        <p id="score-keywords" class="font-bold text-emerald-500">0%</p>
+                    </div>
+                    <div class="ios-card p-3 text-center">
+                        <p class="text-xs opacity-50 mb-1">التنسيق</p>
+                        <p id="score-format" class="font-bold text-blue-500">0%</p>
+                    </div>
+                    <div class="ios-card p-3 text-center">
+                        <p class="text-xs opacity-50 mb-1">الإنجازات</p>
+                        <p id="score-achievements" class="font-bold text-yellow-500">0%</p>
+                    </div>
+                    <div class="ios-card p-3 text-center">
+                        <p class="text-xs opacity-50 mb-1">المهارات</p>
+                        <p id="score-skills" class="font-bold text-purple-500">0%</p>
+                    </div>
+                </div>
+                
+                <!-- Analysis Details -->
+                <div class="space-y-4">
+                    <!-- Strengths -->
+                    <div class="ios-card p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-xl">✅</span>
+                            <h4 class="font-bold">نقاط القوة</h4>
+                        </div>
+                        <ul id="cv-strengths" class="space-y-2 text-sm opacity-80">
+                        </ul>
+                    </div>
+                    
+                    <!-- Weaknesses -->
+                    <div class="ios-card p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-xl">⚠️</span>
+                            <h4 class="font-bold">نقاط تحتاج تحسين</h4>
+                        </div>
+                        <ul id="cv-weaknesses" class="space-y-2 text-sm opacity-80">
+                        </ul>
+                    </div>
+                    
+                    <!-- Suggestions -->
+                    <div class="ios-card p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-xl">💡</span>
+                            <h4 class="font-bold">اقتراحات التحسين</h4>
+                        </div>
+                        <ul id="cv-suggestions" class="space-y-2 text-sm opacity-80">
+                        </ul>
+                    </div>
+                    
+                    <!-- Keyword Optimization -->
+                    <div id="keyword-optimization" class="ios-card p-4 hidden">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-xl">🔍</span>
+                            <h4 class="font-bold">تحسين الكلمات المفتاحية</h4>
+                        </div>
+                        
+                        <div id="matched-keywords" class="mb-4">
+                            <p class="text-sm font-medium mb-2 text-emerald-500">✓ كلمات متطابقة:</p>
+                            <div id="matched-keywords-list" class="flex flex-wrap gap-2"></div>
+                        </div>
+                        
+                        <div id="missing-keywords">
+                            <p class="text-sm font-medium mb-2 text-yellow-500">⚠ كلمات ناقصة:</p>
+                            <div id="missing-keywords-list" class="flex flex-wrap gap-2"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Improved Version -->
+                    <div class="ios-card p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-xl">✨</span>
+                            <h4 class="font-bold">الملخص المهني المقترح</h4>
+                        </div>
+                        <p id="improved-summary" class="text-sm opacity-80 leading-relaxed">
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Matched Jobs -->
+                <div id="matched-jobs-section" class="mt-6 hidden">
+                    <h4 class="font-bold mb-4 flex items-center gap-2">
+                        <span>🎯</span>
+                        وظائف تناسب سيرتك
+                    </h4>
+                    
+                    <div id="matched-jobs-list" class="space-y-3">
+                    </div>
+                </div>
+                
+                <!-- Reset Button -->
+                <div class="text-center mt-6">
+                    <button onclick="resetCVAnalysis()" class="btn-secondary">
+                        تحليل سيرة أخرى
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Loading State -->
+            <div id="cv-loading" class="hidden mt-6 text-center">
+                <div class="w-12 h-12 border-3 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin mx-auto mb-4"></div>
+                <p class="opacity-60">جاري تحليل السيرة الذاتية...</p>
+                <p class="text-sm opacity-40 mt-2">قد يستغرق الأمر بضع ثوانٍ</p>
+            </div>
         </section>
         
         <!-- Search & Filters Bar -->
@@ -1065,6 +1228,111 @@
             } else {
                 window.location.href = 'profile.html';
             }
+        }
+        
+        // ═══════════════════════════════════════════════════════════════════════════════
+        // CV ANALYZER FUNCTIONS
+        // ═══════════════════════════════════════════════════════════════════════════════
+        let currentCVText = '';
+        
+        function saveAPIKey() {
+            const apiKey = document.getElementById('openai-api-key').value.trim();
+            if (apiKey) {
+                localStorage.setItem('openai_api_key', apiKey);
+                CVAnalyzer.init(apiKey);
+                alert('✅ تم حفظ مفتاح API');
+            }
+        }
+        
+        async function handleCVUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const validTypes = ['application/pdf', 'text/plain', 'application/msword', 
+                               'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+            if (!validTypes.includes(file.type)) {
+                alert('❌ يرجى رفع ملف PDF, DOC, DOCX, أو TXT');
+                return;
+            }
+            
+            if (file.size > 5 * 1024 * 1024) {
+                alert('❌ حجم الملف يجب أن يكون أقل من 5MB');
+                return;
+            }
+            
+            document.getElementById('cv-upload-area').classList.add('hidden');
+            document.getElementById('api-key-section').classList.add('hidden');
+            document.getElementById('cv-loading').classList.remove('hidden');
+            
+            try {
+                const text = await readFileContent(file);
+                currentCVText = text;
+                
+                const apiKey = localStorage.getItem('openai_api_key');
+                if (apiKey) CVAnalyzer.init(apiKey);
+                
+                const result = await CVAnalyzer.analyzeCV(text);
+                displayAnalysisResults(result);
+                
+            } catch (error) {
+                alert('❌ حدث خطأ أثناء التحليل');
+                resetCVAnalysis();
+            }
+        }
+        
+        function readFileContent(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => resolve(e.target.result);
+                reader.onerror = reject;
+                reader.readAsText(file);
+            });
+        }
+        
+        function displayAnalysisResults(result) {
+            document.getElementById('cv-loading').classList.add('hidden');
+            document.getElementById('cv-analysis-results').classList.remove('hidden');
+            
+            document.getElementById('ats-score').textContent = result.atsScore;
+            document.getElementById('score-keywords').textContent = result.breakdown.keywordMatch + '%';
+            document.getElementById('score-format').textContent = result.breakdown.formatCompliance + '%';
+            document.getElementById('score-achievements').textContent = result.breakdown.quantifiableResults + '%';
+            document.getElementById('score-skills').textContent = result.breakdown.skillsAlignment + '%';
+            
+            const scoreMsg = document.getElementById('score-message');
+            if (result.atsScore >= 80) {
+                scoreMsg.textContent = '🎉 سيرة ممتازة! جاهزة للتقديم';
+            } else if (result.atsScore >= 60) {
+                scoreMsg.textContent = '👍 جيدة، لكن يمكن تحسينها';
+            } else {
+                scoreMsg.textContent = '⚠️ تحتاج تحسينات كبيرة';
+            }
+            
+            document.getElementById('cv-strengths').innerHTML = result.analysis.strengths.map(s => '<li>✓ ' + s + '</li>').join('');
+            document.getElementById('cv-weaknesses').innerHTML = result.analysis.weaknesses.map(w => '<li>• ' + w + '</li>').join('');
+            document.getElementById('cv-suggestions').innerHTML = result.analysis.suggestions.map(s => '<li>💡 ' + s + '</li>').join('');
+            
+            document.getElementById('improved-summary').textContent = result.analysis.improvedVersion;
+            
+            if (result.matchedJobs && result.matchedJobs.length > 0) {
+                document.getElementById('matched-jobs-section').classList.remove('hidden');
+                document.getElementById('matched-jobs-list').innerHTML = result.matchedJobs.map(job => 
+                    '<div class="ios-card p-3 cursor-pointer" onclick="showJobDetail(' + job.id + ')" style="background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.3);">' +
+                    '<div class="flex items-center justify-between"><div><p class="font-semibold text-sm">' + job.title + '</p>' +
+                    '<p class="text-xs opacity-60">' + job.company + ' • ' + job.location + '</p></div>' +
+                    '<span class="text-emerald-500 text-xs">مطابقة</span></div></div>'
+                ).join('');
+            }
+        }
+        
+        function resetCVAnalysis() {
+            document.getElementById('cv-file-input').value = '';
+            document.getElementById('cv-upload-area').classList.remove('hidden');
+            document.getElementById('api-key-section').classList.remove('hidden');
+            document.getElementById('cv-analysis-results').classList.add('hidden');
+            document.getElementById('cv-loading').classList.add('hidden');
+            document.getElementById('matched-jobs-section').classList.add('hidden');
+            currentCVText = '';
         }
         
         // ═══════════════════════════════════════════════════════════════════════════════
