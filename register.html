@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إنشاء حساب | SaudiCareers</title>
+    <meta name="description" content="أنشئ حسابك في SaudiCareers وابحث عن وظيفتك المثالية">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+        
+        :root {
+            --primary: #1e3a5f;
+            --primary-light: #2d5a8e;
+            --secondary: #0f766e;
+            --accent: #10b981;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --bg: #f8fafc;
+            --white: #ffffff;
+            --border: #e5e7eb;
+            --error: #ef4444;
+            --success: #10b981;
+        }
+        
+        body {
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        .header {
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
+        }
+        
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+        
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            font-size: 20px;
+        }
+        
+        .logo-text {
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 24px;
+        }
+        
+        .logo-sub {
+            color: var(--text-light);
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .back-link {
+            color: var(--text-light);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+        
+        .back-link:hover {
+            color: var(--primary);
+        }
+        
+        /* Main Content */
+        .main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 24px;
+        }
+        
+        .register-container {
+            width: 100%;
+            max-width: 480px;
+        }
+        
+        .register-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .register-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        
+        .register-header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+        
+        .register-header p {
+            color: var(--text-light);
+            font-size: 15px;
+        }
+        
+        /* Form */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.2s;
+            background: var(--white);
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.1);
+        }
+        
+        .form-input::placeholder {
+            color: var(--text-light);
+        }
+        
+        .form-input.error {
+            border-color: var(--error);
+        }
+        
+        .error-message {
+            color: var(--error);
+            font-size: 13px;
+            margin-top: 6px;
+            display: none;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        /* Password Field */
+        .password-field {
+            position: relative;
+        }
+        
+        .password-toggle {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            font-size: 18px;
+            padding: 4px;
+        }
+        
+        .password-toggle:hover {
+            color: var(--text);
+        }
+        
+        /* Checkbox */
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        
+        .checkbox-input {
+            width: 20px;
+            height: 20px;
+            margin-top: 2px;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+        
+        .checkbox-label {
+            font-size: 14px;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+        
+        .checkbox-label a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .checkbox-label a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(30, 58, 95, 0.3);
+        }
+        
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .submit-btn.loading {
+            position: relative;
+            color: transparent;
+        }
+        
+        .submit-btn.loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid white;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            right: 50%;
+            margin-right: -10px;
+            top: 50%;
+            margin-top: -10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Login Link */
+        .login-link {
+            text-align: center;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+        
+        .login-link p {
+            color: var(--text-light);
+            font-size: 15px;
+        }
+        
+        .login-link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 700;
+        }
+        
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Trust Badges */
+        .trust-section {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+        
+        .trust-title {
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 16px;
+        }
+        
+        .trust-badges {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .trust-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+        
+        /* Success State */
+        .success-state {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .success-state.show {
+            display: block;
+        }
+        
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin: 0 auto 24px;
+        }
+        
+        .success-state h2 {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+        
+        .success-state p {
+            color: var(--text-light);
+            margin-bottom: 24px;
+        }
+        
+        /* Footer */
+        .footer {
+            background: #0f172a;
+            color: white;
+            padding: 24px;
+            text-align: center;
+        }
+        
+        .footer p {
+            font-size: 14px;
+            color: rgba(255,255,255,0.6);
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 12px;
+        }
+        
+        .footer-links a {
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            font-size: 13px;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        /* Mobile */
+        @media (max-width: 480px) {
+            .register-card {
+                padding: 24px;
+            }
+            
+            .register-header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-inner">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">🇸🇦</div>
+                <div>
+                    <div class="logo-text">SaudiCareers</div>
+                    <div class="logo-sub">منصة التوظيف الوطنية</div>
+                </div>
+            </a>
+            
+            <a href="index.html" class="back-link">
+                <span>←</span>
+                <span>العودة للرئيسية</span>
+            </a>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="main">
+        <div class="register-container">
+            <!-- Registration Form -->
+            <div class="register-card" id="registerForm">
+                <div class="register-header">
+                    <h1>إنشاء حساب جديد</h1>
+                    <p>انضم إلى أكثر من 50,000 باحث عن عمل</p>
+                </div>
+                
+                <form id="signupForm">
+                    <div class="form-group">
+                        <label class="form-label">الاسم الكامل</label>
+                        <input type="text" class="form-input" id="fullName" placeholder="أدخل اسمك الكامل" required>
+                        <div class="error-message" id="nameError">الرجاء إدخال الاسم الكامل</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">البريد الإلكتروني</label>
+                        <input type="email" class="form-input" id="email" placeholder="example@email.com" required>
+                        <div class="error-message" id="emailError">الرجاء إدخال بريد إلكتروني صحيح</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">رقم الجوال</label>
+                        <input type="tel" class="form-input" id="phone" placeholder="05xxxxxxxx" required>
+                        <div class="error-message" id="phoneError">الرجاء إدخال رقم جوال صحيح</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">كلمة المرور</label>
+                        <div class="password-field">
+                            <input type="password" class="form-input" id="password" placeholder="أدخل كلمة المرور" required>
+                            <button type="button" class="password-toggle" onclick="togglePassword()">👁️</button>
+                        </div>
+                        <div class="error-message" id="passwordError">كلمة المرور يجب أن تكون 8 أحرف على الأقل</div>
+                    </div>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" class="checkbox-input" id="agreeTerms" required>
+                        <label class="checkbox-label" for="agreeTerms">
+                            أوافق على <a href="terms.html">شروط الاستخدام</a> و <a href="privacy.html">سياسة الخصوصية</a>
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn" id="submitBtn">إنشاء الحساب</button>
+                </form>
+                
+                <div class="login-link">
+                    <p>لديك حساب بالفعل؟ <a href="login.html">تسجيل الدخول</a></p>
+                </div>
+                
+                <div class="trust-section">
+                    <div class="trust-title">🔒 معتمد من وزارة الموارد البشرية</div>
+                    
+                    <div class="trust-badges">
+                        <span class="trust-badge">🔐 تشفير SSL</span>
+                        <span class="trust-badge">🛡️ حماية البيانات</span>
+                        <span class="trust-badge">🇸🇦 منصة سعودية</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Success State -->
+            <div class="register-card success-state" id="successState">
+                <div class="success-icon">✅</div>
+                <h2>تم إنشاء الحساب بنجاح!</h2>
+                <p>تم إرسال رابط التفعيل إلى بريدك الإلكتروني. الرجاء التحقق من بريدك وتفعيل حسابك.</p>
+                
+                <a href="login.html" class="submit-btn" style="display: inline-block; text-align: center; text-decoration: none;">تسجيل الدخول</a>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2026 SaudiCareers. جميع الحقوق محفوظة.</p>
+        <div class="footer-links">
+            <a href="privacy.html">سياسة الخصوصية</a>
+            <a href="terms.html">شروط الاستخدام</a>
+            <a href="about.html">من نحن</a>
+        </div>
+    </footer>
+    
+    <script>
+        // Toggle Password Visibility
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleBtn = document.querySelector('.password-toggle');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleBtn.textContent = '🙈';
+            } else {
+                passwordInput.type = 'password';
+                toggleBtn.textContent = '👁️';
+            }
+        }
+        
+        // Form Validation
+        const form = document.getElementById('signupForm');
+        const fullName = document.getElementById('fullName');
+        const email = document.getElementById('email');
+        const phone = document.getElementById('phone');
+        const password = document.getElementById('password');
+        const submitBtn = document.getElementById('submitBtn');
+        
+        // Validation Functions
+        function validateName() {
+            const nameError = document.getElementById('nameError');
+            if (fullName.value.trim().length < 3) {
+                fullName.classList.add('error');
+                nameError.classList.add('show');
+                return false;
+            }
+            fullName.classList.remove('error');
+            nameError.classList.remove('show');
+            return true;
+        }
+        
+        function validateEmail() {
+            const emailError = document.getElementById('emailError');
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email.value)) {
+                email.classList.add('error');
+                emailError.classList.add('show');
+                return false;
+            }
+            email.classList.remove('error');
+            emailError.classList.remove('show');
+            return true;
+        }
+        
+        function validatePhone() {
+            const phoneError = document.getElementById('phoneError');
+            const phoneRegex = /^05[0-9]{8}$/;
+            if (!phoneRegex.test(phone.value.replace(/\s/g, ''))) {
+                phone.classList.add('error');
+                phoneError.classList.add('show');
+                return false;
+            }
+            phone.classList.remove('error');
+            phoneError.classList.remove('show');
+            return true;
+        }
+        
+        function validatePassword() {
+            const passwordError = document.getElementById('passwordError');
+            if (password.value.length < 8) {
+                password.classList.add('error');
+                passwordError.classList.add('show');
+                return false;
+            }
+            password.classList.remove('error');
+            passwordError.classList.remove('show');
+            return true;
+        }
+        
+        // Real-time validation
+        fullName.addEventListener('blur', validateName);
+        email.addEventListener('blur', validateEmail);
+        phone.addEventListener('blur', validatePhone);
+        password.addEventListener('blur', validatePassword);
+        
+        // Form Submit
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Validate all fields
+            const isNameValid = validateName();
+            const isEmailValid = validateEmail();
+            const isPhoneValid = validatePhone();
+            const isPasswordValid = validatePassword();
+            
+            if (!isNameValid || !isEmailValid || !isPhoneValid || !isPasswordValid) {
+                return;
+            }
+            
+            // Show loading state
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+            
+            // Simulate API call
+            setTimeout(() => {
+                // Hide form, show success
+                document.getElementById('registerForm').style.display = 'none';
+                document.getElementById('successState').classList.add('show');
+                
+                // Store user data in localStorage (mock registration)
+                const userData = {
+                    name: fullName.value,
+                    email: email.value,
+                    phone: phone.value,
+                    registeredAt: new Date().toISOString()
+                };
+                localStorage.setItem('saudiCareers_user', JSON.stringify(userData));
+                localStorage.setItem('saudiCareers_loggedIn', 'false');
+                
+            }, 1500);
+        });
+        
+        // Phone number formatting
+        phone.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 10) value = value.slice(0, 10);
+            e.target.value = value;
+        });
+    </script>
+</body>
+</html>
