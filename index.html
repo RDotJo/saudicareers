@@ -1,1653 +1,982 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" data-theme="dark">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#000000">
-    <title id="page-title">SaudiCareers - وظائف حكومية وشبه حكومية</title>
-    
-    <!-- PWA -->
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="logo.webp">
-    <link rel="icon" type="image/webp" href="logo.webp">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaudiCareers - منصة التوظيف الوطنية</title>
+    <meta name="description" content="منصة سعودية متخصصة في الوظائف الحكومية والخاصة - نوفر لك الوظائف الجديدة يومياً مع تحليل ذكي للسوق">
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Tailwind -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- 🛡️ Fallback Loader - مولد الطوارئ -->
-    <script src="fallback-loader.js"></script>
-    
-    <!-- Job Database -->
-    <script src="jobs-data.js"></script>
-    
-    <!-- CV Analyzer -->
-    <script src="cv-analyzer.js"></script>
-    
-    <!-- Email Verification -->
-    <script src="email-verification.js"></script>
-    
-    <!-- Category Icons -->
-    <script src="category-icons.js"></script>
-    
-    <script>
-    tailwind.config = {
-        darkMode: 'class',
-        theme: {
-            extend: {
-                colors: {
-                    primary: '#10B981',
-                    success: '#30D158',
-                    warning: '#FF9F0A',
-                    danger: '#FF453A',
-                    gold: '#2D5A3D',
-                    emerald: '#10B981',
-                }
-            }
-        }
-    }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     
     <style>
-    :root {
-        --bg-primary: #000000;
-        --bg-secondary: #1C1C1E;
-        --bg-tertiary: #2C2C2E;
-        --text-primary: #FFFFFF;
-        --text-secondary: rgba(255,255,255,0.6);
-        --text-tertiary: rgba(255,255,255,0.3);
-        --border-color: rgba(255,255,255,0.1);
-    }
-    
-    [data-theme="light"] {
-        --bg-primary: #F2F2F7;
-        --bg-secondary: #FFFFFF;
-        --bg-tertiary: #E5E5EA;
-        --text-primary: #000000;
-        --text-secondary: rgba(0,0,0,0.6);
-        --text-tertiary: rgba(0,0,0,0.3);
-        --border-color: rgba(0,0,0,0.1);
-    }
-    
-    * {
-        font-family: 'SF Pro Display', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-        -webkit-tap-highlight-color: transparent;
-    }
-    
-    body {
-        background: var(--bg-primary);
-        color: var(--text-primary);
-        overflow-x: hidden;
-        padding-bottom: 20px;
-        transition: background 0.3s ease, color 0.3s ease;
-    }
-    
-    /* Mobile-only tab bar */
-    .tab-bar {
-        display: none;
-    }
-    
-    @media (max-width: 768px) {
-        .tab-bar {
-            display: block;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--bg-secondary);
-            backdrop-filter: blur(20px);
-            border-top: 1px solid var(--border-color);
-            z-index: 1000;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
         }
+        
+        :root {
+            --primary: #1e3a5f;
+            --primary-light: #2d5a8e;
+            --secondary: #0f766e;
+            --accent: #10b981;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --bg: #f8fafc;
+            --white: #ffffff;
+            --border: #e5e7eb;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
         body {
-            padding-bottom: 80px;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
         }
-    }
-    
-    /* Desktop Navigation */
-    .desktop-nav {
-        display: none;
-    }
-    
-    @media (min-width: 769px) {
-        .desktop-nav {
+        
+        /* Header */
+        .header {
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+        
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
             display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
         }
-    }
-    
-    @media (max-width: 768px) {
-        .desktop-nav {
-            display: none;
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
         }
-    }
-    
-    .nav-container {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: 100;
-        background: var(--bg-primary);
-        border-bottom: 1px solid var(--border-color);
-    }
-    
-    .ios-card {
-        background: var(--bg-secondary);
-        border-radius: 16px;
-        border: 1px solid var(--border-color);
-        transition: background 0.3s ease;
-    }
-    
-    .btn-primary {
-        background: #10B981;
-        color: white;
-        padding: 12px 20px;
-        border-radius: 10px;
-        font-weight: 600;
-        transition: all 0.2s ease;
-        cursor: pointer;
-        border: none;
-    }
-    
-    .btn-primary:hover { transform: translateY(-2px); opacity: 0.9; }
-    .btn-primary:active { transform: scale(0.97); }
-    
-    .btn-secondary {
-        background: var(--bg-tertiary);
-        color: var(--text-primary);
-        padding: 12px 20px;
-        border-radius: 10px;
-        font-weight: 600;
-        transition: all 0.2s ease;
-        cursor: pointer;
-        border: none;
-    }
-    
-    .ios-input {
-        width: 100%;
-        padding: 12px 16px;
-        background: var(--bg-tertiary);
-        border: 1px solid var(--border-color);
-        border-radius: 10px;
-        color: var(--text-primary);
-        font-size: 16px;
-        transition: all 0.2s ease;
-    }
-    
-    .ios-input:focus {
-        outline: none;
-        border-color: #10B981;
-    }
-    
-    .ios-select {
-        padding: 10px 14px;
-        background: var(--bg-tertiary);
-        border: 1px solid var(--border-color);
-        border-radius: 8px;
-        color: var(--text-primary);
-        font-size: 14px;
-        cursor: pointer;
-    }
-    
-    .tab-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 4px;
-        padding: 8px 16px;
-        color: var(--text-secondary);
-        transition: color 0.2s ease;
-        cursor: pointer;
-        border: none;
-        background: transparent;
-    }
-    
-    .tab-item.active { color: #10B981; }
-    .tab-item:active { transform: scale(0.95); }
-    
-    .sheet-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(0,0,0,0.6);
-        z-index: 2000;
-        opacity: 0;
-        visibility: hidden;
-        transition: all 0.3s ease;
-    }
-    
-    .sheet-overlay.active { opacity: 1; visibility: visible; }
-    
-    .sheet {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: var(--bg-secondary);
-        border-radius: 24px 24px 0 0;
-        z-index: 2001;
-        transform: translateY(100%);
-        transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-        max-height: 90vh;
-        overflow-y: auto;
-    }
-    
-    .sheet.active { transform: translateY(0); }
-    
-    .sheet-handle {
-        width: 36px;
-        height: 5px;
-        background: var(--text-tertiary);
-        border-radius: 3px;
-        margin: 12px auto;
-    }
-    
-    .hidden { display: none !important; }
-    
-    .job-card {
-        opacity: 0;
-        animation: fadeIn 0.4s ease forwards;
-    }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    
-    /* Toggle buttons */
-    .toggle-btn {
-        width: 40px;
-        height: 40px;
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: var(--bg-tertiary);
-        border: 1px solid var(--border-color);
-        cursor: pointer;
-        transition: all 0.2s ease;
-        color: var(--text-primary);
-    }
-    
-    .toggle-btn:hover { background: var(--bg-secondary); }
-    
-    .job-list-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-        gap: 16px;
-    }
-    
-    @media (max-width: 768px) {
-        .job-list-container {
-            grid-template-columns: 1fr;
+        
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            font-size: 20px;
         }
-    }
-    
-    /* Search and filters */
-    .search-bar {
-        position: sticky;
-        top: 70px;
-        z-index: 50;
-        background: var(--bg-primary);
-        padding: 10px 0;
-    }
-    
-    [data-theme="light"] .gold-text { color: #065F46; }
-    [data-theme="dark"] .gold-text { color: #10B981; }
+        
+        .logo-text {
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 24px;
+        }
+        
+        .logo-sub {
+            color: var(--text-light);
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .nav {
+            display: flex;
+            gap: 32px;
+        }
+        
+        .nav a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 15px;
+            transition: color 0.2s;
+            position: relative;
+        }
+        
+        .nav a:hover, .nav a.active {
+            color: var(--primary);
+        }
+        
+        .nav a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -24px;
+            right: 0;
+            left: 0;
+            height: 3px;
+            background: var(--primary);
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .btn {
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-light);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 1.5px solid var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 80px 24px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 50%;
+        }
+        
+        .hero-inner {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.15);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 14px;
+            margin-bottom: 24px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .hero-badge .dot {
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+        
+        .hero p {
+            font-size: 20px;
+            opacity: 0.9;
+            margin-bottom: 40px;
+        }
+        
+        .search-box {
+            background: white;
+            border-radius: 16px;
+            padding: 12px;
+            display: flex;
+            gap: 12px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 16px 20px;
+            border: none;
+            font-size: 16px;
+            outline: none;
+            color: var(--text);
+        }
+        
+        .search-input::placeholder {
+            color: var(--text-light);
+        }
+        
+        .search-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .search-btn:hover {
+            background: #059669;
+        }
+        
+        /* Stats Bar */
+        .stats-bar {
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            padding: 24px;
+        }
+        
+        .stats-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+        
+        .stat-item {
+            padding: 0 24px;
+        }
+        
+        .stat-number {
+            font-size: 36px;
+            font-weight: 900;
+            color: var(--primary);
+            display: block;
+        }
+        
+        .stat-label {
+            color: var(--text-light);
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        /* Trust Section - Companies */
+        .trust-section {
+            padding: 60px 24px;
+            background: var(--white);
+            text-align: center;
+        }
+        
+        .section-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 12px;
+        }
+        
+        .section-subtitle {
+            color: var(--text-light);
+            font-size: 16px;
+            margin-bottom: 40px;
+        }
+        
+        .companies-grid {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 48px;
+            flex-wrap: wrap;
+        }
+        
+        .company-logo {
+            height: 50px;
+            opacity: 0.6;
+            filter: grayscale(100%);
+            transition: all 0.3s;
+        }
+        
+        .company-logo:hover {
+            opacity: 1;
+            filter: grayscale(0%);
+        }
+        
+        /* Intelligence Section */
+        .intel-section {
+            padding: 80px 24px;
+            background: var(--bg);
+        }
+        
+        .intel-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+        
+        .intel-content h2 {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 20px;
+        }
+        
+        .intel-content p {
+            color: var(--text-light);
+            font-size: 16px;
+            margin-bottom: 32px;
+            line-height: 1.8;
+        }
+        
+        .intel-features {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .intel-feature {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 20px;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+        
+        .intel-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+        
+        .intel-feature h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .intel-feature p {
+            font-size: 14px;
+            color: var(--text-light);
+            margin: 0;
+        }
+        
+        .intel-visual {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .chart-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: var(--text);
+        }
+        
+        .chart-bar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .chart-label {
+            width: 100px;
+            font-size: 14px;
+            color: var(--text-light);
+            text-align: left;
+        }
+        
+        .chart-progress {
+            flex: 1;
+            height: 12px;
+            background: var(--bg);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        .chart-fill {
+            height: 100%;
+            border-radius: 6px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+        
+        .chart-value {
+            width: 60px;
+            text-align: right;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        /* Features Section */
+        .features-section {
+            padding: 80px 24px;
+            background: var(--white);
+        }
+        
+        .features-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+        }
+        
+        .feature-card {
+            padding: 32px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .feature-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 20px rgba(30, 58, 95, 0.1);
+            transform: translateY(-4px);
+        }
+        
+        .feature-icon {
+            width: 64px;
+            height: 64px;
+            background: rgba(30, 58, 95, 0.08);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin: 0 auto 20px;
+        }
+        
+        .feature-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        
+        .feature-card p {
+            color: var(--text-light);
+            font-size: 15px;
+            line-height: 1.7;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            padding: 80px 24px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            text-align: center;
+        }
+        
+        .cta-section h2 {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+        
+        .cta-section p {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 32px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .btn-white {
+            background: white;
+            color: var(--primary);
+            padding: 16px 40px;
+            font-size: 16px;
+        }
+        
+        .btn-white:hover {
+            background: rgba(255,255,255,0.9);
+        }
+        
+        /* Footer */
+        .footer {
+            background: #0f172a;
+            color: white;
+            padding: 60px 24px 24px;
+        }
+        
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-brand p {
+            color: rgba(255,255,255,0.7);
+            font-size: 14px;
+            margin-top: 16px;
+            line-height: 1.8;
+        }
+        
+        .footer-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+        
+        .footer-links a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .trust-badges {
+            display: flex;
+            gap: 16px;
+        }
+        
+        .trust-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+        }
+        
+        /* Mobile */
+        @media (max-width: 968px) {
+            .nav {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 32px;
+            }
+            
+            .search-box {
+                flex-direction: column;
+            }
+            
+            .stats-inner {
+                flex-wrap: wrap;
+                gap: 24px;
+            }
+            
+            .intel-inner {
+                grid-template-columns: 1fr;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .companies-grid {
+                gap: 24px;
+            }
+        }
     </style>
 </head>
 <body>
-    
-    <!-- ═══════════════════════════════════════════════════════════════════════════════
-         NAVIGATION - Desktop & Mobile with Language & Theme Toggles
-         ═══════════════════════════════════════════════════════════════════════════════ -->
-    <nav class="nav-container">
-        <div class="px-4 py-3 flex items-center justify-between max-w-7xl mx-auto">
-            <div class="flex items-center gap-3">
-                <img src="logo.webp" alt="SaudiCareers" class="w-12 h-12 rounded-xl">
+    <!-- Header -->
+    <header class="header">
+        <div class="header-inner">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">🇸🇦</div>
                 <div>
-                    <h1 class="text-lg font-bold">SaudiCareers</h1>
-                    <p id="nav-subtitle" class="text-xs opacity-60">وظائف حكومية وشبه حكومية</p>
+                    <div class="logo-text">SaudiCareers</div>
+                    <div class="logo-sub">منصة التوظيف الوطنية</div>
                 </div>
-            </div>
+            </a>
             
-            <!-- Desktop Navigation -->
-            <div class="desktop-nav items-center gap-6">
-                <a href="#" class="text-sm font-medium opacity-80 hover:opacity-100">الرئيسية</a>
-                <a href="#" class="text-sm font-medium opacity-80 hover:opacity-100">الوظائف</a>
-                <a href="#" class="text-sm font-medium opacity-80 hover:opacity-100">المقالات</a>
-                <a href="#" class="text-sm font-medium opacity-80 hover:opacity-100">عن الموقع</a>
-            </div>
+            <nav class="nav">
+                <a href="index.html" class="active">الرئيسية</a>
+                <a href="jobs.html">الوظائف</a>
+                <a href="about.html">من نحن</a>
+                <a href="companies.html">الشركات</a>
+            </nav>
             
-            <!-- Right Side: Toggles + Auth -->
-            <div class="flex items-center gap-2">
-                <!-- Language Toggle -->
-                <button onclick="toggleLanguage()" class="toggle-btn" title="تغيير اللغة">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path>
-                    </svg>
-                </button>
-                
-                <!-- Theme Toggle -->
-                <button onclick="toggleTheme()" class="toggle-btn" title="تغيير المظهر">
-                    <svg id="theme-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
-                    </svg>
-                </button>
-                
-                <!-- Auth Button -->
-                <button id="nav-auth-btn" onclick="openLoginSheet()" class="btn-primary text-sm py-2 px-4 mr-2">
-                    اشترك الآن
-                </button>
-                
-                <button id="nav-user-btn" onclick="toggleUserMenu()" class="hidden w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center text-sm font-bold mr-2">
-                    👤
-                </button>
+            <div class="header-actions">
+                <a href="login.html" class="btn btn-outline">تسجيل الدخول</a>
+                <a href="register.html" class="btn btn-primary">إنشاء حساب</a>
             </div>
         </div>
-    </nav>
+    </header>
     
-    <!-- ═══════════════════════════════════════════════════════════════════════════════
-         MAIN CONTENT
-         ═══════════════════════════════════════════════════════════════════════════════ -->
-    <main class="pt-20 px-4 max-w-7xl mx-auto">
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-inner">
+            <div class="hero-badge">
+                <span class="dot"></span>
+                <span>وظائف جديدة تُضاف يومياً</span>
+            </div>
+            
+            <h1>ابحث عن وظيفتك المثالية<br>في القطاع الحكومي والخاص</h1>
+            <p>منصة سعودية موثقة تجمع آلاف الوظائف من مصادر رسمية موثوقة</p>
+            
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="المسمى الوظيفي، المدينة، أو الشركة...">
+                <button class="search-btn">بحث</button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Stats Bar -->
+    <section class="stats-bar">
+        <div class="stats-inner">
+            <div class="stat-item">
+                <span class="stat-number">12,847</span>
+                <span class="stat-label">وظيفة نشطة</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">468</span>
+                <span class="stat-label">شركة موثقة</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">89,432</span>
+                <span class="stat-label">متقدم هذا الشهر</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">96%</span>
+                <span class="stat-label">نسبة الرضا</span>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Trust Section - Companies -->
+    <section class="trust-section">
+        <h2 class="section-title">شركات موثقة تثق بنا</h2>
+        <p class="section-subtitle">ن cooper مع أكبر الشركات والجهات الحكومية في المملكة</p>
         
-        <!-- Welcome Section -->
-        <section class="ios-card p-5 mb-5">
-            <p id="welcome-subtitle" class="gold-text text-sm font-medium mb-1">مرحباً بك في SaudiCareers</p>
-            <h2 id="welcome-title" class="text-xl font-bold">اكتشف فرص وظيفية حكومية وشبه حكومية</h2>
-        </section>
-        
-        <!-- ═══════════════════════════════════════════════════════════════════════════════
-             CV ANALYZER PREVIEW - For Guests (Locked)
-             ═══════════════════════════════════════════════════════════════════════════════ -->
-        <section id="cv-preview-section" class="ios-card p-6 mb-6">
-            <div class="flex items-center gap-3 mb-4">
-                <div class="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center">
-                    <svg class="w-6 h-6 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                    </svg>
-                </div>
-                <div>
-                    <h3 class="font-bold text-lg">تحليل السيرة الذاتية</h3>
-                    <p class="text-sm opacity-60">احصل على تقرير احترافي لسيرتك الذاتية</p>
-                </div>
-            </div>
-            
-            <div class="border-2 border-dashed border-emerald-500/20 rounded-xl p-8 text-center relative overflow-hidden">
-                <!-- Lock Overlay -->
-                <div class="absolute inset-0 bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center z-10">
-                    <div class="w-16 h-16 rounded-full bg-emerald-500/20 flex items-center justify-center mb-3">
-                        <svg class="w-8 h-8 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                        </svg>
-                    </div>
-                    <p class="font-bold mb-2">ميزة حصرية للأعضاء</p>
-                    <p class="text-sm opacity-60 mb-4">سجل الآن وتحقق من توافق سيرتك مع ATS</p>
-                    <button onclick="openLoginSheet()" class="btn-primary text-sm">
-                        🔓 افتح الميزة - سجل الآن
-                    </button>
-                </div>
+        <div class="companies-grid">
+            <div class="company-logo" style="font-size: 24px; font-weight: 800; color: #1e3a5f;">أرامكو</div>
+            <div class="company-logo" style="font-size: 24px; font-weight: 800; color: #1e3a5f;">سابك</div>
+            <div class="company-logo" style="font-size: 24px; font-weight: 800; color: #1e3a5f;">صندوق الاستثمارات</div>
+            <div class="company-logo" style="font-size: 24px; font-weight: 800; color: #1e3a5f;">معادن</div>
+            <div class="company-logo" style="font-size: 24px; font-weight: 800; color: #1e3a5f;">STC</div>
+            <div class="company-logo" style="font-size: 24px; font-weight: 800; color: #1e3a5f;">البنك الأهلي</div>
+            <div class="company-logo" style="font-size: 24px; font-weight: 800; color: #1e3a5f;">نيوم</div>
+            <div class="company-logo" style="font-size: 24px; font-weight: 800; color: #1e3a5f;">الخطوط السعودية</div>
+        </div>
+    </section>
+    
+    <!-- Intelligence Section -->
+    <section class="intel-section">
+        <div class="intel-inner">
+            <div class="intel-content">
+                <h2>تحليل ذكي لسوق العمل السعودي</h2>
+                <p>نقدم لك بيانات دقيقة ومحدثة عن سوق العمل في المملكة. تعرف على الشركات الأكثر توظيفاً، متوسط الرواتب، والمهارات المطلوبة في كل قطاع.</p>
                 
-                <!-- Blurred Background Content -->
-                <div class="opacity-30 blur-sm">
-                    <div class="w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-8 h-8 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                        </svg>
-                    </div>
-                    <p class="font-medium mb-2">ارفع سيرتك الذاتية</p>
-                    <p class="text-sm opacity-50 mb-4">PDF, DOC, DOCX, أو TXT</p>
-                    <button class="btn-primary text-sm">اختيار الملف</button>
-                </div>
-            </div>
-            
-            <!-- Features List -->
-            <div class="mt-4 grid grid-cols-2 gap-3">
-                <div class="flex items-center gap-2 text-sm opacity-60">
-                    <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    تحليل ATS ذكي
-                </div>
-                <div class="flex items-center gap-2 text-sm opacity-60">
-                    <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    نصائح تحسين مخصصة
-                </div>
-                <div class="flex items-center gap-2 text-sm opacity-60">
-                    <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    مطابقة مع الوظائف
-                </div>
-                <div class="flex items-center gap-2 text-sm opacity-60">
-                    <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    تقرير PDF كامل
-                </div>
-            </div>
-        </section>
-
-        <!-- ═══════════════════════════════════════════════════════════════════════════════
-             CV ANALYZER SECTION - For Logged-in Users Only
-             ═══════════════════════════════════════════════════════════════════════════════ -->
-        <section id="cv-analyzer-section" class="ios-card p-6 mb-6 hidden">
-            <div class="flex items-center gap-3 mb-4">
-                <div class="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center">
-                    <svg class="w-6 h-6 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                    </svg>
-                </div>
-                <div>
-                    <h3 class="font-bold text-lg">تحليل السيرة الذاتية</h3>
-                    <p class="text-sm opacity-60">تحقق من توافق سيرتك مع ATS واحصل على نصائح التحسين</p>
-                </div>
-            </div>
-            
-            <!-- Upload Area -->
-            <div id="cv-upload-area" class="border-2 border-dashed border-emerald-500/30 rounded-xl p-8 text-center cursor-pointer hover:border-emerald-500/60 transition-all">
-                <input type="file" id="cv-file-input" accept=".pdf,.doc,.docx,.txt" class="hidden" onchange="handleCVUpload(event)">
-                <div class="w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-4">
-                    <svg class="w-8 h-8 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                    </svg>
-                </div>
-                <p class="font-medium mb-2">ارفع سيرتك الذاتية</p>
-                <p class="text-sm opacity-50 mb-4">PDF, DOC, DOCX, أو TXT (Max 5MB)</p>
-                <button onclick="document.getElementById('cv-file-input').click()" class="btn-primary text-sm">
-                    اختيار الملف
-                </button>
-            </div>
-            
-            <!-- API Key Input (for demo purposes) -->
-            <div id="api-key-section" class="mt-4 p-4 bg-white/5 rounded-xl">
-                <p class="text-sm opacity-60 mb-2">🔑 أدخل OpenAI API Key للتحليل المتقدم (اختياري):</p>
-                <div class="flex gap-2">
-                    <input type="password" id="openai-api-key" class="ios-input text-sm" placeholder="sk-...">
-                    <button onclick="saveAPIKey()" class="btn-secondary text-sm whitespace-nowrap">حفظ</button>
-                </div>
-                <p class="text-xs opacity-40 mt-2">يتم حفظ المفتاح محلياً في متصفحك فقط</p>
-            </div>
-            
-            <!-- Analysis Results -->
-            <div id="cv-analysis-results" class="hidden mt-6">
-                <!-- Overall Score -->
-                <div class="text-center mb-6">
-                    <div class="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 border-2 border-emerald-500/50 mb-3">
-                        <span id="ats-score" class="text-3xl font-bold text-emerald-500">0</span>
-                    </div>
-                    <p class="font-bold">نقاط ATS</p>
-                    <p id="score-message" class="text-sm opacity-60"></p>
-                </div>
-                
-                <!-- Score Breakdown -->
-                <div class="grid grid-cols-2 gap-3 mb-6">
-                    <div class="ios-card p-3 text-center">
-                        <p class="text-xs opacity-50 mb-1">توافق الكلمات</p>
-                        <p id="score-keywords" class="font-bold text-emerald-500">0%</p>
-                    </div>
-                    <div class="ios-card p-3 text-center">
-                        <p class="text-xs opacity-50 mb-1">التنسيق</p>
-                        <p id="score-format" class="font-bold text-blue-500">0%</p>
-                    </div>
-                    <div class="ios-card p-3 text-center">
-                        <p class="text-xs opacity-50 mb-1">الإنجازات</p>
-                        <p id="score-achievements" class="font-bold text-yellow-500">0%</p>
-                    </div>
-                    <div class="ios-card p-3 text-center">
-                        <p class="text-xs opacity-50 mb-1">المهارات</p>
-                        <p id="score-skills" class="font-bold text-purple-500">0%</p>
-                    </div>
-                </div>
-                
-                <!-- Analysis Details -->
-                <div class="space-y-4">
-                    <!-- Strengths -->
-                    <div class="ios-card p-4">
-                        <div class="flex items-center gap-2 mb-3">
-                            <span class="text-xl">✅</span>
-                            <h4 class="font-bold">نقاط القوة</h4>
-                        </div>
-                        <ul id="cv-strengths" class="space-y-2 text-sm opacity-80">
-                        </ul>
-                    </div>
-                    
-                    <!-- Weaknesses -->
-                    <div class="ios-card p-4">
-                        <div class="flex items-center gap-2 mb-3">
-                            <span class="text-xl">⚠️</span>
-                            <h4 class="font-bold">نقاط تحتاج تحسين</h4>
-                        </div>
-                        <ul id="cv-weaknesses" class="space-y-2 text-sm opacity-80">
-                        </ul>
-                    </div>
-                    
-                    <!-- Suggestions -->
-                    <div class="ios-card p-4">
-                        <div class="flex items-center gap-2 mb-3">
-                            <span class="text-xl">💡</span>
-                            <h4 class="font-bold">اقتراحات التحسين</h4>
-                        </div>
-                        <ul id="cv-suggestions" class="space-y-2 text-sm opacity-80">
-                        </ul>
-                    </div>
-                    
-                    <!-- Keyword Optimization -->
-                    <div id="keyword-optimization" class="ios-card p-4 hidden">
-                        <div class="flex items-center gap-2 mb-3">
-                            <span class="text-xl">🔍</span>
-                            <h4 class="font-bold">تحسين الكلمات المفتاحية</h4>
-                        </div>
-                        
-                        <div id="matched-keywords" class="mb-4">
-                            <p class="text-sm font-medium mb-2 text-emerald-500">✓ كلمات متطابقة:</p>
-                            <div id="matched-keywords-list" class="flex flex-wrap gap-2"></div>
-                        </div>
-                        
-                        <div id="missing-keywords">
-                            <p class="text-sm font-medium mb-2 text-yellow-500">⚠ كلمات ناقصة:</p>
-                            <div id="missing-keywords-list" class="flex flex-wrap gap-2"></div>
+                <div class="intel-features">
+                    <div class="intel-feature">
+                        <div class="intel-icon">📊</div>
+                        <div>
+                            <h3>تحليل يومي للوظائف</h3>
+                            <p>مئات الوظائف الجديدة تُحلل وترتب حسب أهميتها</p>
                         </div>
                     </div>
-                    
-                    <!-- Improved Version -->
-                    <div class="ios-card p-4">
-                        <div class="flex items-center gap-2 mb-3">
-                            <span class="text-xl">✨</span>
-                            <h4 class="font-bold">الملخص المهني المقترح</h4>
+                    <div class="intel-feature">
+                        <div class="intel-icon">🏢</div>
+                        <div>
+                            <h3>متابعة الشركات</h3>
+                            <p>تتبع فوري لإعلانات التوظيف من أكبر 500 شركة</p>
                         </div>
-                        <p id="improved-summary" class="text-sm opacity-80 leading-relaxed">
-                        </p>
+                    </div>
+                    <div class="intel-feature">
+                        <div class="intel-icon">💰</div>
+                        <div>
+                            <h3>مقارنة الرواتب</h3>
+                            <p>اعرف قيمتك السوقية بمقارنة رواتب 50,000+ وظيفة</p>
+                        </div>
                     </div>
                 </div>
+            </div>
+            
+            <div class="intel-visual">
+                <div class="chart-title">الشركات الأكثر توظيفاً هذا الشهر</div>
                 
-                <!-- Matched Jobs -->
-                <div id="matched-jobs-section" class="mt-6 hidden">
-                    <h4 class="font-bold mb-4 flex items-center gap-2">
-                        <span>🎯</span>
-                        وظائف تناسب سيرتك
-                    </h4>
-                    
-                    <div id="matched-jobs-list" class="space-y-3">
+                <div class="chart-bar">
+                    <span class="chart-label">أرامكو</span>
+                    <div class="chart-progress">
+                        <div class="chart-fill" style="width: 95%;"></div>
                     </div>
+                    <span class="chart-value">+342</span>
                 </div>
                 
-                <!-- Reset Button -->
-                <div class="text-center mt-6">
-                    <button onclick="resetCVAnalysis()" class="btn-secondary">
-                        تحليل سيرة أخرى
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Loading State -->
-            <div id="cv-loading" class="hidden mt-6 text-center">
-                <div class="w-12 h-12 border-3 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin mx-auto mb-4"></div>
-                <p class="opacity-60">جاري تحليل السيرة الذاتية...</p>
-                <p class="text-sm opacity-40 mt-2">قد يستغرق الأمر بضع ثوانٍ</p>
-            </div>
-        </section>
-        
-        <!-- Search & Filters Bar -->
-        <div class="search-bar mb-5">
-            <div class="ios-card p-4">
-                <!-- Search Input -->
-                <div class="relative mb-4">
-                    <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
-                    <input type="text" id="search-input" class="ios-input pl-12" placeholder="ابحث عن وظيفة، شركة، أو مدينة..." onkeyup="filterJobs()">
+                <div class="chart-bar">
+                    <span class="chart-label">سابك</span>
+                    <div class="chart-progress">
+                        <div class="chart-fill" style="width: 78%;"></div>
+                    </div>
+                    <span class="chart-value">+186</span>
                 </div>
                 
-                <!-- Filters -->
-                <div class="flex flex-wrap gap-2">
-                    <select id="filter-type" class="ios-select" onchange="filterJobs()">
-                        <option value="">كل الأنواع</option>
-                        <option value="حكومي">حكومي</option>
-                        <option value="شبه حكومي">شبه حكومي</option>
-                        <option value="مشروع رؤية 2030">مشروع رؤية 2030</option>
-                        <option value="قطاع خاص">قطاع خاص</option>
-                    </select>
-                    
-                    <select id="filter-category" class="ios-select" onchange="filterJobs()">
-                        <option value="">كل التخصصات</option>
-                        <option value="إدارة">إدارة</option>
-                        <option value="هندسة">هندسة</option>
-                        <option value="تقنية">تقنية</option>
-                        <option value="مالية">مالية</option>
-                        <option value="موارد بشرية">موارد بشرية</option>
-                        <option value="صحية">صحية</option>
-                        <option value="تسويق">تسويق</option>
-                    </select>
-                    
-                    <select id="filter-location" class="ios-select" onchange="filterJobs()">
-                        <option value="">كل المدن</option>
-                        <option value="الرياض">الرياض</option>
-                        <option value="جدة">جدة</option>
-                        <option value="الدمام">الدمام</option>
-                        <option value="مكة المكرمة">مكة المكرمة</option>
-                        <option value="المدينة المنورة">المدينة المنورة</option>
-                        <option value="تبوك">تبوك</option>
-                        <option value="أملج">أملج</option>
-                    </select>
-                    
-                    <button onclick="resetFilters()" class="ios-select text-emerald-500">
-                        إعادة تعيين
-                    </button>
+                <div class="chart-bar">
+                    <span class="chart-label">نيوم</span>
+                    <div class="chart-progress">
+                        <div class="chart-fill" style="width: 65%;"></div>
+                    </div>
+                    <span class="chart-value">+124</span>
+                </div>
+                
+                <div class="chart-bar">
+                    <span class="chart-label">الاستثمارات</span>
+                    <div class="chart-progress">
+                        <div class="chart-fill" style="width: 52%;"></div>
+                    </div>
+                    <span class="chart-value">+98</span>
+                </div>
+                
+                <div class="chart-bar">
+                    <span class="chart-label">معادن</span>
+                    <div class="chart-progress">
+                        <div class="chart-fill" style="width: 38%;"></div>
+                    </div>
+                    <span class="chart-value">+67</span>
                 </div>
             </div>
         </div>
-        
-        <!-- Results Count -->
-        <div class="flex items-center justify-between mb-4">
-            <h3 id="results-title" class="text-lg font-bold">الوظائف المتاحة</h3>
-            <span id="results-count" class="text-sm opacity-60">فرص وظيفية متاحة</span>
-        </div>
-        
-        <!-- Job Listings Grid -->
-        <div id="jobs-container" class="job-list-container">
-            <!-- Jobs will be loaded here via JavaScript -->
-        </div>
-        
-        <!-- Load More Button -->
-        <div class="text-center mt-6 mb-8">
-            <button onclick="loadMoreJobs()" id="load-more-btn" class="btn-secondary">
-                تحميل المزيد
-            </button>
-        </div>
-        
-        <!-- ═══════════════════════════════════════════════════════════════════════════════
-             FOOTER - روابط هامة
-             ═══════════════════════════════════════════════════════════════════════════════ -->
-        <footer class="ios-card p-6 mt-8 text-center">
-            <div class="flex flex-wrap items-center justify-center gap-4 text-sm opacity-60">
-                <a href="jobs.html" class="hover:text-emerald-500 transition-colors">الوظائف</a>
-                <span class="opacity-30">|</span>
-                <a href="privacy.html" class="hover:text-emerald-500 transition-colors">سياسة الخصوصية</a>
-                <span class="opacity-30">|</span>
-                <a href="terms.html" class="hover:text-emerald-500 transition-colors">شروط الاستخدام</a>
-                <span class="opacity-30">|</span>
-                <a href="profile.html" class="hover:text-emerald-500 transition-colors">حسابي</a>
-                <span class="opacity-30">|</span>
-                <a href="admin.html" class="hover:text-emerald-500 transition-colors">لوحة التحكم</a>
-            </div>
-            
-            <p class="text-xs opacity-40 mt-4">© 2024 SaudiCareers - جميع الحقوق محفوظة</p>
-        </footer>
-    </main>
+    </section>
     
-    <!-- ═══════════════════════════════════════════════════════════════════════════════
-         MOBILE TAB BAR - Only shows on mobile
-         ═══════════════════════════════════════════════════════════════════════════════ -->
-    <nav class="tab-bar">
-        <div class="flex justify-around items-center h-16 max-w-md mx-auto">
-            <button class="tab-item active" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M10 20V14H14V20H19V12H22L12 3L2 12H5V20H10Z"/>
-                </svg>
-                <span class="text-[10px]">الرئيسية</span>
-            </button>
-            
-            <button class="tab-item" onclick="goToJobs()">
-                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M20 6H16V4C16 2.89 15.11 2 14 2H10C8.89 2 8 2.89 8 4V6H4C2.89 6 2.01 6.89 2.01 8L2 19C2 20.11 2.89 21 4 21H20C21.11 21 22 20.11 22 19V8C22 6.89 21.11 6 20 6ZM14 6H10V4H14V6Z"/>
-                </svg>
-                <span class="text-[10px]">الوظائف</span>
-            </button>
-            
-            <button class="tab-item" onclick="openSavedJobs()">
-                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                </svg>
-                <span class="text-[10px]">المحفوظة</span>
-            </button>
-            
-            <button class="tab-item" onclick="openProfile()">
-                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"/>
-                </svg>
-                <span class="text-[10px]">حسابي</span>
-            </button>
-        </div>
-    </nav>
-    
-    <!-- ═══════════════════════════════════════════════════════════════════════════════
-         SHEETS / MODALS
-         ═══════════════════════════════════════════════════════════════════════════════ -->
-    
-    <!-- Login Sheet -->
-    <div class="sheet-overlay" id="login-sheet-overlay" onclick="closeLoginSheet()"></div>
-    <div class="sheet" id="login-sheet">
-        <div class="sheet-handle"></div>
-        <div class="p-6">
-            <h2 id="login-title" class="text-2xl font-bold mb-2">تسجيل الدخول</h2>
-            <p id="login-subtitle" class="opacity-60 mb-6">أهلاً بعودتك! سجل دخولك للمتابعة</p>
-            
-            <form onsubmit="event.preventDefault(); handleLoginSubmit();">
-                <div class="mb-4">
-                    <label class="block text-sm mb-2">البريد الإلكتروني</label>
-                    <input type="email" id="login-email" class="ios-input" placeholder="your@email.com">
-                </div>
-                
-                <div class="mb-6">
-                    <label class="block text-sm mb-2">كلمة المرور</label>
-                    <input type="password" id="login-password" class="ios-input" placeholder="••••••••">
-                </div>
-                
-                <button type="submit" id="login-btn" class="btn-primary w-full mb-4">
-                    دخول
-                </button>
-            </form>
-            
-            <!-- Divider -->
-            <div class="flex items-center gap-3 my-4">
-                <div class="flex-1 h-px bg-slate-700"></div>
-                <span class="text-xs opacity-50">أو</span>
-                <div class="flex-1 h-px bg-slate-700"></div>
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="features-inner">
+            <div style="text-align: center; margin-bottom: 48px;">
+                <h2 class="section-title">لماذا SaudiCareers؟</h2>
+                <p class="section-subtitle">نقدم تجربة توظيف مختلفة تركز على الجودة والموثوقية</p>
             </div>
             
-            <p class="text-center text-sm opacity-60">
-                <span id="no-account-text">ليس لديك حساب؟</span> 
-                <button onclick="closeLoginSheet(); openRegisterSheet();" class="text-emerald-500">سجل الآن</button>
-            </p>
-        </div>
-    </div>
-    
-    <!-- Register Sheet -->
-    <div class="sheet-overlay" id="register-sheet-overlay" onclick="closeRegisterSheet()"></div>
-    <div class="sheet" id="register-sheet">
-        <div class="sheet-handle"></div>
-        <div class="p-6">
-            <h2 id="register-title" class="text-2xl font-bold mb-2">إنشاء حساب</h2>
-            <p id="register-subtitle" class="opacity-60 mb-6">انضم لنا واكتشف فرصك في رؤية 2030</p>
-            
-            <form onsubmit="event.preventDefault(); handleRegisterSubmit();">
-                <div class="mb-4">
-                    <label id="name-label" class="block text-sm mb-2">الاسم الكامل</label>
-                    <input type="text" id="register-name" class="ios-input" placeholder="محمد أحمد">
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>بحث ذكي</h3>
+                    <p>ابحث بالمسمى، المدينة، الراتب، نوع الشركة والمزيد. نتائج دقيقة ومفلترة حسب احتياجك.</p>
                 </div>
                 
-                <div class="mb-4">
-                    <label id="email-label" class="block text-sm mb-2">البريد الإلكتروني</label>
-                    <input type="email" id="register-email" class="ios-input" placeholder="your@email.com">
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>تحليل السيرة الذاتية</h3>
+                    <p>حلل سيرتك الذاتية بالذكاء الاصطناعي واحصل على توصيات مخصصة لتحسين فرصك.</p>
                 </div>
                 
-                <div class="mb-6">
-                    <label id="password-label" class="block text-sm mb-2">كلمة المرور</label>
-                    <input type="password" id="register-password" class="ios-input" placeholder="••••••••">
+                <div class="feature-card">
+                    <div class="feature-icon">🔔</div>
+                    <h3>تنبيهات فورية</h3>
+                    <p>احصل على إشعارات فورية عند نشر وظائف تطابق تخصصك وخبراتك.</p>
                 </div>
                 
-                <button type="submit" id="register-btn" class="btn-primary w-full mb-4">
-                    🚀 إنشاء حساب
-                </button>
-            </form>
-            
-            <p class="text-center text-sm opacity-60 mt-4">
-                <span id="have-account-text">لديك حساب بالفعل؟</span> 
-                <button onclick="closeRegisterSheet(); openLoginSheet();" class="text-emerald-500">تسجيل الدخول</button>
-            </p>
-        </div>
-    </div>
-    
-    <!-- ═══════════════════════════════════════════════════════════════════════════════
-         OTP VERIFICATION SHEET - Email Verification
-         ═══════════════════════════════════════════════════════════════════════════════ -->
-    <div class="sheet-overlay" id="verify-otp-overlay" onclick="closeVerifyOTPSheet()"></div>
-    <div class="sheet" id="verify-otp-sheet">
-        <div class="sheet-handle"></div>
-        <div class="p-6 text-center">
-            <!-- Icon -->
-            <div class="w-16 h-16 rounded-full bg-emerald-500/20 flex items-center justify-center mx-auto mb-4">
-                <svg class="w-8 h-8 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                </svg>
+                <div class="feature-card">
+                    <div class="feature-icon">📋</div>
+                    <h3>تتبع الطلبات</h3>
+                    <p>تتبع حالة طلباتك في مكان واحد. اعرف متى تمت مراجعة سيرتك الذاتية.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>مصداقية تامة</h3>
+                    <p>جميع الوظائف من مصادر رسمية موثقة. نتحقق من كل إعلان قبل نشره.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>تجربة سلسة</h3>
+                    <p>تقدم على الوظائف بخطوات بسيطة من أي جهاز. تصميم يعمل على الجوال والكمبيوتر.</p>
+                </div>
             </div>
-            
-            <h2 class="text-2xl font-bold mb-2">🔐 توثيق البريد الإلكتروني</h2>
-            
-            <p class="opacity-60 mb-6">
-                تم إرسال رمز التوثيق إلى بريدك الإلكتروني
-                <br>
-                <span id="verify-email-display" class="text-emerald-500 font-medium"></span>
-            </p>
-            
-            <!-- OTP Input -->
-            <div class="mb-6">
-                <label class="block text-sm mb-3">أدخل الرمز المكون من 6 أرقام</label>
-                <div class="flex justify-center gap-2 mb-4">
-                    <input type="text" id="otp-1" maxlength="1" class="w-12 h-14 text-center text-xl font-bold bg-white/10 border border-white/20 rounded-xl focus:border-emerald-500 focus:outline-none" onkeyup="handleOTPInput(1, event)">
-                    <input type="text" id="otp-2" maxlength="1" class="w-12 h-14 text-center text-xl font-bold bg-white/10 border border-white/20 rounded-xl focus:border-emerald-500 focus:outline-none" onkeyup="handleOTPInput(2, event)">
-                    <input type="text" id="otp-3" maxlength="1" class="w-12 h-14 text-center text-xl font-bold bg-white/10 border border-white/20 rounded-xl focus:border-emerald-500 focus:outline-none" onkeyup="handleOTPInput(3, event)">
-                    <input type="text" id="otp-4" maxlength="1" class="w-12 h-14 text-center text-xl font-bold bg-white/10 border border-white/20 rounded-xl focus:border-emerald-500 focus:outline-none" onkeyup="handleOTPInput(4, event)">
-                    <input type="text" id="otp-5" maxlength="1" class="w-12 h-14 text-center text-xl font-bold bg-white/10 border border-white/20 rounded-xl focus:border-emerald-500 focus:outline-none" onkeyup="handleOTPInput(5, event)">
-                    <input type="text" id="otp-6" maxlength="1" class="w-12 h-14 text-center text-xl font-bold bg-white/10 border border-white/20 rounded-xl focus:border-emerald-500 focus:outline-none" onkeyup="handleOTPInput(6, event)">
-                </div>
-                
-                <input type="hidden" id="pending-email" value="">
-            </div>
-            
-            <!-- Verify Button -->
-            <button onclick="verifyOTP()" class="btn-primary w-full mb-4">
-                ✅ تأكيد التسجيل
-            </button>
-            
-            <!-- Resend -->
-            <p class="text-sm opacity-60">
-                لم تستلم الرمز؟ 
-                <button onclick="resendOTP()" class="text-emerald-500">إعادة الإرسال</button>
-            </p>
-            
-            <!-- Cancel -->
-            <button onclick="closeVerifyOTPSheet()" class="mt-4 text-sm opacity-50 hover:opacity-80">
-                إلغاء التسجيل
-            </button>
         </div>
-    </div>
+    </section>
     
-    <!-- Job Detail Sheet -->
-    <div class="sheet-overlay" id="job-sheet-overlay" onclick="closeJobSheet()"></div>
-    <div class="sheet" id="job-sheet">
-        <div class="sheet-handle"></div>
-        <div class="p-6">
-            <div class="flex items-center gap-4 mb-6">
-                <div class="w-16 h-16 rounded-2xl bg-emerald-500/20 flex items-center justify-center">
-                    <span id="job-logo" class="text-2xl font-bold text-emerald-500">و</span>
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <h2>ابدأ رحلتك المهنية الآن</h2>
+        <p>انضم إلى أكثر من 50,000 باحث عن عمل استخدموا SaudiCareers للحصول على وظيفة أحلامهم</p>
+        <a href="jobs.html" class="btn btn-white">استعرض الوظائف المتاحة</a>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                        <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #1e3a5f 0%, #0f766e 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800;">🇸🇦</div>
+                        <span style="font-weight: 800; font-size: 20px;">SaudiCareers</span>
+                    </div>
+                    <p>منصة سعودية متخصصة في ربط الباحثين عن عمل بالوظائف الحكومية والخاصة. نؤمن بأن كل مواطن سعودي يستحق فرصة عمل مناسبة تتوافق مع تطلعات رؤية 2030.</p>
                 </div>
                 
                 <div>
-                    <h2 id="job-title" class="text-xl font-bold"></h2>
-                    <p id="job-company" class="opacity-60"></p>
+                    <h4 class="footer-title">الوظائف</h4>
+                    <ul class="footer-links">
+                        <li><a href="jobs.html">الوظائف الحكومية</a></li>
+                        <li><a href="jobs.html">الوظائف الخاصة</a></li>
+                        <li><a href="jobs.html">وظائف شبه حكومية</a></li>
+                        <li><a href="jobs.html">وظائف عن بُعد</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="footer-title">الشركات</h4>
+                    <ul class="footer-links">
+                        <li><a href="companies.html">الشركات الموثقة</a></li>
+                        <li><a href="about.html">نشر وظيفة</a></li>
+                        <li><a href="about.html">حلول التوظيف</a></li>
+                        <li><a href="about.html">الشراكات</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="footer-title">الدعم</h4>
+                    <ul class="footer-links">
+                        <li><a href="about.html">من نحن</a></li>
+                        <li><a href="privacy.html">سياسة الخصوصية</a></li>
+                        <li><a href="terms.html">شروط الاستخدام</a></li>
+                        <li><a href="#">اتصل بنا</a></li>
+                    </ul>
                 </div>
             </div>
             
-            <div class="space-y-3 mb-6">
-                <div class="flex items-center gap-3">
-                    <svg class="w-5 h-5 opacity-60" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2ZM12 11.5C10.62 11.5 9.5 10.38 9.5 9C9.5 7.62 10.62 6.5 12 6.5C13.38 6.5 14.5 7.62 14.5 9C14.5 10.38 13.38 11.5 12 11.5Z"/>
-                    </svg>
-                    <span id="job-location"></span>
-                </div>
-                
-                <div class="flex items-center gap-3">
-                    <svg class="w-5 h-5 opacity-60" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M20 6H16V4C16 2.89 15.11 2 14 2H10C8.89 2 8 2.89 8 4V6H4C2.89 6 2 6.89 2 8V19C2 20.11 2.89 21 4 21H20C21.11 21 22 20.11 22 19V8C22 6.89 21.11 6 20 6ZM10 4H14V6H10V4Z"/>
-                    </svg>
-                    <span id="job-type"></span>
-                </div>
-                
-                <div class="flex items-center gap-3">
-                    <svg class="w-5 h-5 opacity-60" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20ZM12 6C9.79 6 8 7.79 8 10H10C10 8.9 10.9 8 12 8C13.1 8 14 8.9 14 10C14 11.5 12 12 12 14H14C14 12.5 16 12 16 10C16 7.79 14.21 6 12 6ZM11 16V18H13V16H11Z"/>
-                    </svg>
-                    <span id="job-salary"></span>
-                </div>
-                
-                <div class="flex items-center gap-3">
-                    <svg class="w-5 h-5 opacity-60" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M11.99 2C6.47 2 2 6.48 2 12C2 17.52 6.47 22 11.99 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 11.99 2ZM12 20C7.58 20 4 16.42 4 12C4 7.58 7.58 4 12 4C16.42 4 20 7.58 20 12C20 16.42 16.42 20 12 20ZM12.5 7H11V13L16.25 16.15L17 14.92L12.5 12.25V7Z"/>
-                    </svg>
-                    <span id="job-experience"></span>
+            <div class="footer-bottom">
+                <div>© 2026 SaudiCareers. جميع الحقوق محفوظة.</div>
+                <div class="trust-badges">
+                    <span class="trust-badge">🔒 SSL Secure</span>
+                    <span class="trust-badge">✓ موثق من وزارة الموارد البشرية</span>
+                    <span class="trust-badge">🇸🇦 منصة سعودية 100%</span>
                 </div>
             </div>
-            
-            <div class="ios-card p-4 mb-6">
-                <h4 id="desc-label" class="font-semibold mb-2">الوصف الوظيفي</h4>
-                <p id="job-description" class="text-sm opacity-80"></p>
-            </div>
-            
-            <button onclick="applyForJob()" id="apply-btn" class="btn-primary w-full">
-                التقديم على الوظيفة
-            </button>
         </div>
-    </div>
+    </footer>
     
     <script>
-        // ═══════════════════════════════════════════════════════════════════════════════
-        // STATE MANAGEMENT
-        // ═══════════════════════════════════════════════════════════════════════════════
-        let currentUser = null;
-        let currentLanguage = localStorage.getItem('lang') || 'ar';
-        let currentTheme = localStorage.getItem('theme') || 'dark';
-        let displayedJobs = 12;
-        let filteredJobs = [];
-        let currentJob = null;
+        // Animate numbers on scroll
+        const statsSection = document.querySelector('.stats-bar');
+        const statNumbers = document.querySelectorAll('.stat-number');
+        let animated = false;
         
-        // ═══════════════════════════════════════════════════════════════════════════════
-        // TRANSLATIONS
-        // ═══════════════════════════════════════════════════════════════════════════════
-        const translations = {
-            ar: {
-                title: 'SaudiCareers - وظائف حكومية وشبه حكومية',
-                subtitle: 'وظائف حكومية وشبه حكومية',
-                welcomeTitle: 'اكتشف فرص وظيفية حكومية وشبه حكومية',
-                welcomeSubtitle: 'مرحباً بك في SaudiCareers',
-                searchPlaceholder: 'ابحث عن وظيفة، شركة، أو مدينة...',
-                allTypes: 'كل الأنواع',
-                allCategories: 'كل التخصصات',
-                allLocations: 'كل المدن',
-                reset: 'إعادة تعيين',
-                jobsAvailable: 'الوظائف المتاحة',
-                loadMore: 'تحميل المزيد',
-                login: 'دخول',
-                register: 'اشترك الآن',
-                loginTitle: 'تسجيل الدخول',
-                loginSubtitle: 'أهلاً بعودتك! سجل دخولك للمتابعة',
-                registerTitle: 'إنشاء حساب',
-                registerSubtitle: 'انضم لنا واكتشف فرصك في رؤية 2030',
-                name: 'الاسم الكامل',
-                email: 'البريد الإلكتروني',
-                password: 'كلمة المرور',
-                noAccount: 'ليس لديك حساب؟',
-                haveAccount: 'لديك حساب بالفعل؟',
-                apply: 'التقديم على الوظيفة',
-                description: 'الوصف الوظيفي',
-                jobs: 'وظيفة'
-            },
-            en: {
-                title: 'SaudiCareers - Government & Semi-Government Jobs',
-                subtitle: 'Government & Semi-Government Jobs',
-                welcomeTitle: 'Discover Government & Semi-Government Opportunities',
-                welcomeSubtitle: 'Welcome to SaudiCareers',
-                searchPlaceholder: 'Search jobs, companies, or cities...',
-                allTypes: 'All Types',
-                allCategories: 'All Categories',
-                allLocations: 'All Cities',
-                reset: 'Reset',
-                jobsAvailable: 'Available Jobs',
-                loadMore: 'Load More',
-                login: 'Login',
-                register: 'Register',
-                loginTitle: 'Login',
-                loginSubtitle: 'Welcome back! Login to continue',
-                registerTitle: 'Create Account',
-                registerSubtitle: 'Join us and discover Vision 2030 opportunities',
-                name: 'Full Name',
-                email: 'Email',
-                password: 'Password',
-                noAccount: "Don't have an account?",
-                haveAccount: 'Already have an account?',
-                apply: 'Apply for Job',
-                description: 'Job Description',
-                jobs: 'jobs'
+        function animateNumber(element, target, duration = 2000) {
+            let start = 0;
+            const increment = target / (duration / 16);
+            
+            function update() {
+                start += increment;
+                if (start < target) {
+                    element.textContent = Math.floor(start).toLocaleString('ar-SA');
+                    requestAnimationFrame(update);
+                } else {
+                    element.textContent = target.toLocaleString('ar-SA');
+                }
             }
-        };
+            
+            update();
+        }
         
-        // ═══════════════════════════════════════════════════════════════════════════════
-        // INITIALIZATION
-        // ═══════════════════════════════════════════════════════════════════════════════
-        document.addEventListener('DOMContentLoaded', () => {
-            checkAuth();
-            applyTheme();
-            applyLanguage();
-            filterJobs();
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !animated) {
+                    animated = true;
+                    animateNumber(statNumbers[0], 12847);
+                    animateNumber(statNumbers[1], 468);
+                    animateNumber(statNumbers[2], 89432);
+                    animateNumber(statNumbers[3], 96);
+                }
+            });
         });
         
-        // ═══════════════════════════════════════════════════════════════════════════════
-        // AUTH FUNCTIONS
-        // ═══════════════════════════════════════════════════════════════════════════════
-        function checkAuth() {
-            const userData = localStorage.getItem(SESSION_KEY);
-            if (userData) {
-                currentUser = JSON.parse(userData);
-                updateAuthUI();
-            }
-        }
+        observer.observe(statsSection);
         
-        function updateAuthUI() {
-            const authBtn = document.getElementById('nav-auth-btn');
-            const userBtn = document.getElementById('nav-user-btn');
-            const cvAnalyzer = document.getElementById('cv-analyzer-section');
-            const cvPreview = document.getElementById('cv-preview-section');
-            
-            if (currentUser) {
-                // Logged in
-                authBtn.classList.add('hidden');
-                userBtn.classList.remove('hidden');
-                userBtn.textContent = currentUser.name.charAt(0).toUpperCase();
-                
-                // Show CV analyzer, hide preview
-                if (cvAnalyzer) cvAnalyzer.classList.remove('hidden');
-                if (cvPreview) cvPreview.classList.add('hidden');
+        // Search functionality
+        document.querySelector('.search-btn').addEventListener('click', function() {
+            const query = document.querySelector('.search-input').value;
+            if (query.trim()) {
+                window.location.href = 'jobs.html?q=' + encodeURIComponent(query);
             } else {
-                // Guest
-                authBtn.classList.remove('hidden');
-                userBtn.classList.add('hidden');
-                
-                // Hide CV analyzer, show preview
-                if (cvAnalyzer) cvAnalyzer.classList.add('hidden');
-                if (cvPreview) cvPreview.classList.remove('hidden');
+                window.location.href = 'jobs.html';
             }
-        }
+        });
         
-        // ═══════════════════════════════════════════════════════════════════════════════
-        // AUTHENTICATION - Real Email/Password with Validation
-        // ═══════════════════════════════════════════════════════════════════════════════
-        
-        // User database stored in localStorage
-        const USERS_KEY = 'saudicareers_users';
-        const SESSION_KEY = 'saudicareers_user';
-        
-        // Initialize users database
-        function getUsers() {
-            const users = localStorage.getItem(USERS_KEY);
-            return users ? JSON.parse(users) : [];
-        }
-        
-        function saveUser(user) {
-            const users = getUsers();
-            users.push(user);
-            localStorage.setItem(USERS_KEY, JSON.stringify(users));
-        }
-        
-        function findUser(email) {
-            return getUsers().find(u => u.email === email);
-        }
-        
-        // Email validation
-        function isValidEmail(email) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return emailRegex.test(email);
-        }
-        
-        // Password validation (min 8 chars, at least 1 letter and 1 number)
-        function isValidPassword(password) {
-            return password.length >= 8 && /[a-zA-Z]/.test(password) && /\d/.test(password);
-        }
-        
-        function handleLoginSubmit() {
-            const email = document.getElementById('login-email').value.trim();
-            const password = document.getElementById('login-password').value;
-            
-            // Validation
-            if (!email) {
-                alert('❌ يرجى إدخال البريد الإلكتروني');
-                return;
+        document.querySelector('.search-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.querySelector('.search-btn').click();
             }
-            
-            if (!isValidEmail(email)) {
-                alert('❌ البريد الإلكتروني غير صالح');
-                return;
-            }
-            
-            if (!password) {
-                alert('❌ يرجى إدخال كلمة المرور');
-                return;
-            }
-            
-            // Check if user exists
-            const user = findUser(email);
-            if (!user) {
-                alert('❌ الحساب غير موجود. يرجى التسجيل أولاً');
-                return;
-            }
-            
-            // Verify password
-            if (user.password !== password) {
-                alert('❌ كلمة المرور غير صحيحة');
-                return;
-            }
-            
-            // Login successful
-            currentUser = { name: user.name, email: user.email };
-            localStorage.setItem(SESSION_KEY, JSON.stringify(currentUser));
-            updateAuthUI();
-            closeLoginSheet();
-            showNotification('✅ مرحباً ' + user.name + '! تم تسجيل دخولك بنجاح');
-        }
-        
-        async function handleRegisterSubmit() {
-            const name = document.getElementById('register-name').value.trim();
-            const email = document.getElementById('register-email').value.trim();
-            const password = document.getElementById('register-password').value;
-            
-            // Validation
-            if (!name) {
-                alert('❌ يرجى إدخال الاسم الكامل');
-                return;
-            }
-            
-            if (name.length < 3) {
-                alert('❌ الاسم يجب أن يكون 3 أحرف على الأقل');
-                return;
-            }
-            
-            if (!email) {
-                alert('❌ يرجى إدخال البريد الإلكتروني');
-                return;
-            }
-            
-            if (!isValidEmail(email)) {
-                alert('❌ البريد الإلكتروني غير صالح (مثال: user@email.com)');
-                return;
-            }
-            
-            // Check if email already exists
-            if (findUser(email)) {
-                alert('❌ هذا البريد الإلكتروني مسجل بالفعل. يرجى تسجيل الدخول');
-                return;
-            }
-            
-            // Check if there's a pending verification for this email
-            const pending = EmailVerification.getPendingVerifications();
-            if (pending[email]) {
-                alert('⚠️ هناك طلب توثيق نشط لهذا الإيميل. راجع بريدك أو انتظر 15 دقيقة');
-                return;
-            }
-            
-            if (!password) {
-                alert('❌ يرجى إدخال كلمة المرور');
-                return;
-            }
-            
-            if (!isValidPassword(password)) {
-                alert('❌ كلمة المرور يجب أن تكون 8 أحرف على الأقل وتحتوي على حرف ورقم');
-                return;
-            }
-            
-            // Show loading
-            const btn = document.getElementById('register-btn');
-            const originalText = btn.textContent;
-            btn.textContent = '⏳ جاري الإرسال...';
-            btn.disabled = true;
-            
-            try {
-                // Generate OTP
-                const otp = EmailVerification.generateOTP();
-                
-                // Store pending verification
-                const userData = {
-                    name: name,
-                    email: email,
-                    password: password,
-                    createdAt: new Date().toISOString()
-                };
-                EmailVerification.storePendingVerification(email, userData, otp);
-                
-                // Send verification email
-                await EmailVerification.sendVerificationEmail(email, otp, name);
-                
-                // Close register sheet and open OTP sheet
-                closeRegisterSheet();
-                openVerifyOTPSheet(email);
-                
-                alert('📧 تم إرسال رمز التوثيق إلى بريدك الإلكتروني!\n\nفي وضع التجربة، افتح Console (F12) لرؤية الرمز');
-                
-            } catch (error) {
-                console.error('Registration error:', error);
-                alert('❌ حدث خطأ أثناء إرسال الرمز. حاول مرة أخرى.');
-            } finally {
-                btn.textContent = originalText;
-                btn.disabled = false;
-            }
-        }
-        
-        // OTP Verification Functions
-        function openVerifyOTPSheet(email) {
-            document.getElementById('pending-email').value = email;
-            document.getElementById('verify-email-display').textContent = email;
-            
-            // Clear OTP inputs
-            for (let i = 1; i <= 6; i++) {
-                document.getElementById(`otp-${i}`).value = '';
-            }
-            document.getElementById('otp-1').focus();
-            
-            document.getElementById('verify-otp-overlay').classList.add('active');
-            document.getElementById('verify-otp-sheet').classList.add('active');
-        }
-        
-        function closeVerifyOTPSheet() {
-            document.getElementById('verify-otp-overlay').classList.remove('active');
-            document.getElementById('verify-otp-sheet').classList.remove('active');
-        }
-        
-        // Handle OTP input (auto-focus next field)
-        function handleOTPInput(index, event) {
-            const input = document.getElementById(`otp-${index}`);
-            const value = input.value;
-            
-            // Only allow numbers
-            if (!/^\d*$/.test(value)) {
-                input.value = value.replace(/\D/g, '');
-                return;
-            }
-            
-            if (value && index < 6) {
-                document.getElementById(`otp-${index + 1}`).focus();
-            }
-            
-            // Handle backspace
-            if (event.key === 'Backspace' && !value && index > 1) {
-                document.getElementById(`otp-${index - 1}`).focus();
-            }
-        }
-        
-        // Verify OTP
-        function verifyOTP() {
-            const email = document.getElementById('pending-email').value;
-            let enteredOTP = '';
-            
-            for (let i = 1; i <= 6; i++) {
-                enteredOTP += document.getElementById(`otp-${i}`).value;
-            }
-            
-            if (enteredOTP.length !== 6) {
-                alert('❌ يرجى إدخال الرمز كاملاً (6 أرقام)');
-                return;
-            }
-            
-            const result = EmailVerification.verifyOTP(email, enteredOTP);
-            
-            if (result.success) {
-                // Save user to database
-                saveUser(result.userData);
-                
-                // Auto login
-                currentUser = { name: result.userData.name, email: result.userData.email };
-                localStorage.setItem(SESSION_KEY, JSON.stringify(currentUser));
-                updateAuthUI();
-                closeVerifyOTPSheet();
-                
-                // Clear register form
-                document.getElementById('register-name').value = '';
-                document.getElementById('register-email').value = '';
-                document.getElementById('register-password').value = '';
-                
-                showNotification('✅ تم توثيق حسابك بنجاح! مرحباً ' + result.userData.name);
-            } else {
-                alert('❌ ' + result.error);
-            }
-        }
-        
-        // Resend OTP
-        async function resendOTP() {
-            const email = document.getElementById('pending-email').value;
-            
-            const btn = event.target;
-            btn.disabled = true;
-            btn.textContent = '⏳...';
-            
-            const result = await EmailVerification.resendOTP(email);
-            
-            if (result.success) {
-                alert('📧 تم إرسال رمز جديد! افتح Console (F12) لرؤيته');
-            } else {
-                alert('❌ ' + result.error);
-            }
-            
-            setTimeout(() => {
-                btn.disabled = false;
-                btn.textContent = 'إعادة الإرسال';
-            }, 30000); // 30 seconds cooldown
-        }
-        
-        function logout() {
-            currentUser = null;
-            localStorage.removeItem(SESSION_KEY);
-            updateAuthUI();
-            showNotification('✅ تم تسجيل الخروج');
-            
-            // Clear login form
-            document.getElementById('login-email').value = '';
-            document.getElementById('login-password').value = '';
-        }
-        
-        // ═══════════════════════════════════════════════════════════════════════════════
-        // THEME & LANGUAGE
-        // ═══════════════════════════════════════════════════════════════════════════════
-        function toggleTheme() {
-            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            localStorage.setItem('theme', currentTheme);
-            applyTheme();
-        }
-        
-        function applyTheme() {
-            document.documentElement.setAttribute('data-theme', currentTheme);
-            
-            // Update theme icon
-            const themeIcon = document.getElementById('theme-icon');
-            if (currentTheme === 'light') {
-                themeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>';
-            } else {
-                themeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>';
-            }
-            
-            // Update meta theme-color
-            document.querySelector('meta[name="theme-color"]').setAttribute('content', 
-                currentTheme === 'dark' ? '#000000' : '#F2F2F7');
-        }
-        
-        function toggleLanguage() {
-            currentLanguage = currentLanguage === 'ar' ? 'en' : 'ar';
-            localStorage.setItem('lang', currentLanguage);
-            
-            // Update HTML dir
-            document.documentElement.dir = currentLanguage === 'ar' ? 'rtl' : 'ltr';
-            document.documentElement.lang = currentLanguage;
-            
-            applyLanguage();
-            filterJobs(); // Re-render jobs
-        }
-        
-        function applyLanguage() {
-            const t = translations[currentLanguage];
-            
-            document.getElementById('page-title').textContent = t.title;
-            document.getElementById('nav-subtitle').textContent = t.subtitle;
-            document.getElementById('welcome-title').textContent = t.welcomeTitle;
-            document.getElementById('welcome-subtitle').textContent = t.welcomeSubtitle;
-            document.getElementById('search-input').placeholder = t.searchPlaceholder;
-            document.getElementById('results-title').textContent = t.jobsAvailable;
-            document.getElementById('load-more-btn').textContent = t.loadMore;
-            
-            // Check if returning visitor
-            const hasVisited = localStorage.getItem('saudicareers_visited');
-            document.getElementById('nav-auth-btn').textContent = hasVisited ? t.login : t.register;
-            
-            document.getElementById('login-title').textContent = t.loginTitle;
-            document.getElementById('login-subtitle').textContent = t.loginSubtitle;
-            document.getElementById('login-btn').textContent = t.login;
-            document.getElementById('register-title').textContent = t.registerTitle;
-            document.getElementById('register-subtitle').textContent = t.registerSubtitle;
-            document.getElementById('name-label').textContent = t.name;
-            document.getElementById('email-label').textContent = t.email;
-            document.getElementById('password-label').textContent = t.password;
-            document.getElementById('no-account-text').textContent = t.noAccount;
-            document.getElementById('have-account-text').textContent = t.haveAccount;
-            document.getElementById('apply-btn').textContent = t.apply;
-            document.getElementById('desc-label').textContent = t.description;
-        }
-        
-        // ═══════════════════════════════════════════════════════════════════════════════
-        // JOB FILTERING & DISPLAY
-        // ═══════════════════════════════════════════════════════════════════════════════
-        function filterJobs() {
-            const search = document.getElementById('search-input').value.toLowerCase();
-            const type = document.getElementById('filter-type').value;
-            const category = document.getElementById('filter-category').value;
-            const location = document.getElementById('filter-location').value;
-            
-            filteredJobs = JOBS_DATABASE.filter(job => {
-                const matchesSearch = !search || 
-                    job.title.toLowerCase().includes(search) ||
-                    job.company.toLowerCase().includes(search) ||
-                    job.location.toLowerCase().includes(search);
-                
-                const matchesType = !type || job.type === type;
-                const matchesCategory = !category || job.category === category;
-                const matchesLocation = !location || job.location === location;
-                
-                return matchesSearch && matchesType && matchesCategory && matchesLocation;
-            });
-            
-            displayedJobs = 12;
-            renderJobs();
-        }
-        
-        function resetFilters() {
-            document.getElementById('search-input').value = '';
-            document.getElementById('filter-type').value = '';
-            document.getElementById('filter-category').value = '';
-            document.getElementById('filter-location').value = '';
-            filterJobs();
-        }
-        
-        function renderJobs() {
-            const container = document.getElementById('jobs-container');
-            const jobsToShow = filteredJobs.slice(0, displayedJobs);
-            
-            container.innerHTML = jobsToShow.map((job, index) => `
-                <div class="ios-card p-4 job-card cursor-pointer hover:opacity-80 transition-opacity" 
-                     style="animation-delay: ${index * 0.05}s"
-                     onclick="showJobDetail(${job.id})">
-                    <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
-                            ${getCategoryIcon(job.category)}
-                        </div>
-                        
-                        <div class="flex-1 min-w-0">
-                            <p class="opacity-60 text-xs truncate">${job.company}</p>
-                            <p class="font-semibold truncate">${job.title}</p>
-                            <div class="flex items-center gap-2 mt-1">
-                                <span class="text-xs opacity-60">${job.location}</span>
-                                <span class="text-xs opacity-40">•</span>
-                                <span class="text-xs opacity-60">${job.experience}</span>
-                            </div>
-                        </div>
-                        
-                        <svg class="w-5 h-5 opacity-40 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M8.59 16.59L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.59Z"/>
-                        </svg>
-                    </div>
-                </div>
-            `).join('');
-            
-            // Update count - show generic text instead of number
-            document.getElementById('results-count').textContent = 'فرص متاحة';
-            
-            // Show/hide load more button
-            document.getElementById('load-more-btn').style.display = 
-                displayedJobs >= filteredJobs.length ? 'none' : 'inline-block';
-        }
-        
-        function loadMoreJobs() {
-            displayedJobs += 12;
-            renderJobs();
-        }
-        
-        function showJobDetail(jobId) {
-            currentJob = JOBS_DATABASE.find(j => j.id === jobId);
-            if (!currentJob) return;
-            
-            document.getElementById('job-logo').innerHTML = getCategoryIcon(currentJob.category);
-            document.getElementById('job-title').textContent = currentJob.title;
-            document.getElementById('job-company').textContent = currentJob.company;
-            document.getElementById('job-location').textContent = currentJob.location;
-            document.getElementById('job-type').textContent = currentJob.type;
-            document.getElementById('job-salary').textContent = currentJob.salary;
-            document.getElementById('job-experience').textContent = currentJob.experience;
-            document.getElementById('job-description').textContent = currentJob.description;
-            
-            document.getElementById('job-sheet-overlay').classList.add('active');
-            document.getElementById('job-sheet').classList.add('active');
-        }
-        
-        function closeJobSheet() {
-            document.getElementById('job-sheet-overlay').classList.remove('active');
-            document.getElementById('job-sheet').classList.remove('active');
-        }
-        
-        function applyForJob() {
-            if (!currentUser) {
-                closeJobSheet();
-                setTimeout(() => openLoginSheet(), 300);
-            } else {
-                window.open(currentJob?.applyLink || '#', '_blank');
-            }
-        }
-        
-        // ═══════════════════════════════════════════════════════════════════════════════
-        // SHEET FUNCTIONS
-        // ═══════════════════════════════════════════════════════════════════════════════
-        function openLoginSheet() {
-            // Mark as returning visitor
-            localStorage.setItem('saudicareers_visited', 'true');
-            // Update button to "دخول" for returning visitors
-            const t = translations[currentLanguage];
-            document.getElementById('nav-auth-btn').textContent = t.login;
-            
-            document.getElementById('login-sheet-overlay').classList.add('active');
-            document.getElementById('login-sheet').classList.add('active');
-        }
-        
-        function closeLoginSheet() {
-            document.getElementById('login-sheet-overlay').classList.remove('active');
-            document.getElementById('login-sheet').classList.remove('active');
-        }
-        
-        function openRegisterSheet() {
-            document.getElementById('register-sheet-overlay').classList.add('active');
-            document.getElementById('register-sheet').classList.add('active');
-        }
-        
-        function closeRegisterSheet() {
-            document.getElementById('register-sheet-overlay').classList.remove('active');
-            document.getElementById('register-sheet').classList.remove('active');
-        }
-        
-        function toggleUserMenu() {
-            if (confirm(currentLanguage === 'ar' ? 'تسجيل الخروج؟' : 'Logout?')) {
-                logout();
-            }
-        }
-        
-        // ═══════════════════════════════════════════════════════════════════════════════
-        // MOBILE FUNCTIONS
-        // ═══════════════════════════════════════════════════════════════════════════════
-        function focusSearch() {
-            document.getElementById('search-input').focus();
-            document.getElementById('search-input').scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-        
-        function openSavedJobs() {
-            if (!currentUser) {
-                openLoginSheet();
-            } else {
-                showNotification(currentLanguage === 'ar' ? 'قريباً: الوظائف المحفوظة' : 'Coming soon: Saved jobs');
-            }
-        }
-        
-        function goToJobs() {
-            window.location.href = 'jobs.html';
-        }
-        
-        function openProfile() {
-            if (!currentUser) {
-                openLoginSheet();
-            } else {
-                window.location.href = 'profile.html';
-            }
-        }
-        
-        // ═══════════════════════════════════════════════════════════════════════════════
-        // CV ANALYZER FUNCTIONS
-        // ═══════════════════════════════════════════════════════════════════════════════
-        let currentCVText = '';
-        
-        function saveAPIKey() {
-            const apiKey = document.getElementById('openai-api-key').value.trim();
-            if (apiKey) {
-                localStorage.setItem('openai_api_key', apiKey);
-                CVAnalyzer.init(apiKey);
-                alert('✅ تم حفظ مفتاح API');
-            }
-        }
-        
-        async function handleCVUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            const validTypes = ['application/pdf', 'text/plain', 'application/msword', 
-                               'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-            if (!validTypes.includes(file.type)) {
-                alert('❌ يرجى رفع ملف PDF, DOC, DOCX, أو TXT');
-                return;
-            }
-            
-            if (file.size > 5 * 1024 * 1024) {
-                alert('❌ حجم الملف يجب أن يكون أقل من 5MB');
-                return;
-            }
-            
-            document.getElementById('cv-upload-area').classList.add('hidden');
-            document.getElementById('api-key-section').classList.add('hidden');
-            document.getElementById('cv-loading').classList.remove('hidden');
-            
-            try {
-                const text = await readFileContent(file);
-                currentCVText = text;
-                
-                const apiKey = localStorage.getItem('openai_api_key');
-                if (apiKey) CVAnalyzer.init(apiKey);
-                
-                const result = await CVAnalyzer.analyzeCV(text);
-                displayAnalysisResults(result);
-                
-            } catch (error) {
-                alert('❌ حدث خطأ أثناء التحليل');
-                resetCVAnalysis();
-            }
-        }
-        
-        function readFileContent(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = (e) => resolve(e.target.result);
-                reader.onerror = reject;
-                reader.readAsText(file);
-            });
-        }
-        
-        function displayAnalysisResults(result) {
-            document.getElementById('cv-loading').classList.add('hidden');
-            document.getElementById('cv-analysis-results').classList.remove('hidden');
-            
-            document.getElementById('ats-score').textContent = result.atsScore;
-            document.getElementById('score-keywords').textContent = result.breakdown.keywordMatch + '%';
-            document.getElementById('score-format').textContent = result.breakdown.formatCompliance + '%';
-            document.getElementById('score-achievements').textContent = result.breakdown.quantifiableResults + '%';
-            document.getElementById('score-skills').textContent = result.breakdown.skillsAlignment + '%';
-            
-            const scoreMsg = document.getElementById('score-message');
-            if (result.atsScore >= 80) {
-                scoreMsg.textContent = '🎉 سيرة ممتازة! جاهزة للتقديم';
-            } else if (result.atsScore >= 60) {
-                scoreMsg.textContent = '👍 جيدة، لكن يمكن تحسينها';
-            } else {
-                scoreMsg.textContent = '⚠️ تحتاج تحسينات كبيرة';
-            }
-            
-            document.getElementById('cv-strengths').innerHTML = result.analysis.strengths.map(s => '<li>✓ ' + s + '</li>').join('');
-            document.getElementById('cv-weaknesses').innerHTML = result.analysis.weaknesses.map(w => '<li>• ' + w + '</li>').join('');
-            document.getElementById('cv-suggestions').innerHTML = result.analysis.suggestions.map(s => '<li>💡 ' + s + '</li>').join('');
-            
-            document.getElementById('improved-summary').textContent = result.analysis.improvedVersion;
-            
-            if (result.matchedJobs && result.matchedJobs.length > 0) {
-                document.getElementById('matched-jobs-section').classList.remove('hidden');
-                document.getElementById('matched-jobs-list').innerHTML = result.matchedJobs.map(job => 
-                    '<div class="ios-card p-3 cursor-pointer" onclick="showJobDetail(' + job.id + ')" style="background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.3);">' +
-                    '<div class="flex items-center justify-between"><div><p class="font-semibold text-sm">' + job.title + '</p>' +
-                    '<p class="text-xs opacity-60">' + job.company + ' • ' + job.location + '</p></div>' +
-                    '<span class="text-emerald-500 text-xs">مطابقة</span></div></div>'
-                ).join('');
-            }
-        }
-        
-        function resetCVAnalysis() {
-            document.getElementById('cv-file-input').value = '';
-            document.getElementById('cv-upload-area').classList.remove('hidden');
-            document.getElementById('api-key-section').classList.remove('hidden');
-            document.getElementById('cv-analysis-results').classList.add('hidden');
-            document.getElementById('cv-loading').classList.add('hidden');
-            document.getElementById('matched-jobs-section').classList.add('hidden');
-            currentCVText = '';
-        }
-        
-        // ═══════════════════════════════════════════════════════════════════════════════
-        // SERVICE WORKER - PWA Support
-        // ═══════════════════════════════════════════════════════════════════════════════
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').catch(console.error);
-        }
+        });
     </script>
 </body>
 </html>

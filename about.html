@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>من نحن | SaudiCareers</title>
+    <meta name="description" content="تعرف على SaudiCareers - منصة التوظيف الوطنية السعودية المعتمدة من وزارة الموارد البشرية">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+        
+        :root {
+            --primary: #1e3a5f;
+            --primary-light: #2d5a8e;
+            --secondary: #0f766e;
+            --accent: #10b981;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --bg: #f8fafc;
+            --white: #ffffff;
+            --border: #e5e7eb;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        body {
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        /* Header */
+        .header {
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+        
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+        
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            font-size: 20px;
+        }
+        
+        .logo-text {
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 24px;
+        }
+        
+        .logo-sub {
+            color: var(--text-light);
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .nav {
+            display: flex;
+            gap: 32px;
+        }
+        
+        .nav a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 15px;
+            transition: color 0.2s;
+        }
+        
+        .nav a:hover, .nav a.active {
+            color: var(--primary);
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-light);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 1.5px solid var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 60px 24px;
+            text-align: center;
+        }
+        
+        .page-header h1 {
+            font-size: 42px;
+            font-weight: 900;
+            margin-bottom: 16px;
+        }
+        
+        .page-header p {
+            font-size: 18px;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .breadcrumbs {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        .breadcrumbs a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        /* Content Sections */
+        .content-section {
+            padding: 80px 24px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        
+        .section-text {
+            color: var(--text-light);
+            font-size: 17px;
+            line-height: 2;
+            margin-bottom: 24px;
+        }
+        
+        /* Mission Section */
+        .mission-section {
+            background: var(--white);
+            padding: 80px 24px;
+        }
+        
+        .mission-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+        
+        .mission-content h2 {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 24px;
+        }
+        
+        .mission-content p {
+            color: var(--text-light);
+            font-size: 17px;
+            line-height: 2;
+            margin-bottom: 16px;
+        }
+        
+        .mission-visual {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 20px;
+            padding: 40px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .mission-visual::before {
+            content: '"';
+            position: absolute;
+            top: -20px;
+            right: 20px;
+            font-size: 200px;
+            opacity: 0.1;
+            font-family: serif;
+        }
+        
+        .mission-quote {
+            font-size: 24px;
+            font-weight: 700;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .mission-author {
+            margin-top: 24px;
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        
+        /* Values Section */
+        .values-section {
+            padding: 80px 24px;
+            background: var(--bg);
+        }
+        
+        .values-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+        
+        .value-card {
+            background: var(--white);
+            padding: 32px 24px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+        }
+        
+        .value-card:hover {
+            transform: translateY(-4px);
+        }
+        
+        .value-icon {
+            width: 64px;
+            height: 64px;
+            background: rgba(30, 58, 95, 0.08);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin: 0 auto 20px;
+        }
+        
+        .value-card h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+        
+        .value-card p {
+            font-size: 14px;
+            color: var(--text-light);
+            line-height: 1.7;
+        }
+        
+        /* Stats Section */
+        .stats-section {
+            padding: 80px 24px;
+            background: var(--white);
+        }
+        
+        .stats-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 32px;
+            text-align: center;
+        }
+        
+        .stat-box {
+            padding: 24px;
+        }
+        
+        .stat-box-number {
+            font-size: 48px;
+            font-weight: 900;
+            color: var(--primary);
+            display: block;
+        }
+        
+        .stat-box-label {
+            color: var(--text-light);
+            font-size: 16px;
+            font-weight: 500;
+            margin-top: 8px;
+        }
+        
+        /* Trust Section */
+        .trust-section {
+            padding: 80px 24px;
+            background: var(--bg);
+        }
+        
+        .trust-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .trust-badges {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+        
+        .trust-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 20px 32px;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+        
+        .trust-badge-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .trust-badge-text {
+            text-align: right;
+        }
+        
+        .trust-badge-title {
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--text);
+        }
+        
+        .trust-badge-sub {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+        
+        /* Team Section */
+        .team-section {
+            padding: 80px 24px;
+            background: var(--white);
+        }
+        
+        .team-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+            margin-top: 48px;
+        }
+        
+        .team-card {
+            text-align: center;
+        }
+        
+        .team-avatar {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 48px;
+            font-weight: 700;
+        }
+        
+        .team-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+        
+        .team-card p {
+            font-size: 15px;
+            color: var(--text-light);
+        }
+        
+        /* Footer */
+        .footer {
+            background: #0f172a;
+            color: white;
+            padding: 60px 24px 24px;
+        }
+        
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-brand p {
+            color: rgba(255,255,255,0.7);
+            font-size: 14px;
+            margin-top: 16px;
+            line-height: 1.8;
+        }
+        
+        .footer-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+        
+        .footer-links a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: rgba(255,255,255,0.5);
+        }
+        
+        /* Mobile */
+        @media (max-width: 968px) {
+            .nav {
+                display: none;
+            }
+            
+            .mission-inner {
+                grid-template-columns: 1fr;
+            }
+            
+            .values-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .stats-inner {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-inner">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">🇸🇦</div>
+                <div>
+                    <div class="logo-text">SaudiCareers</div>
+                    <div class="logo-sub">منصة التوظيف الوطنية</div>
+                </div>
+            </a>
+            
+            <nav class="nav">
+                <a href="index.html">الرئيسية</a>
+                <a href="jobs.html">الوظائف</a>
+                <a href="about.html" class="active">من نحن</a>
+                <a href="companies.html">الشركات</a>
+            </nav>
+            
+            <div class="header-actions">
+                <a href="login.html" class="btn btn-outline">تسجيل الدخول</a>
+                <a href="register.html" class="btn btn-primary">إنشاء حساب</a>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="breadcrumbs">
+            <a href="index.html">الرئيسية</a>
+            <span>/</span>
+            <span>من نحن</span>
+        </div>
+        <h1>من نحن</h1>
+        <p>منصة سعودية وطنية تخدم رؤية 2030 في تمكين المواطنين من إيجاد فرص العمل المناسبة</p>
+    </section>
+    
+    <!-- Mission Section -->
+    <section class="mission-section">
+        <div class="mission-inner">
+            <div class="mission-content">
+                <h2>رسالتنا</h2>
+                <p>SaudiCareers هي منصة وطنية سعودية 100%، تأسست بهدف دعم رؤية المملكة 2030 في تمكين المواطنين السعوديين من إيجاد فرص عمل مناسبة في القطاعات الحكومية والخاصة.</p>
+                <p>نؤمن بأن كل مواطن سعودي يستحق فرصة عمل تليق بقدراته وطموحاته. لذلك نعمل على توفير منصة موثوقة تجمع الوظائف من مصادر رسمية موثقة، مع توفير أدوات ذكية تساعد الباحثين عن عمل في تحسين فرصهم.</p>
+                
+                <p>منذ إطلاقنا في عام 2024، ساعدنا أكثر من 50,000 باحث عن عمل في الوصول إلى وظائفهم المثالية، و cooper مع أكبر الشركات والجهات الحكومية في المملكة.</p>
+            </div>
+            
+            <div class="mission-visual">
+                <div class="mission-quote">نسعى لأن نكون المنصة الأولى في تمكين المواطن السعودي من إيجاد فرصة عمل تليق بطموحاته وتساهم في بناء مستقبل وطننا الغالي.</div>
+                <div class="mission-author">— فريق SaudiCareers</div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Values Section -->
+    <section class="values-section">
+        <div class="values-inner">
+            <h2 class="section-title">قيمنا</h2>
+            
+            <div class="values-grid">
+                <div class="value-card">
+                    <div class="value-icon">🤝</div>
+                    <h3>الموثوقية</h3>
+                    <p>نتحقق من كل وظيفة قبل نشرها، ون cooper فقط مع جهات موثقة ورسمية.</p>
+                </div>
+                
+                <div class="value-card">
+                    <div class="value-icon">⚡</div>
+                    <h3>السرعة</h3>
+                    <p>نوفر وظائف جديدة يومياً مع تنبيهات فورية للوظائف المطابقة لك.</p>
+                </div>
+                
+                <div class="value-card">
+                    <div class="value-icon">🔒</div>
+                    <h3>الأمان</h3>
+                    <p>نحمي بياناتك بأعلى معايير الأمان، ولا نشارك معلوماتك مع أي طرف ثالث.</p>
+                </div>
+                
+                <div class="value-card">
+                    <div class="value-icon">💡</div>
+                    <h3>الابتكار</h3>
+                    <p>نستخدم أحدث التقنيات لتقديم تجربة توظيف ذكية ومخصصة لكل مستخدم.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="stats-inner">
+            <div class="stat-box">
+                <span class="stat-box-number">50,000+</span>
+                <div class="stat-box-label">باحث عن عمل</div>
+            </div>
+            
+            <div class="stat-box">
+                <span class="stat-box-number">12,800+</span>
+                <div class="stat-box-label">وظيفة منشورة</div>
+            </div>
+            
+            <div class="stat-box">
+                <span class="stat-box-number">468</span>
+                <div class="stat-box-label">شركة موثقة</div>
+            </div>
+            
+            <div class="stat-box">
+                <span class="stat-box-number">96%</span>
+                <div class="stat-box-label">نسبة الرضا</div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Trust Section -->
+    <section class="trust-section">
+        <div class="trust-inner">
+            <h2 class="section-title">اعتمادات وتوثيق</h2>
+            <p class="section-text" style="text-align: center; max-width: 700px; margin: 0 auto 24px;">SaudiCareers منصة موثقة تعمل تحت إشراف وزارة الموارد البحرية والتنمية الاجتماعية، وتتبع أعلى معايير الأمان والموثوقية في صناعة التوظيف.</p>
+            
+            <div class="trust-badges">
+                <div class="trust-badge">
+                    <div class="trust-badge-icon">🏛️</div>
+                    <div class="trust-badge-text">
+                        <div class="trust-badge-title">معتمد من وزارة الموارد البشرية</div>
+                        <div class="trust-badge-sub">ترخيص رقم 12345</div>
+                    </div>
+                </div>
+                
+                <div class="trust-badge">
+                    <div class="trust-badge-icon">🔒</div>
+                    <div class="trust-badge-text">
+                        <div class="trust-badge-title">شهادة SSL Secure</div>
+                        <div class="trust-badge-sub">تشفير كامل للبيانات</div>
+                    </div>
+                </div>
+                
+                <div class="trust-badge">
+                    <div class="trust-badge-icon">🇸🇦</div>
+                    <div class="trust-badge-text">
+                        <div class="trust-badge-title">منصة سعودية 100%</div>
+                        <div class="trust-badge-sub">نخدم رؤية 2030</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Team Section -->
+    <section class="team-section">
+        <div class="team-inner">
+            <h2 class="section-title">فريقنا</h2>
+            <p class="section-text" style="text-align: center; max-width: 600px; margin: 0 auto 24px;">فريق متخصص من السعوديين والسعوديات يعمل بشغف لخدمة الوطن والمواطنين</p>
+            
+            <div class="team-grid">
+                <div class="team-card">
+                    <div class="team-avatar">أ.ع</div>
+                    <h3>أبو علي</h3>
+                    <p>المؤسس والرئيس التنفيذي</p>
+                </div>
+                
+                <div class="team-card">
+                    <div class="team-avatar">م.خ</div>
+                    <h3>م. خالد</h3>
+                    <p>مدير التقنية</p>
+                </div>
+                
+                <div class="team-card">
+                    <div class="team-avatar">س.ف</div>
+                    <h3>سارة الفهد</h3>
+                    <p>مديرة العمليات</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                        <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #1e3a5f 0%, #0f766e 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800;">🇸🇦</div>
+                        <span style="font-weight: 800; font-size: 20px;">SaudiCareers</span>
+                    </div>
+                    <p>منصة سعودية متخصصة في ربط الباحثين عن عمل بالوظائف الحكومية والخاصة. نؤمن بأن كل مواطن سعودي يستحق فرصة عمل مناسبة تتوافق مع تطلعات رؤية 2030.</p>
+                </div>
+                
+                <div>
+                    <h4 class="footer-title">الوظائف</h4>
+                    <ul class="footer-links">
+                        <li><a href="jobs.html">الوظائف الحكومية</a></li>
+                        <li><a href="jobs.html">الوظائف الخاصة</a></li>
+                        <li><a href="jobs.html">وظائف شبه حكومية</a></li>
+                        <li><a href="jobs.html">وظائف عن بُعد</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="footer-title">الشركات</h4>
+                    <ul class="footer-links">
+                        <li><a href="companies.html">الشركات الموثقة</a></li>
+                        <li><a href="about.html">نشر وظيفة</a></li>
+                        <li><a href="about.html">حلول التوظيف</a></li>
+                        <li><a href="about.html">الشراكات</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="footer-title">الدعم</h4>
+                    <ul class="footer-links">
+                        <li><a href="about.html">من نحن</a></li>
+                        <li><a href="privacy.html">سياسة الخصوصية</a></li>
+                        <li><a href="terms.html">شروط الاستخدام</a></li>
+                        <li><a href="#">اتصل بنا</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div>© 2026 SaudiCareers. جميع الحقوق محفوظة.</div>
+                <div style="display: flex; gap: 16px;">
+                    <span style="display: flex; align-items: center; gap: 6px;">🔒 SSL Secure</span>
+                    <span style="display: flex; align-items: center; gap: 6px;">✓ موثق من وزارة الموارد البشرية</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
