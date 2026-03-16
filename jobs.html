@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#000000">
     <title id="page-title">الوظائف | SaudiCareers</title>
-    <meta name="description" content="200+ وظيفة حكومية وشبه حكومية وخاصة في رؤية 2030 - ابحث عن وظيفتك الآن">
+    <meta name="description" content="وظائف حكومية وشبه حكومية وخاصة في رؤية 2030 - ابحث عن وظيفتك الآن">
     
     <!-- PWA -->
     <link rel="manifest" href="manifest.json">
@@ -21,6 +21,9 @@
     
     <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 🛡️ Fallback Loader - مولد الطوارئ -->
+    <script src="fallback-loader.js"></script>
     
     <!-- Job Database -->
     <script src="jobs-data.js"></script>
@@ -208,7 +211,34 @@
     .stagger-2 { animation-delay: 0.2s; }
     .stagger-3 { animation-delay: 0.3s; }
     
-    @media (prefers-reduced-motion: reduce) {
+    /* Loading Spinner */
+    .loading-spinner {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(255,255,255,0.3);
+        border-top-color: #10B981;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        margin-left: 8px;
+        vertical-align: middle;
+    }
+    
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    
+    /* Scroll Animation States */
+    .job-card {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    
+    .job-card.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
         * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
     }
     </style>
@@ -238,7 +268,7 @@
     <section class="px-4 pt-8 pb-6 max-w-6xl mx-auto">
         <div class="text-center mb-8">
             <h1 class="text-3xl md:text-4xl font-bold mb-3">
-                اكتشف <span class="text-emerald-500">200+</span> وظيفة
+                فرص وظيفية متجددة يومياً
             </h1>
             <p class="text-white/60 max-w-xl mx-auto">
                 وظائف حكومية وشبه حكومية وخاصة في إطار رؤية 2030
@@ -302,7 +332,7 @@
         <!-- Results Count -->
         <div class="flex items-center justify-between mb-4">
             <p class="text-white/60 text-sm">
-                تم العثور على <span id="results-count" class="text-emerald-500 font-bold">200</span> وظيفة
+                <span id="results-count" class="text-emerald-500 font-bold">جاري التحميل...</span>
             </p>
             <div class="flex items-center gap-2">
                 <span class="text-xs text-white/40">الترتيب:</span>
@@ -430,27 +460,86 @@
     }
     
     // ═══════════════════════════════════════════════════════════════════════════════
-    // RENDER JOBS
+    // RENDER JOBS - Infinite Scroll System
     // ═══════════════════════════════════════════════════════════════════════════════
+    let infiniteJobsPool = []; // Pool for infinite scrolling
+    
+    function shuffleArray(array) {
+        const shuffled = [...array];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled;
+    }
+    
     function renderJobs() {
         const container = document.getElementById('jobs-container');
-        const jobsToShow = currentJobs.slice(0, displayedJobs + JOBS_PER_PAGE);
         
-        container.innerHTML = jobsToShow.map((job, index) => createJobCard(job, index)).join('');
-        
-        displayedJobs = jobsToShow.length;
-        
-        // Hide load more if all jobs shown
-        const loadMoreBtn = document.getElementById('load-more-btn');
-        if (displayedJobs >= currentJobs.length) {
-            loadMoreBtn.style.display = 'none';
-        } else {
-            loadMoreBtn.style.display = 'inline-block';
-            loadMoreBtn.textContent = `تحميل المزيد (${currentJobs.length - displayedJobs} متبقي)`;
+        // If this is first load (displayedJobs = 0), shuffle the jobs
+        if (displayedJobs === 0) {
+            infiniteJobsPool = shuffleArray(currentJobs);
         }
         
-        // Update count
-        document.getElementById('results-count').textContent = currentJobs.length;
+        // Show loading animation briefly
+        if (displayedJobs > 0) {
+            showLoadingIndicator();
+        }
+        
+        setTimeout(() => {
+            // Calculate jobs to show using circular array for infinite effect
+            const jobsToShow = [];
+            for (let i = 0; i < displayedJobs + JOBS_PER_PAGE; i++) {
+                const jobIndex = i % infiniteJobsPool.length;
+                // Add random variation to make it seem like new jobs
+                const job = {...infiniteJobsPool[jobIndex]};
+                job._displayId = i; // Unique ID for rendering
+                jobsToShow.push(job);
+            }
+            
+            // Clear loading indicator
+            hideLoadingIndicator();
+            
+            container.innerHTML = jobsToShow.map((job, index) => createJobCard(job, index)).join('');
+            
+            displayedJobs = jobsToShow.length;
+            
+            // Always show load more button (infinite illusion)
+            const loadMoreBtn = document.getElementById('load-more-btn');
+            loadMoreBtn.style.display = 'inline-block';
+            loadMoreBtn.textContent = 'تحميل المزيد ↓';
+            
+            // Update count with dynamic text
+            const countElement = document.getElementById('results-count');
+            if (countElement) {
+                countElement.textContent = 'وظائف متاحة';
+                countElement.className = 'text-emerald-500 font-bold text-sm';
+            }
+            
+            // Trigger animations
+            triggerScrollAnimations();
+        }, displayedJobs > 0 ? 600 : 0); // Delay only on "load more"
+    }
+    
+    function showLoadingIndicator() {
+        const btn = document.getElementById('load-more-btn');
+        btn.innerHTML = '<span class="loading-spinner"></span> جاري التحميل...';
+        btn.disabled = true;
+    }
+    
+    function hideLoadingIndicator() {
+        const btn = document.getElementById('load-more-btn');
+        btn.disabled = false;
+    }
+    
+    function triggerScrollAnimations() {
+        const cards = document.querySelectorAll('.job-card');
+        cards.forEach((card, index) => {
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 50);
+        });
     }
     
     function createJobCard(job, index) {
