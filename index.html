@@ -1430,10 +1430,8 @@
                 </div>
             `).join('');
             
-            // Update count
-            const t = translations[currentLanguage];
-            document.getElementById('results-count').textContent = 
-                `${filteredJobs.length} ${t.jobs}`;
+            // Update count - show generic text instead of number
+            document.getElementById('results-count').textContent = 'فرص متاحة';
             
             // Show/hide load more button
             document.getElementById('load-more-btn').style.display = 
