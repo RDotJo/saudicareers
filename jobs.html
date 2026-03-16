@@ -1,705 +1,276 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" data-theme="dark">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#000000">
-    <title id="page-title">الوظائف | SaudiCareers</title>
-    <meta name="description" content="وظائف حكومية وشبه حكومية وخاصة في رؤية 2030 - ابحث عن وظيفتك الآن">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الوظائف | SaudiCareers</title>
+    <meta name="description" content="ابحث عن وظائف حكومية وخاصة في السعودية">
     
-    <!-- PWA -->
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="logo.webp">
-    <link rel="icon" type="image/webp" href="logo.webp">
-    
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Tailwind -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- 🛡️ Fallback Loader - مولد الطوارئ -->
-    <script src="fallback-loader.js"></script>
-    
-    <!-- Job Database -->
-    <script src="jobs-data.js"></script>
-    
-    <!-- Category Icons -->
-    <script src="category-icons.js"></script>
-    
-    <script>
-    tailwind.config = {
-        darkMode: 'class',
-        theme: {
-            extend: {
-                colors: {
-                    primary: '#10B981',
-                    success: '#30D158',
-                    warning: '#FF9F0A',
-                    danger: '#FF453A',
-                    gold: '#2D5A3D',
-                    emerald: '#10B981',
-                }
-            }
-        }
-    }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     
     <style>
-    :root {
-        --bg-primary: #000000;
-        --bg-secondary: #1C1C1E;
-        --bg-tertiary: #2C2C2E;
-        --text-primary: #FFFFFF;
-        --text-secondary: rgba(255,255,255,0.6);
-        --text-tertiary: rgba(255,255,255,0.3);
-        --border-color: rgba(255,255,255,0.1);
-    }
-    
-    [data-theme="light"] {
-        --bg-primary: #F2F2F7;
-        --bg-secondary: #FFFFFF;
-        --bg-tertiary: #E5E5EA;
-        --text-primary: #000000;
-        --text-secondary: rgba(0,0,0,0.6);
-        --text-tertiary: rgba(0,0,0,0.3);
-        --border-color: rgba(0,0,0,0.1);
-    }
-    
-    * {
-        font-family: 'SF Pro Display', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-        -webkit-tap-highlight-color: transparent;
-    }
-    
-    body {
-        background: var(--bg-primary);
-        color: var(--text-primary);
-        overflow-x: hidden;
-        transition: background 0.3s ease, color 0.3s ease;
-    }
-    
-    .ios-card {
-        background: var(--bg-secondary);
-        border-radius: 16px;
-        border: 1px solid var(--border-color);
-        backdrop-filter: blur(20px);
-    }
-    
-    .ios-input {
-        background: var(--bg-tertiary);
-        border: 1px solid var(--border-color);
-        border-radius: 12px;
-        padding: 14px 16px;
-        color: var(--text-primary);
-        width: 100%;
-        outline: none;
-        transition: all 0.2s ease;
-    }
-    
-    .ios-input:focus {
-        border-color: #10B981;
-        box-shadow: 0 0 0 3px rgba(16,185,129,0.2);
-    }
-    
-    .btn-primary {
-        background: linear-gradient(135deg, #10B981 0%, #059669 100%);
-        border-radius: 12px;
-        padding: 14px 24px;
-        font-weight: 600;
-        color: white;
-        transition: all 0.2s ease;
-    }
-    
-    .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(16,185,129,0.3);
-    }
-    
-    .btn-secondary {
-        background: var(--bg-tertiary);
-        border: 1px solid var(--border-color);
-        border-radius: 12px;
-        padding: 14px 24px;
-        font-weight: 600;
-        color: var(--text-primary);
-        transition: all 0.2s ease;
-    }
-    
-    .job-card {
-        background: var(--bg-secondary);
-        border-radius: 16px;
-        border: 1px solid var(--border-color);
-        padding: 20px;
-        transition: all 0.2s ease;
-        cursor: pointer;
-    }
-    
-    .job-card:hover {
-        transform: translateY(-4px);
-        border-color: rgba(16,185,129,0.3);
-        box-shadow: 0 12px 40px rgba(0,0,0,0.2);
-    }
-    
-    .tag {
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 500;
-    }
-    
-    .tag-gov { background: rgba(16,185,129,0.15); color: #10B981; }
-    .tag-semi { background: rgba(0,122,255,0.15); color: #007AFF; }
-    .tag-private { background: rgba(255,159,10,0.15); color: #FF9F0A; }
-    .tag-2030 { background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(45,90,61,0.2)); color: #10B981; }
-    
-    /* Sheet Modal */
-    .sheet-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(0,0,0,0.7);
-        backdrop-filter: blur(10px);
-        z-index: 2000;
-        opacity: 0;
-        visibility: hidden;
-        transition: all 0.3s ease;
-    }
-    
-    .sheet-overlay.active { opacity: 1; visibility: visible; }
-    
-    .sheet {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: var(--bg-secondary);
-        border-radius: 24px 24px 0 0;
-        z-index: 2001;
-        transform: translateY(100%);
-        transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
-        max-height: 85vh;
-        overflow-y: auto;
-    }
-    
-    .sheet.active { transform: translateY(0); }
-    
-    .sheet-handle {
-        width: 36px;
-        height: 4px;
-        background: var(--text-tertiary);
-        border-radius: 2px;
-        margin: 12px auto;
-    }
-    
-    /* Animations */
-    @keyframes fadeInUp {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .animate-fade-in {
-        animation: fadeInUp 0.4s ease forwards;
-    }
-    
-    .stagger-1 { animation-delay: 0.1s; }
-    .stagger-2 { animation-delay: 0.2s; }
-    .stagger-3 { animation-delay: 0.3s; }
-    
-    /* Loading Spinner */
-    .loading-spinner {
-        display: inline-block;
-        width: 16px;
-        height: 16px;
-        border: 2px solid rgba(255,255,255,0.3);
-        border-top-color: #10B981;
-        border-radius: 50%;
-        animation: spin 0.8s linear infinite;
-        margin-left: 8px;
-        vertical-align: middle;
-    }
-    
-    @keyframes spin {
-        to { transform: rotate(360deg); }
-    }
-    
-    /* Scroll Animation States */
-    .job-card {
-        opacity: 0;
-        transform: translateY(20px);
-        transition: opacity 0.4s ease, transform 0.4s ease;
-    }
-    
-    .job-card.visible {
-        opacity: 1;
-        transform: translateY(0);
-    }
-        * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
-    }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
+        :root { --primary: #1e3a5f; --primary-light: #2d5a8e; --secondary: #0f766e; --accent: #10b981; --text: #1f2937; --text-light: #6b7280; --bg: #f8fafc; --white: #ffffff; --border: #e5e7eb; }
+        body { background: var(--bg); color: var(--text); line-height: 1.6; }
+        .header { background: var(--white); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+        .header-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; height: 70px; }
+        .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .logo-icon { width: 45px; height: 45px; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 20px; }
+        .logo-text { color: var(--primary); font-weight: 800; font-size: 24px; }
+        .logo-sub { color: var(--text-light); font-size: 12px; font-weight: 500; }
+        .nav { display: flex; gap: 32px; }
+        .nav a { color: var(--text); text-decoration: none; font-weight: 600; font-size: 15px; transition: color 0.2s; }
+        .nav a:hover, .nav a.active { color: var(--primary); }
+        .header-actions { display: flex; gap: 12px; }
+        .btn { padding: 10px 24px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.2s; border: none; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-light); }
+        .btn-outline { background: transparent; color: var(--primary); border: 1.5px solid var(--primary); }
+        .page-header { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white; padding: 40px 24px; }
+        .page-header h1 { font-size: 32px; font-weight: 800; text-align: center; }
+        .search-section { background: var(--white); padding: 24px; border-bottom: 1px solid var(--border); }
+        .search-box { max-width: 800px; margin: 0 auto; display: flex; gap: 12px; }
+        .search-input { flex: 1; padding: 14px 20px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 15px; }
+        .search-btn { background: var(--accent); color: white; border: none; padding: 14px 32px; border-radius: 10px; font-weight: 700; cursor: pointer; }
+        .filters { display: flex; gap: 12px; margin-top: 16px; justify-content: center; flex-wrap: wrap; }
+        .filter-select { padding: 10px 16px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; background: var(--white); }
+        .jobs-section { padding: 40px 24px; max-width: 1200px; margin: 0 auto; }
+        .jobs-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .jobs-count { font-size: 18px; font-weight: 700; }
+        .jobs-count span { color: var(--primary); }
+        .sort-select { padding: 10px 16px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; }
+        .jobs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
+        .job-card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 24px; transition: all 0.2s; cursor: pointer; }
+        .job-card:hover { border-color: var(--primary); box-shadow: 0 4px 20px rgba(30, 58, 95, 0.1); transform: translateY(-2px); }
+        .job-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+        .job-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+        .job-company { color: var(--text-light); font-size: 14px; }
+        .job-badge { background: rgba(16, 185, 129, 0.1); color: var(--accent); padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .job-details { display: flex; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
+        .job-detail { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--text-light); }
+        .job-description { color: var(--text-light); font-size: 14px; line-height: 1.6; margin-bottom: 16px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .job-footer { display: flex; justify-content: space-between; align-items: center; }
+        .job-salary { font-size: 16px; font-weight: 700; color: var(--primary); }
+        .job-date { font-size: 13px; color: var(--text-light); }
+        .load-more { text-align: center; margin-top: 40px; }
+        .load-more-btn { background: var(--white); border: 1.5px solid var(--primary); color: var(--primary); padding: 14px 40px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+        .load-more-btn:hover { background: var(--primary); color: white; }
+        .footer { background: #0f172a; color: white; padding: 40px 24px 24px; margin-top: 60px; }
+        .footer-inner { max-width: 1200px; margin: 0 auto; text-align: center; }
+        .footer p { color: rgba(255,255,255,0.6); font-size: 14px; }
+        @media (max-width: 768px) { .nav { display: none; } .jobs-grid { grid-template-columns: 1fr; } .search-box { flex-direction: column; } }
     </style>
 </head>
-<body class="min-h-screen">
-    
-    <!-- Header -->
-    <header class="sticky top-0 z-50 backdrop-blur-xl bg-black/80 border-b border-white/10">
-        <div class="flex items-center justify-between px-4 py-3 max-w-6xl mx-auto">
-            <a href="index.html" class="flex items-center gap-2">
-                <img src="logo.webp" alt="SaudiCareers" class="w-8 h-8 rounded-lg">
-                <span class="font-bold text-lg">الوظائف</span>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">🇸🇦</div>
+                <div>
+                    <div class="logo-text">SaudiCareers</div>
+                    <div class="logo-sub">منصة التوظيف الوطنية</div>
+                </div>
             </a>
-            
-            <div class="flex items-center gap-2">
-                <button onclick="toggleTheme()" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center" aria-label="تبديل الوضع">
-                    <span id="theme-icon">☀️</span>
-                </button>
-                <button onclick="window.location.href='index.html'" class="btn-primary text-sm px-4 py-2">
-                    الرئيسية
-                </button>
+            <nav class="nav">
+                <a href="index.html">الرئيسية</a>
+                <a href="jobs.html" class="active">الوظائف</a>
+                <a href="about.html">من نحن</a>
+            </nav>
+            <div class="header-actions">
+                <a href="login.html" class="btn btn-outline">تسجيل الدخول</a>
+                <a href="register.html" class="btn btn-primary">إنشاء حساب</a>
             </div>
         </div>
     </header>
-    
-    <!-- Hero Section -->
-    <section class="px-4 pt-8 pb-6 max-w-6xl mx-auto">
-        <div class="text-center mb-8">
-            <h1 class="text-3xl md:text-4xl font-bold mb-3">
-                فرص وظيفية متجددة يومياً
-            </h1>
-            <p class="text-white/60 max-w-xl mx-auto">
-                وظائف حكومية وشبه حكومية وخاصة في إطار رؤية 2030
-            </p>
+
+    <section class="page-header">
+        <h1>ابحث عن وظيفتك المثالية</h1>
+    </section>
+
+    <section class="search-section">
+        <div class="search-box">
+            <input type="text" class="search-input" id="searchInput" placeholder="المسمى الوظيفي، الشركة، أو المدينة...">
+            <button class="search-btn" onclick="searchJobs()">بحث</button>
         </div>
-        
-        <!-- Search & Filters -->
-        <div class="ios-card p-4 mb-6">
-            <!-- Search Bar -->
-            <div class="relative mb-4">
-                <svg class="w-5 h-5 absolute right-4 top-1/2 -translate-y-1/2 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                </svg>
-                <input type="text" id="search-input" class="ios-input pr-12" placeholder="ابحث عن وظيفة، شركة، أو مدينة..." onkeyup="filterJobs()">
-            </div>
-            
-            <!-- Filters Row -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <select id="filter-type" class="ios-input text-sm" onchange="filterJobs()">
-                    <option value="">كل الأنواع</option>
-                    <option value="government">🏛️ حكومي</option>
-                    <option value="semi">🏢 شبه حكومي</option>
-                    <option value="private">💼 خاص</option>
-                    <option value="vision2030">🇸🇦 رؤية 2030</option>
-                </select>
-                
-                <select id="filter-category" class="ios-input text-sm" onchange="filterJobs()">
-                    <option value="">كل التصنيفات</option>
-                    <option value="إدارة">إدارة</option>
-                    <option value="هندسة">هندسة</option>
-                    <option value="تقنية">تقنية</option>
-                    <option value="مالية">مالية</option>
-                    <option value="طب">طب</option>
-                    <option value="تعليم">تعليم</option>
-                    <option value="قانون">قانون</option>
-                </select>
-                
-                <select id="filter-location" class="ios-input text-sm" onchange="filterJobs()">
-                    <option value="">كل المدن</option>
-                    <option value="الرياض">الرياض</option>
-                    <option value="جدة">جدة</option>
-                    <option value="الدمام">الدمام</option>
-                    <option value="مكة">مكة</option>
-                    <option value="المدينة">المدينة</option>
-                    <option value="أبها">أبها</option>
-                    <option value="الخبر">الخبر</option>
-                    <option value="تبوك">تبوك</option>
-                    <option value="نجران">نجران</option>
-                    <option value="حائل">حائل</option>
-                    <option value="الجبيل">الجبيل</option>
-                    <option value="ينبع">ينبع</option>
-                    <option value="عن بعد">عن بعد</option>
-                </select>
-                
-                <button onclick="resetFilters()" class="btn-secondary text-sm">
-                    إعادة ضبط
-                </button>
-            </div>
-        </div>
-        
-        <!-- Results Count -->
-        <div class="flex items-center justify-between mb-4">
-            <p class="text-white/60 text-sm">
-                <span id="results-count" class="text-emerald-500 font-bold">جاري التحميل...</span>
-            </p>
-            <div class="flex items-center gap-2">
-                <span class="text-xs text-white/40">الترتيب:</span>
-                <select id="sort-by" class="bg-transparent text-sm border-none outline-none text-white/80" onchange="sortJobs()">
-                    <option value="newest">الأحدث</option>
-                    <option value="salary-high">الأعلى راتب</option>
-                    <option value="salary-low">الأقل راتب</option>
-                </select>
-            </div>
+        <div class="filters">
+            <select class="filter-select" id="typeFilter" onchange="filterJobs()">
+                <option value="">كل الأنواع</option>
+                <option value="حكومي">حكومي</option>
+                <option value="شبه حكومي">شبه حكومي</option>
+                <option value="خاص">خاص</option>
+            </select>
+            <select class="filter-select" id="cityFilter" onchange="filterJobs()">
+                <option value="">كل المدن</option>
+                <option value="الرياض">الرياض</option>
+                <option value="جدة">جدة</option>
+                <option value="الدمام">الدمام</option>
+                <option value="مكة">مكة</option>
+            </select>
+            <select class="filter-select" id="categoryFilter" onchange="filterJobs()">
+                <option value="">كل التصنيفات</option>
+                <option value="إدارة">إدارة</option>
+                <option value="هندسة">هندسة</option>
+                <option value="تقنية">تقنية</option>
+                <option value="مالية">مالية</option>
+            </select>
         </div>
     </section>
-    
-    <!-- Jobs Grid -->
-    <section class="px-4 pb-24 max-w-6xl mx-auto">
-        <div id="jobs-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <!-- Jobs will be loaded here -->
+
+    <section class="jobs-section">
+        <div class="jobs-header">
+            <div class="jobs-count">عدد الوظائف: <span id="jobsCount">0</span></div>
+            <select class="sort-select" id="sortSelect" onchange="sortJobs()">
+                <option value="newest">الأحدث</option>
+                <option value="salary-high">الأعلى راتب</option>
+                <option value="salary-low">الأقل راتب</option>
+            </select>
         </div>
-        
-        <!-- Load More -->
-        <div class="text-center mt-8">
-            <button onclick="loadMoreJobs()" id="load-more-btn" class="btn-secondary">
-                تحميل المزيد
-            </button>
+        <div class="jobs-grid" id="jobsContainer"></div>
+        <div class="load-more" id="loadMoreContainer" style="display: none;">
+            <button class="load-more-btn" onclick="loadMore()">تحميل المزيد</button>
         </div>
     </section>
-    
-    <!-- Job Detail Sheet -->
-    <div class="sheet-overlay" id="job-sheet-overlay" onclick="closeJobSheet()"></div>
-    <div class="sheet" id="job-sheet">
-        <div class="sheet-handle"></div>
-        <div class="p-6">
-            <div class="flex items-start gap-4 mb-6">
-                <div class="w-16 h-16 rounded-2xl bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
-                    <span id="job-logo" class="text-2xl font-bold text-emerald-500">و</span>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <h2 id="job-title" class="text-xl font-bold mb-1"></h2>
-                    <p id="job-company" class="text-white/60 text-sm mb-2"></p>
-                    <div id="job-tags" class="flex flex-wrap gap-2"></div>
-                </div>
-            </div>
-            
-            <div class="space-y-4 mb-6">
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="ios-card p-3 text-center">
-                        <p class="text-xs text-white/40 mb-1">الراتب</p>
-                        <p id="job-salary" class="font-bold text-emerald-500"></p>
-                    </div>
-                    <div class="ios-card p-3 text-center">
-                        <p class="text-xs text-white/40 mb-1">الموقع</p>
-                        <p id="job-location" class="font-bold"></p>
-                    </div>
-                </div>
-                
-                <div>
-                    <h3 class="font-bold mb-2">الوصف الوظيفي</h3>
-                    <p id="job-description" class="text-sm text-white/70 leading-relaxed"></p>
-                </div>
-                
-                <div>
-                    <h3 class="font-bold mb-2">المتطلبات</h3>
-                    <ul id="job-requirements" class="text-sm text-white/70 space-y-1"></ul>
-                </div>
-            </div>
-            
-            <button onclick="applyForJob()" class="btn-primary w-full py-4 text-lg font-bold">
-                التقديم على الوظيفة
-            </button>
-        </div>
-    </div>
-    
-    <!-- Footer -->
-    <footer class="border-t border-white/10 py-8 mt-12">
-        <div class="max-w-6xl mx-auto px-4 text-center">
-            <div class="flex flex-wrap items-center justify-center gap-4 text-sm opacity-60 mb-4">
-                <a href="index.html" class="hover:text-emerald-500 transition-colors">الرئيسية</a>
-                <span class="opacity-30">|</span>
-                <a href="privacy.html" class="hover:text-emerald-500 transition-colors">سياسة الخصوصية</a>
-                <span class="opacity-30">|</span>
-                <a href="terms.html" class="hover:text-emerald-500 transition-colors">شروط الاستخدام</a>
-            </div>
-            <p class="text-xs opacity-40">© 2024 SaudiCareers - جميع الحقوق محفوظة</p>
+
+    <footer class="footer">
+        <div class="footer-inner">
+            <p>© 2026 SaudiCareers. جميع الحقوق محفوظة.</p>
         </div>
     </footer>
-    
+
+    <script src="jobs-data.js"></script>
     <script>
-    // ═══════════════════════════════════════════════════════════════════════════════
-    // STATE
-    // ═══════════════════════════════════════════════════════════════════════════════
-    let currentJobs = [...jobsDatabase];
-    let displayedJobs = 0;
-    const JOBS_PER_PAGE = 12;
-    let currentLanguage = localStorage.getItem('language') || 'ar';
-    
-    // ═══════════════════════════════════════════════════════════════════════════════
-    // INITIALIZATION
-    // ═══════════════════════════════════════════════════════════════════════════════
-    document.addEventListener('DOMContentLoaded', function() {
-        applyTheme();
-        renderJobs();
-    });
-    
-    // ═══════════════════════════════════════════════════════════════════════════════
-    // THEME
-    // ═══════════════════════════════════════════════════════════════════════════════
-    function toggleTheme() {
-        const html = document.documentElement;
-        const current = html.getAttribute('data-theme');
-        const next = current === 'dark' ? 'light' : 'dark';
-        html.setAttribute('data-theme', next);
-        localStorage.setItem('theme', next);
-        updateThemeIcon();
-    }
-    
-    function applyTheme() {
-        const saved = localStorage.getItem('theme') || 'dark';
-        document.documentElement.setAttribute('data-theme', saved);
-        updateThemeIcon();
-    }
-    
-    function updateThemeIcon() {
-        const icon = document.getElementById('theme-icon');
-        const theme = document.documentElement.getAttribute('data-theme');
-        icon.textContent = theme === 'dark' ? '☀️' : '🌙';
-    }
-    
-    // ═══════════════════════════════════════════════════════════════════════════════
-    // RENDER JOBS - Infinite Scroll System
-    // ═══════════════════════════════════════════════════════════════════════════════
-    let infiniteJobsPool = []; // Pool for infinite scrolling
-    
-    function shuffleArray(array) {
-        const shuffled = [...array];
-        for (let i = shuffled.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-        }
-        return shuffled;
-    }
-    
-    function renderJobs() {
-        const container = document.getElementById('jobs-container');
-        
-        // If this is first load (displayedJobs = 0), shuffle the jobs
-        if (displayedJobs === 0) {
-            infiniteJobsPool = shuffleArray(currentJobs);
-        }
-        
-        // Show loading animation briefly
-        if (displayedJobs > 0) {
-            showLoadingIndicator();
-        }
-        
-        setTimeout(() => {
-            // Calculate jobs to show using circular array for infinite effect
-            const jobsToShow = [];
-            for (let i = 0; i < displayedJobs + JOBS_PER_PAGE; i++) {
-                const jobIndex = i % infiniteJobsPool.length;
-                // Add random variation to make it seem like new jobs
-                const job = {...infiniteJobsPool[jobIndex]};
-                job._displayId = i; // Unique ID for rendering
-                jobsToShow.push(job);
+        let allJobs = [];
+        let displayedJobs = [];
+        let currentPage = 1;
+        const jobsPerPage = 12;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof JOBS_DATABASE !== 'undefined') {
+                allJobs = JOBS_DATABASE;
+            } else {
+                // Fallback data if jobs-data.js fails to load
+                allJobs = [
+                    { id: 1, title: "مدير مشروع", company: "وزارة المالية", location: "الرياض", type: "حكومي", category: "إدارة", salary: "18000-25000 ريال", description: "إدارة مشاريع التحول الرقمي", posted: "2026-03-15" },
+                    { id: 2, title: "مهندس برمجيات", company: "أرامكو", location: "الظهران", type: "خاص", category: "تقنية", salary: "25000-35000 ريال", description: "تطوير أنظمة برمجية", posted: "2026-03-14" },
+                    { id: 3, title: "محلل مالي", company: "سابك", location: "جدة", type: "خاص", category: "مالية", salary: "15000-22000 ريال", description: "تحليل البيانات المالية", posted: "2026-03-13" }
+                ];
             }
-            
-            // Clear loading indicator
-            hideLoadingIndicator();
-            
-            container.innerHTML = jobsToShow.map((job, index) => createJobCard(job, index)).join('');
-            
-            displayedJobs = jobsToShow.length;
-            
-            // Always show load more button (infinite illusion)
-            const loadMoreBtn = document.getElementById('load-more-btn');
-            loadMoreBtn.style.display = 'inline-block';
-            loadMoreBtn.textContent = 'تحميل المزيد ↓';
-            
-            // Update count with dynamic text
-            const countElement = document.getElementById('results-count');
-            if (countElement) {
-                countElement.textContent = 'وظائف متاحة';
-                countElement.className = 'text-emerald-500 font-bold text-sm';
-            }
-            
-            // Trigger animations
-            triggerScrollAnimations();
-        }, displayedJobs > 0 ? 600 : 0); // Delay only on "load more"
-    }
-    
-    function showLoadingIndicator() {
-        const btn = document.getElementById('load-more-btn');
-        btn.innerHTML = '<span class="loading-spinner"></span> جاري التحميل...';
-        btn.disabled = true;
-    }
-    
-    function hideLoadingIndicator() {
-        const btn = document.getElementById('load-more-btn');
-        btn.disabled = false;
-    }
-    
-    function triggerScrollAnimations() {
-        const cards = document.querySelectorAll('.job-card');
-        cards.forEach((card, index) => {
-            setTimeout(() => {
-                card.style.opacity = '1';
-                card.style.transform = 'translateY(0)';
-            }, index * 50);
+            displayJobs();
         });
-    }
-    
-    function createJobCard(job, index) {
-        const typeClass = job.type === 'government' ? 'tag-gov' : 
-                         job.type === 'semi' ? 'tag-semi' : 
-                         job.type === 'vision2030' ? 'tag-2030' : 'tag-private';
-        
-        const typeText = job.type === 'government' ? 'حكومي' : 
-                        job.type === 'semi' ? 'شبه حكومي' : 
-                        job.type === 'vision2030' ? 'رؤية 2030' : 'خاص';
-        
-        const staggerClass = index < 3 ? `stagger-${(index % 3) + 1}` : '';
-        
-        return `
-            <div class="job-card animate-fade-in ${staggerClass}" onclick="openJobSheet(${job.id})" style="opacity:0">
-                <div class="flex items-start gap-3 mb-3">
-                    <div class="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
-                        ${getCategoryIcon(job.category)}
+
+        function displayJobs() {
+            const container = document.getElementById('jobsContainer');
+            const countElement = document.getElementById('jobsCount');
+            const loadMoreContainer = document.getElementById('loadMoreContainer');
+            
+            let filteredJobs = filterJobsData();
+            countElement.textContent = filteredJobs.length;
+            
+            const start = 0;
+            const end = currentPage * jobsPerPage;
+            const jobsToShow = filteredJobs.slice(start, end);
+            
+            container.innerHTML = jobsToShow.map(job => `
+                <div class="job-card" onclick="viewJob(${job.id})">
+                    <div class="job-header">
+                        <div>
+                            <div class="job-title">${job.title}</div>
+                            <div class="job-company">${job.company}</div>
+                        </div>
+                        <span class="job-badge">${job.type}</span>
                     </div>
-                    <div class="flex-1 min-w-0">
-                        <h3 class="font-bold text-base mb-1 truncate">${job.title}</h3>
-                        <p class="text-sm text-white/60 truncate">${job.company}</p>
+                    <div class="job-details">
+                        <span class="job-detail">📍 ${job.location}</span>
+                        <span class="job-detail">💼 ${job.category}</span>
+                        <span class="job-detail">📅 ${job.experience || 'غير محدد'}</span>
+                    </div>
+                    <div class="job-description">${job.description}</div>
+                    <div class="job-footer">
+                        <span class="job-salary">${job.salary}</span>
+                        <span class="job-date">${formatDate(job.posted)}</span>
                     </div>
                 </div>
-                
-                <div class="flex flex-wrap gap-2 mb-3">
-                    <span class="tag ${typeClass}">${typeText}</span>
-                    <span class="tag bg-white/10">${job.location}</span>
-                    <span class="tag bg-white/10">${job.category}</span>
-                </div>
-                
-                <div class="flex items-center justify-between pt-3 border-t border-white/10">
-                    <span class="text-emerald-500 font-bold text-sm">${job.salary}</span>
-                    <span class="text-xs text-white/40">${job.postedDate}</span>
-                </div>
-            </div>
-        `;
-    }
-    
-    function loadMoreJobs() {
-        renderJobs();
-    }
-    
-    // ═══════════════════════════════════════════════════════════════════════════════
-    // FILTER & SEARCH
-    // ═══════════════════════════════════════════════════════════════════════════════
-    function filterJobs() {
-        const searchTerm = document.getElementById('search-input').value.toLowerCase();
-        const typeFilter = document.getElementById('filter-type').value;
-        const categoryFilter = document.getElementById('filter-category').value;
-        const locationFilter = document.getElementById('filter-location').value;
-        
-        currentJobs = jobsDatabase.filter(job => {
-            const matchesSearch = !searchTerm || 
-                job.title.toLowerCase().includes(searchTerm) ||
-                job.company.toLowerCase().includes(searchTerm) ||
-                job.location.toLowerCase().includes(searchTerm) ||
-                job.category.toLowerCase().includes(searchTerm);
+            `).join('');
             
-            const matchesType = !typeFilter || job.type === typeFilter;
-            const matchesCategory = !categoryFilter || job.category === categoryFilter;
-            const matchesLocation = !locationFilter || job.location.includes(locationFilter);
+            loadMoreContainer.style.display = filteredJobs.length > end ? 'block' : 'none';
+        }
+
+        function filterJobsData() {
+            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            const typeFilter = document.getElementById('typeFilter').value;
+            const cityFilter = document.getElementById('cityFilter').value;
+            const categoryFilter = document.getElementById('categoryFilter').value;
             
-            return matchesSearch && matchesType && matchesCategory && matchesLocation;
+            return allJobs.filter(job => {
+                const matchesSearch = !searchQuery || 
+                    job.title.toLowerCase().includes(searchQuery) ||
+                    job.company.toLowerCase().includes(searchQuery) ||
+                    job.location.toLowerCase().includes(searchQuery);
+                const matchesType = !typeFilter || job.type === typeFilter;
+                const matchesCity = !cityFilter || job.location === cityFilter;
+                const matchesCategory = !categoryFilter || job.category === categoryFilter;
+                
+                return matchesSearch && matchesType && matchesCity && matchesCategory;
+            });
+        }
+
+        function searchJobs() {
+            currentPage = 1;
+            displayJobs();
+        }
+
+        function filterJobs() {
+            currentPage = 1;
+            displayJobs();
+        }
+
+        function sortJobs() {
+            const sortValue = document.getElementById('sortSelect').value;
+            
+            if (sortValue === 'salary-high') {
+                allJobs.sort((a, b) => extractMaxSalary(b.salary) - extractMaxSalary(a.salary));
+            } else if (sortValue === 'salary-low') {
+                allJobs.sort((a, b) => extractMaxSalary(a.salary) - extractMaxSalary(b.salary));
+            } else {
+                allJobs.sort((a, b) => new Date(b.posted) - new Date(a.posted));
+            }
+            
+            displayJobs();
+        }
+
+        function extractMaxSalary(salaryStr) {
+            const match = salaryStr.match(/(\d+)/g);
+            return match ? parseInt(match[match.length - 1]) : 0;
+        }
+
+        function loadMore() {
+            currentPage++;
+            displayJobs();
+        }
+
+        function viewJob(id) {
+            window.location.href = `job-detail.html?id=${id}`;
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return 'حديثاً';
+            const date = new Date(dateStr);
+            const now = new Date();
+            const diffDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
+            
+            if (diffDays === 0) return 'اليوم';
+            if (diffDays === 1) return 'أمس';
+            if (diffDays < 7) return `منذ ${diffDays} أيام`;
+            return date.toLocaleDateString('ar-SA');
+        }
+
+        // Search on Enter key
+        document.getElementById('searchInput')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') searchJobs();
         });
-        
-        displayedJobs = 0;
-        renderJobs();
-    }
-    
-    function resetFilters() {
-        document.getElementById('search-input').value = '';
-        document.getElementById('filter-type').value = '';
-        document.getElementById('filter-category').value = '';
-        document.getElementById('filter-location').value = '';
-        document.getElementById('sort-by').value = 'newest';
-        filterJobs();
-    }
-    
-    function sortJobs() {
-        const sortBy = document.getElementById('sort-by').value;
-        
-        if (sortBy === 'newest') {
-            // Already sorted by date in database
-            currentJobs.sort((a, b) => b.id - a.id);
-        } else if (sortBy === 'salary-high') {
-            currentJobs.sort((a, b) => {
-                const aMax = parseInt(a.salary.match(/\d+/g)?.pop() || 0);
-                const bMax = parseInt(b.salary.match(/\d+/g)?.pop() || 0);
-                return bMax - aMax;
-            });
-        } else if (sortBy === 'salary-low') {
-            currentJobs.sort((a, b) => {
-                const aMin = parseInt(a.salary.match(/\d+/g)?.[0] || 0);
-                const bMin = parseInt(b.salary.match(/\d+/g)?.[0] || 0);
-                return aMin - bMin;
-            });
-        }
-        
-        displayedJobs = 0;
-        renderJobs();
-    }
-    
-    // ═══════════════════════════════════════════════════════════════════════════════
-    // JOB SHEET
-    // ═══════════════════════════════════════════════════════════════════════════════
-    function openJobSheet(jobId) {
-        const job = jobsDatabase.find(j => j.id === jobId);
-        if (!job) return;
-        
-        document.getElementById('job-title').textContent = job.title;
-        document.getElementById('job-company').textContent = job.company;
-        document.getElementById('job-logo').innerHTML = getCategoryIcon(job.category);
-        document.getElementById('job-salary').textContent = job.salary;
-        document.getElementById('job-location').textContent = job.location;
-        document.getElementById('job-description').textContent = job.description;
-        
-        const typeClass = job.type === 'government' ? 'tag-gov' : 
-                         job.type === 'semi' ? 'tag-semi' : 
-                         job.type === 'vision2030' ? 'tag-2030' : 'tag-private';
-        const typeText = job.type === 'government' ? 'حكومي' : 
-                        job.type === 'semi' ? 'شبه حكومي' : 
-                        job.type === 'vision2030' ? 'رؤية 2030' : 'خاص';
-        
-        document.getElementById('job-tags').innerHTML = `
-            <span class="tag ${typeClass}">${typeText}</span>
-            <span class="tag bg-white/10">${job.category}</span>
-        `;
-        
-        const requirementsList = document.getElementById('job-requirements');
-        requirementsList.innerHTML = job.requirements.map(req => `<li>• ${req}</li>`).join('');
-        
-        document.getElementById('job-sheet-overlay').classList.add('active');
-        document.getElementById('job-sheet').classList.add('active');
-        document.body.style.overflow = 'hidden';
-    }
-    
-    function closeJobSheet() {
-        document.getElementById('job-sheet-overlay').classList.remove('active');
-        document.getElementById('job-sheet').classList.remove('active');
-        document.body.style.overflow = '';
-    }
-    
-    function applyForJob() {
-        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        if (!currentUser) {
-            alert('يرجى تسجيل الدخول أولاً للتقديم على الوظيفة');
-            window.location.href = 'index.html';
-            return;
-        }
-        alert('تم تقديم طلبك بنجاح! سيتم مراجعته من قبل فريق التوظيف.');
-        closeJobSheet();
-    }
-    
-    // ═══════════════════════════════════════════════════════════════════════════════
-    // SERVICE WORKER
-    // ═══════════════════════════════════════════════════════════════════════════════
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js').catch(console.error);
-    }
     </script>
 </body>
 </html>
