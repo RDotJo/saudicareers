@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحليل السيرة الذاتية | SaudiCareers</title>
+    <meta name="description" content="حلل سيرتك الذاتية بالذكاء الاصطناعي واحصل على توصيات مخصصة">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
+        :root { --primary: #1e3a5f; --primary-light: #2d5a8e; --secondary: #0f766e; --accent: #10b981; --text: #1f2937; --text-light: #6b7280; --bg: #f8fafc; --white: #ffffff; --border: #e5e7eb; --warning: #f59e0b; --danger: #ef4444; }
+        body { background: var(--bg); color: var(--text); line-height: 1.6; }
+        .header { background: var(--white); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+        .header-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; height: 70px; }
+        .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .logo-icon { width: 45px; height: 45px; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 20px; }
+        .logo-text { color: var(--primary); font-weight: 800; font-size: 24px; }
+        .logo-sub { color: var(--text-light); font-size: 12px; font-weight: 500; }
+        .nav { display: flex; gap: 32px; }
+        .nav a { color: var(--text); text-decoration: none; font-weight: 600; font-size: 15px; transition: color 0.2s; }
+        .nav a:hover, .nav a.active { color: var(--primary); }
+        .header-actions { display: flex; gap: 12px; }
+        .btn { padding: 10px 24px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.2s; border: none; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-light); }
+        .btn-outline { background: transparent; color: var(--primary); border: 1.5px solid var(--primary); }
+        
+        .page-header { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white; padding: 60px 24px; text-align: center; }
+        .page-header h1 { font-size: 36px; font-weight: 800; margin-bottom: 12px; }
+        .page-header p { font-size: 18px; opacity: 0.9; }
+        
+        .main { padding: 40px 24px; max-width: 900px; margin: 0 auto; }
+        
+        .analyzer-card { background: var(--white); border-radius: 20px; padding: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        
+        .upload-section { margin-bottom: 32px; }
+        .upload-area { border: 2px dashed var(--border); border-radius: 16px; padding: 48px 24px; text-align: center; transition: all 0.2s; cursor: pointer; }
+        .upload-area:hover { border-color: var(--primary); background: rgba(30, 58, 95, 0.02); }
+        .upload-area.dragover { border-color: var(--accent); background: rgba(16, 185, 129, 0.05); }
+        .upload-icon { font-size: 48px; margin-bottom: 16px; }
+        .upload-text { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+        .upload-subtext { color: var(--text-light); font-size: 14px; }
+        .file-input { display: none; }
+        
+        .or-divider { display: flex; align-items: center; gap: 16px; margin: 24px 0; color: var(--text-light); }
+        .or-divider::before, .or-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+        
+        .text-input-section { margin-bottom: 24px; }
+        .text-input-section label { display: block; font-weight: 600; margin-bottom: 8px; }
+        .cv-textarea { width: 100%; min-height: 300px; padding: 16px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 15px; resize: vertical; }
+        .cv-textarea:focus { outline: none; border-color: var(--primary); }
+        
+        .analyze-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: 700; cursor: pointer; }
+        .analyze-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(30, 58, 95, 0.3); }
+        .analyze-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .analyze-btn.loading { position: relative; color: transparent; }
+        .analyze-btn.loading::after { content: ''; position: absolute; width: 24px; height: 24px; border: 3px solid white; border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; right: 50%; margin-right: -12px; top: 50%; margin-top: -12px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        /* Results Section */
+        .results-section { display: none; margin-top: 40px; }
+        .results-section.show { display: block; }
+        
+        .score-card { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white; border-radius: 16px; padding: 32px; text-align: center; margin-bottom: 32px; }
+        .score-label { font-size: 16px; opacity: 0.9; margin-bottom: 8px; }
+        .score-value { font-size: 72px; font-weight: 900; line-height: 1; }
+        .score-max { font-size: 24px; opacity: 0.7; }
+        .score-text { margin-top: 16px; font-size: 18px; }
+        
+        .score-breakdown { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+        .breakdown-item { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; }
+        .breakdown-value { font-size: 32px; font-weight: 800; color: var(--primary); }
+        .breakdown-label { font-size: 13px; color: var(--text-light); margin-top: 4px; }
+        
+        .result-section { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+        .result-section h3 { font-size: 18px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .result-section.good h3 { color: var(--accent); }
+        .result-section.warning h3 { color: var(--warning); }
+        .result-section.danger h3 { color: var(--danger); }
+        
+        .result-list { list-style: none; }
+        .result-list li { padding: 12px 0; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; gap: 12px; }
+        .result-list li:last-child { border-bottom: none; }
+        .result-icon { font-size: 20px; }
+        
+        .keywords-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+        .keyword-tag { background: rgba(16, 185, 129, 0.1); color: var(--accent); padding: 6px 14px; border-radius: 20px; font-size: 14px; }
+        .keyword-tag.missing { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+        
+        .footer { background: #0f172a; color: white; padding: 40px 24px 24px; margin-top: 60px; }
+        .footer-inner { max-width: 1200px; margin: 0 auto; text-align: center; }
+        .footer p { color: rgba(255,255,255,0.6); font-size: 14px; }
+        
+        @media (max-width: 768px) { .nav { display: none; } .score-breakdown { grid-template-columns: repeat(2, 1fr); } }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">🇸🇦</div>
+                <div>
+                    <div class="logo-text">SaudiCareers</div>
+                    <div class="logo-sub">منصة التوظيف الوطنية</div>
+                </div>
+            </a>
+            <nav class="nav">
+                <a href="index.html">الرئيسية</a>
+                <a href="jobs.html">الوظائف</a>
+                <a href="cv-analyzer.html" class="active">تحليل السيرة</a>
+                <a href="about.html">من نحن</a>
+            </nav>
+            <div class="header-actions">
+                <a href="login.html" class="btn btn-outline">تسجيل الدخول</a>
+                <a href="register.html" class="btn btn-primary">إنشاء حساب</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="page-header">
+        <h1>🤖 تحليل السيرة الذاتية بالذكاء الاصطناعي</h1>
+        <p>حلل سيرتك الذاتية واحصل على تقييم دقيق وتوصيات للتحسين</p>
+    </section>
+
+    <main class="main">
+        <div class="analyzer-card">
+            <div class="upload-section">
+                <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+                    <div class="upload-icon">📄</div>
+                    <div class="upload-text">اسحب ملف PDF هنا أو انقر للاختيار</div>
+                    <div class="upload-subtext">PDF, DOC, DOCX (حتى 5 ميجابايت)</div>
+                </div>
+                <input type="file" class="file-input" id="fileInput" accept=".pdf,.doc,.docx" onchange="handleFileSelect(event)">
+                <div id="fileName" style="margin-top: 16px; text-align: center; color: var(--primary); font-weight: 600; display: none;"></div>
+            </div>
+
+            <div class="or-divider">أو</div>
+
+            <div class="text-input-section">
+                <label>📋 ألصق نص السيرة الذاتية هنا:</label>
+                <textarea class="cv-textarea" id="cvText" placeholder="انسخ والصق نص سيرتك الذاتية هنا..."></textarea>
+            </div>
+
+            <button class="analyze-btn" id="analyzeBtn" onclick="analyzeCV()">🔍 تحليل السيرة الذاتية</button>
+        </div>
+
+        <!-- Results -->
+        <div class="results-section" id="resultsSection">
+            <div class="score-card">
+                <div class="score-label">درجة التوافق مع ATS</div>
+                <div>
+                    <span class="score-value" id="scoreValue">0</span>
+                    <span class="score-max">/100</span>
+                </div>
+                <div class="score-text" id="scoreText"></div>
+            </div>
+
+            <div class="score-breakdown">
+                <div class="breakdown-item">
+                    <div class="breakdown-value" id="keywordScore">0</div>
+                    <div class="breakdown-label">توافق الكلمات المفتاحية</div>
+                </div>
+                <div class="breakdown-item">
+                    <div class="breakdown-value" id="formatScore">0</div>
+                    <div class="breakdown-label">التوافق مع ATS</div>
+                </div>
+                <div class="breakdown-item">
+                    <div class="breakdown-value" id="quantScore">0</div>
+                    <div class="breakdown-label">الإنجازات القابلة للقياس</div>
+                </div>
+                <div class="breakdown-item">
+                    <div class="breakdown-value" id="skillsScore">0</div>
+                    <div class="breakdown-label">المهارات</div>
+                </div>
+            </div>
+
+            <div class="result-section good">
+                <h3>✅ نقاط القوة</h3>
+                <ul class="result-list" id="strengthsList"></ul>
+            </div>
+
+            <div class="result-section warning">
+                <h3>⚠️ مجالات تحتاج تحسين</h3>
+                <ul class="result-list" id="weaknessesList"></ul>
+            </div>
+
+            <div class="result-section">
+                <h3>💡 توصيات للتحسين</h3>
+                <ul class="result-list" id="suggestionsList"></ul>
+            </div>
+
+            <div class="result-section">
+                <h3>🔍 الكلمات المفتاحية المفقودة</h3>
+                <div class="keywords-grid" id="missingKeywords"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-inner">
+            <p>© 2026 SaudiCareers. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+
+    <script src="cv-analyzer.js"></script>
+    <script>
+        // API Key from environment variable
+        const OPENAI_API_KEY = typeof process !== 'undefined' ? process.env.OPENAI_API_KEY : null;
+        
+        let uploadedFile = null;
+        let cvText = '';
+
+        // Handle file selection
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                uploadedFile = file;
+                document.getElementById('fileName').textContent = `📎 ${file.name}`;
+                document.getElementById('fileName').style.display = 'block';
+                
+                // Read file content (mock - in real implementation would use PDF parser)
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    cvText = e.target.result;
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        // Drag and drop
+        const uploadArea = document.getElementById('uploadArea');
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length) {
+                document.getElementById('fileInput').files = files;
+                handleFileSelect({ target: { files } });
+            }
+        });
+
+        // Analyze CV
+        async function analyzeCV() {
+            const btn = document.getElementById('analyzeBtn');
+            const textarea = document.getElementById('cvText');
+            const text = textarea.value.trim();
+
+            if (!text && !uploadedFile) {
+                alert('الرجاء إدخال نص السيرة الذاتية أو رفع ملف');
+                return;
+            }
+
+            // Use textarea text if no file uploaded
+            if (!cvText && text) {
+                cvText = text;
+            }
+
+            // Show loading
+            btn.classList.add('loading');
+            btn.disabled = true;
+
+            try {
+                // Check if CVAnalyzer is loaded
+                if (typeof CVAnalyzer === 'undefined') {
+                    // Mock analysis if CVAnalyzer not available
+                    await mockAnalysis();
+                } else {
+                    // Real analysis
+                    CVAnalyzer.init(OPENAI_API_KEY);
+                    const result = await CVAnalyzer.analyzeCV(cvText);
+                    displayResults(result);
+                }
+            } catch (error) {
+                console.error('Analysis error:', error);
+                await mockAnalysis();
+            } finally {
+                btn.classList.remove('loading');
+                btn.disabled = false;
+            }
+        }
+
+        // Mock analysis for demo
+        async function mockAnalysis() {
+            // Simulate API delay
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
+            const mockResult = {
+                atsScore: 72,
+                breakdown: {
+                    keywordMatch: 65,
+                    formatCompliance: 85,
+                    quantifiableResults: 70,
+                    skillsAlignment: 68
+                },
+                analysis: {
+                    strengths: [
+                        'هيكل السيرة الذاتية واضح ومنظم',
+                        'استخدام أفعال قوية للإنجازات',
+                        'الخبرة العملية مفصلة بشكل جيد',
+                        'المؤهلات التعليمية موضحة بوضوح'
+                    ],
+                    weaknesses: [
+                        'نقص في الكلمات المفتاحية المطلوبة',
+                        'بعض الإنجازات غير قابلة للقياس',
+                        'الملخص المهني قصير جداً'
+                    ],
+                    suggestions: [
+                        'أضف أرقام ونسب مئوية للإنجازات',
+                        'استخدم كلمات مفتاحية من الوصف الوظيفي',
+                        'وسّع الملخص المهني ليشمل 3-4 سطور',
+                        'أضف قسم المهارات التقنية بشكل منفصل'
+                    ],
+                    keywordOptimization: {
+                        missing: ['إدارة المشاريع', 'تحليل البيانات', 'العمل الجماعي', 'القيادة']
+                    }
+                }
+            };
+
+            displayResults(mockResult);
+        }
+
+        // Display results
+        function displayResults(result) {
+            document.getElementById('resultsSection').classList.add('show');
+            
+            // Score
+            document.getElementById('scoreValue').textContent = result.atsScore;
+            
+            let scoreText = '';
+            if (result.atsScore >= 80) scoreText = 'ممتاز! سيرتك الذاتية جاهزة للتقديم';
+            else if (result.atsScore >= 60) scoreText = 'جيد، لكن يحتاج بعض التحسينات';
+            else scoreText = 'يحتاج تحسينات كبيرة قبل التقديم';
+            document.getElementById('scoreText').textContent = scoreText;
+
+            // Breakdown
+            document.getElementById('keywordScore').textContent = result.breakdown.keywordMatch;
+            document.getElementById('formatScore').textContent = result.breakdown.formatCompliance;
+            document.getElementById('quantScore').textContent = result.breakdown.quantifiableResults;
+            document.getElementById('skillsScore').textContent = result.breakdown.skillsAlignment;
+
+            // Strengths
+            const strengthsList = document.getElementById('strengthsList');
+            strengthsList.innerHTML = result.analysis.strengths.map(s => 
+                `<li><span class="result-icon">✓</span><span>${s}</span></li>`
+            ).join('');
+
+            // Weaknesses
+            const weaknessesList = document.getElementById('weaknessesList');
+            weaknessesList.innerHTML = result.analysis.weaknesses.map(w => 
+                `<li><span class="result-icon">⚠️</span><span>${w}</span></li>`
+            ).join('');
+
+            // Suggestions
+            const suggestionsList = document.getElementById('suggestionsList');
+            suggestionsList.innerHTML = result.analysis.suggestions.map(s => 
+                `<li><span class="result-icon">💡</span><span>${s}</span></li>`
+            ).join('');
+
+            // Missing keywords
+            const missingKeywords = document.getElementById('missingKeywords');
+            if (result.analysis.keywordOptimization && result.analysis.keywordOptimization.missing) {
+                missingKeywords.innerHTML = result.analysis.keywordOptimization.missing.map(k => 
+                    `<span class="keyword-tag missing">${k}</span>`
+                ).join('');
+            }
+
+            // Scroll to results
+            document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
