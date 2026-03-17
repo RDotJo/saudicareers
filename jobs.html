@@ -10,6 +10,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
         :root { --primary: #1e3a5f; --primary-light: #2d5a8e; --secondary: #0f766e; --accent: #10b981; --text: #1f2937; --text-light: #6b7280; --bg: #f8fafc; --white: #ffffff; --border: #e5e7eb; }
@@ -54,6 +56,10 @@
         .job-footer { display: flex; justify-content: space-between; align-items: center; }
         .job-salary { font-size: 16px; font-weight: 700; color: var(--primary); }
         .job-date { font-size: 13px; color: var(--text-light); }
+        .loading { text-align: center; padding: 60px 20px; }
+        .loading-spinner { width: 48px; height: 48px; border: 4px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .error { background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; padding: 20px; border-radius: 12px; text-align: center; }
         .load-more { text-align: center; margin-top: 40px; }
         .load-more-btn { background: var(--white); border: 1.5px solid var(--primary); color: var(--primary); padding: 14px 40px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
         .load-more-btn:hover { background: var(--primary); color: white; }
@@ -128,6 +134,14 @@
                 <option value="salary-low">الأقل راتب</option>
             </select>
         </div>
+        <div id="loadingState" class="loading">
+            <div class="loading-spinner"></div>
+            <p>جاري تحميل الوظائف من قاعدة البيانات...</p>
+        </div>
+        <div id="errorState" class="error" style="display: none;">
+            <p>حدث خطأ في الاتصال بقاعدة البيانات</p>
+            <button class="btn btn-primary" onclick="loadJobs()" style="margin-top: 12px;">إعادة المحاولة</button>
+        </div>
         <div class="jobs-grid" id="jobsContainer"></div>
         <div class="load-more" id="loadMoreContainer" style="display: none;">
             <button class="load-more-btn" onclick="loadMore()">تحميل المزيد</button>
@@ -140,27 +154,66 @@
         </div>
     </footer>
 
-    <script src="jobs-data.js"></script>
     <script>
+        // Supabase Configuration from Environment
+        const SUPABASE_URL = window.ENV?.SUPABASE_URL || 'https://vwtjwmojvtfwgpedufik.supabase.co';
+        const SUPABASE_ANON_KEY = window.ENV?.SUPABASE_ANON_KEY || 'sb_publishable_CV3jxAb81cqQaJq_8t615g_CInfO7HB';
+        
+        let supabaseClient = null;
         let allJobs = [];
         let displayedJobs = [];
         let currentPage = 1;
         const jobsPerPage = 12;
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            if (typeof JOBS_DATABASE !== 'undefined') {
-                allJobs = JOBS_DATABASE;
-            } else {
-                // Fallback data if jobs-data.js fails to load
-                allJobs = [
-                    { id: 1, title: "مدير مشروع", company: "وزارة المالية", location: "الرياض", type: "حكومي", category: "إدارة", salary: "18000-25000 ريال", description: "إدارة مشاريع التحول الرقمي", posted: "2026-03-15" },
-                    { id: 2, title: "مهندس برمجيات", company: "أرامكو", location: "الظهران", type: "خاص", category: "تقنية", salary: "25000-35000 ريال", description: "تطوير أنظمة برمجية", posted: "2026-03-14" },
-                    { id: 3, title: "محلل مالي", company: "سابك", location: "جدة", type: "خاص", category: "مالية", salary: "15000-22000 ريال", description: "تحليل البيانات المالية", posted: "2026-03-13" }
-                ];
+        // Initialize Supabase
+        async function initSupabase() {
+            if (typeof supabase === 'undefined') {
+                await new Promise(resolve => {
+                    const script = document.createElement('script');
+                    script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
+                    script.onload = resolve;
+                    document.head.appendChild(script);
+                });
             }
-            displayJobs();
-        });
+            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        }
+
+        // Load jobs from Supabase
+        async function loadJobs() {
+            const loadingEl = document.getElementById('loadingState');
+            const errorEl = document.getElementById('errorState');
+            const container = document.getElementById('jobsContainer');
+            
+            loadingEl.style.display = 'block';
+            errorEl.style.display = 'none';
+            container.innerHTML = '';
+            
+            try {
+                await initSupabase();
+                
+                const { data, error } = await supabaseClient
+                    .from('jobs')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                
+                if (error) throw error;
+                
+                allJobs = data || [];
+                loadingEl.style.display = 'none';
+                displayJobs();
+                
+            } catch (err) {
+                console.error('Error loading jobs:', err);
+                loadingEl.style.display = 'none';
+                errorEl.style.display = 'block';
+                
+                // Fallback to static data
+                if (typeof JOBS_DATABASE !== 'undefined') {
+                    allJobs = JOBS_DATABASE;
+                    displayJobs();
+                }
+            }
+        }
 
         function displayJobs() {
             const container = document.getElementById('jobsContainer');
@@ -174,6 +227,12 @@
             const end = currentPage * jobsPerPage;
             const jobsToShow = filteredJobs.slice(start, end);
             
+            if (jobsToShow.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-light);">لا توجد وظائف مطابقة</div>';
+                loadMoreContainer.style.display = 'none';
+                return;
+            }
+            
             container.innerHTML = jobsToShow.map(job => `
                 <div class="job-card" onclick="viewJob(${job.id})">
                     <div class="job-header">
@@ -181,17 +240,17 @@
                             <div class="job-title">${job.title}</div>
                             <div class="job-company">${job.company}</div>
                         </div>
-                        <span class="job-badge">${job.type}</span>
+                        <span class="job-badge">${job.type || 'خاص'}</span>
                     </div>
                     <div class="job-details">
                         <span class="job-detail">📍 ${job.location}</span>
-                        <span class="job-detail">💼 ${job.category}</span>
+                        <span class="job-detail">💼 ${job.category || 'غير محدد'}</span>
                         <span class="job-detail">📅 ${job.experience || 'غير محدد'}</span>
                     </div>
                     <div class="job-description">${job.description}</div>
                     <div class="job-footer">
                         <span class="job-salary">${job.salary}</span>
-                        <span class="job-date">${formatDate(job.posted)}</span>
+                        <span class="job-date">${formatDate(job.created_at || job.posted)}</span>
                     </div>
                 </div>
             `).join('');
@@ -207,9 +266,9 @@
             
             return allJobs.filter(job => {
                 const matchesSearch = !searchQuery || 
-                    job.title.toLowerCase().includes(searchQuery) ||
-                    job.company.toLowerCase().includes(searchQuery) ||
-                    job.location.toLowerCase().includes(searchQuery);
+                    (job.title && job.title.toLowerCase().includes(searchQuery)) ||
+                    (job.company && job.company.toLowerCase().includes(searchQuery)) ||
+                    (job.location && job.location.toLowerCase().includes(searchQuery));
                 const matchesType = !typeFilter || job.type === typeFilter;
                 const matchesCity = !cityFilter || job.location === cityFilter;
                 const matchesCategory = !categoryFilter || job.category === categoryFilter;
@@ -236,13 +295,14 @@
             } else if (sortValue === 'salary-low') {
                 allJobs.sort((a, b) => extractMaxSalary(a.salary) - extractMaxSalary(b.salary));
             } else {
-                allJobs.sort((a, b) => new Date(b.posted) - new Date(a.posted));
+                allJobs.sort((a, b) => new Date(b.created_at || b.posted) - new Date(a.created_at || a.posted));
             }
             
             displayJobs();
         }
 
         function extractMaxSalary(salaryStr) {
+            if (!salaryStr) return 0;
             const match = salaryStr.match(/(\d+)/g);
             return match ? parseInt(match[match.length - 1]) : 0;
         }
@@ -268,10 +328,15 @@
             return date.toLocaleDateString('ar-SA');
         }
 
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', loadJobs);
+
         // Search on Enter key
         document.getElementById('searchInput')?.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') searchJobs();
         });
     </script>
+    <!-- Fallback for static data if Supabase fails -->
+    <script src="jobs-data.js"></script>
 </body>
 </html>

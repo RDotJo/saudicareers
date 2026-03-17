@@ -208,8 +208,9 @@
 
     <script src="cv-analyzer.js"></script>
     <script>
-        // API Key from environment variable
-        const OPENAI_API_KEY = typeof process !== 'undefined' ? process.env.OPENAI_API_KEY : null;
+        // API Key from Vercel Environment Variable
+        // يجب إضافة OPENAI_API_KEY في Vercel Dashboard
+        const OPENAI_API_KEY = window.ENV?.OPENAI_API_KEY || '';
         
         let uploadedFile = null;
         let cvText = '';
