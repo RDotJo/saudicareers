@@ -186,7 +186,7 @@
             supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         }
 
-        // Load jobs from Supabase
+        // Load jobs from Supabase or fallback to static data
         async function loadJobs() {
             const loadingEl = document.getElementById('loadingState');
             const errorEl = document.getElementById('errorState');
@@ -196,30 +196,35 @@
             errorEl.style.display = 'none';
             container.innerHTML = '';
             
+            // Try Supabase first
             try {
                 await initSupabase();
-                
                 const { data, error } = await supabaseClient
                     .from('jobs')
                     .select('*')
                     .order('created_at', { ascending: false });
                 
-                if (error) throw error;
-                
-                allJobs = data || [];
+                if (!error && data && data.length > 0) {
+                    allJobs = data;
+                    loadingEl.style.display = 'none';
+                    displayJobs();
+                    return;
+                }
+            } catch (err) {
+                console.log('Supabase error, using fallback:', err);
+            }
+            
+            // Fallback to JOBS_DATABASE
+            if (typeof JOBS_DATABASE !== 'undefined' && JOBS_DATABASE.length > 0) {
+                allJobs = JOBS_DATABASE.map(job => ({
+                    ...job,
+                    created_at: job.posted
+                }));
                 loadingEl.style.display = 'none';
                 displayJobs();
-                
-            } catch (err) {
-                console.error('Error loading jobs:', err);
+            } else {
                 loadingEl.style.display = 'none';
                 errorEl.style.display = 'block';
-                
-                // Fallback to static data
-                if (typeof JOBS_DATABASE !== 'undefined') {
-                    allJobs = JOBS_DATABASE;
-                    displayJobs();
-                }
             }
         }
 
