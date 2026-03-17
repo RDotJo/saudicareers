@@ -208,8 +208,11 @@
 
     <script src="cv-analyzer.js"></script>
     <script>
+        // Inject ENV
+        window.ENV = window.ENV || {};
+        window.ENV.OPENAI_API_KEY = window.ENV.OPENAI_API_KEY || '';
+        
         // API Key from Vercel Environment Variable
-        // يجب إضافة OPENAI_API_KEY في Vercel Dashboard
         const OPENAI_API_KEY = window.ENV?.OPENAI_API_KEY || '';
         
         let uploadedFile = null;
