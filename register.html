@@ -11,6 +11,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    
     <style>
         * {
             margin: 0;
@@ -604,6 +607,23 @@
         phone.addEventListener('blur', validatePhone);
         password.addEventListener('blur', validatePassword);
         
+        // Supabase Config
+        const SUPABASE_URL = 'https://vwtjwmojvtfwgpedufik.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_CV3jxAb81cqQaJq_8t615g_CInfO7HB';
+        let supabaseClient = null;
+
+        async function initSupabase() {
+            if (typeof supabase === 'undefined') {
+                await new Promise(resolve => {
+                    const script = document.createElement('script');
+                    script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
+                    script.onload = resolve;
+                    document.head.appendChild(script);
+                });
+            }
+            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        }
+
         // Form Submit
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -622,23 +642,46 @@
             submitBtn.classList.add('loading');
             submitBtn.disabled = true;
             
-            // Simulate API call
-            setTimeout(() => {
-                // Hide form, show success
+            try {
+                // Initialize Supabase
+                await initSupabase();
+                
+                // Register with Supabase Auth
+                const { data, error } = await supabaseClient.auth.signUp({
+                    email: email.value,
+                    password: password.value,
+                    options: {
+                        data: {
+                            full_name: fullName.value,
+                            phone: phone.value
+                        }
+                    }
+                });
+                
+                if (error) {
+                    throw error;
+                }
+                
+                // Success - show success message
                 document.getElementById('registerForm').style.display = 'none';
                 document.getElementById('successState').classList.add('show');
                 
-                // Store user data in localStorage (mock registration)
+                // Store user data locally for convenience
                 const userData = {
                     name: fullName.value,
                     email: email.value,
                     phone: phone.value,
+                    userId: data.user?.id,
                     registeredAt: new Date().toISOString()
                 };
                 localStorage.setItem('saudiCareers_user', JSON.stringify(userData));
-                localStorage.setItem('saudiCareers_loggedIn', 'false');
                 
-            }, 1500);
+            } catch (error) {
+                console.error('Registration error:', error);
+                alert('خطأ في التسجيل: ' + error.message);
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
+            }
         });
         
         // Phone number formatting

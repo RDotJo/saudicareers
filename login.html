@@ -11,6 +11,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    
     <style>
         * {
             margin: 0;
@@ -489,6 +492,23 @@
             }
         }
         
+        // Supabase Config
+        const SUPABASE_URL = 'https://vwtjwmojvtfwgpedufik.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_CV3jxAb81cqQaJq_8t615g_CInfO7HB';
+        let supabaseClient = null;
+
+        async function initSupabase() {
+            if (typeof supabase === 'undefined') {
+                await new Promise(resolve => {
+                    const script = document.createElement('script');
+                    script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
+                    script.onload = resolve;
+                    document.head.appendChild(script);
+                });
+            }
+            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        }
+
         // Form Submit
         const form = document.getElementById('loginForm');
         const submitBtn = document.getElementById('submitBtn');
@@ -506,39 +526,48 @@
             submitBtn.disabled = true;
             errorMessage.classList.remove('show');
             
-            // Simulate login (mock)
-            setTimeout(() => {
+            try {
+                // Initialize Supabase
+                await initSupabase();
+                
+                // Login with Supabase Auth
+                const { data, error } = await supabaseClient.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+                
+                if (error) {
+                    throw error;
+                }
+                
+                // Success
                 submitBtn.classList.remove('loading');
                 submitBtn.disabled = false;
                 
-                // Check if user exists in localStorage (mock validation)
-                const userData = localStorage.getItem('saudiCareers_user');
+                // Store session info
+                localStorage.setItem('saudiCareers_loggedIn', 'true');
+                localStorage.setItem('saudiCareers_user', JSON.stringify({
+                    name: data.user?.user_metadata?.full_name || 'مستخدم',
+                    email: data.user?.email,
+                    userId: data.user?.id,
+                    registeredAt: data.user?.created_at
+                }));
                 
-                if (userData) {
-                    const user = JSON.parse(userData);
-                    if (user.email === email) {
-                        // Success
-                        localStorage.setItem('saudiCareers_loggedIn', 'true');
-                        if (rememberMe) {
-                            localStorage.setItem('saudiCareers_rememberMe', 'true');
-                        }
-                        window.location.href = 'profile.html';
-                    } else {
-                        // Error
-                        errorMessage.textContent = 'البريد الإلكتروني أو كلمة المرور غير صحيحة';
-                        errorMessage.classList.add('show');
-                    }
-                } else {
-                    // For demo: accept any login
-                    localStorage.setItem('saudiCareers_loggedIn', 'true');
-                    localStorage.setItem('saudiCareers_user', JSON.stringify({
-                        name: 'مستخدم تجريبي',
-                        email: email,
-                        registeredAt: new Date().toISOString()
-                    }));
-                    window.location.href = 'profile.html';
+                if (rememberMe) {
+                    localStorage.setItem('saudiCareers_rememberMe', 'true');
                 }
-            }, 1500);
+                
+                // Redirect to profile
+                window.location.href = 'profile.html';
+                
+            } catch (error) {
+                console.error('Login error:', error);
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
+                errorMessage.textContent = 'البريد الإلكتروني أو كلمة المرور غير صحيحة';
+                errorMessage.classList.add('show');
+            }
+        });
         });
     </script>
 </body>
